@@ -74,12 +74,12 @@ CREATE TABLE AddOnDetails (
 
 
 -- SHOW TABLES (test that the tables were created)
-DESCRIBE Customers;
-DESCRIBE Orders;
-DESCRIBE Drinks;
-DESCRIBE AddOns;
-DESCRIBE DrinkOrders;
-DESCRIBE AddOnDetails;
+-- DESCRIBE Customers;
+-- DESCRIBE Orders;
+-- DESCRIBE Drinks;
+-- DESCRIBE AddOns;
+-- DESCRIBE DrinkOrders;
+-- DESCRIBE AddOnDetails;
 
 
 -------------------- **{ EXAMPLE DATA }** --------------------
