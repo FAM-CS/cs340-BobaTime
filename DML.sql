@@ -58,11 +58,11 @@ FROM
     NATURAL JOIN AddOnDetails
     NATURAL JOIN AddOns
 WHERE
-    :first_name = first_name AND :last_name = last_name;
-    -- C.first_name = "Guest1" AND C.last_name = "Guest1";
+    first_name = :f_name AND last_name = :l_name;
+    -- first_name = "Guest1" AND last_name = "Guest1";
 
 
--- ? Query to see count of ordered drink flavors
+-- ? Query to see count of ordered drink flavors (top flavors)
 SELECT
       base_flavor AS "Flavor"
     , COUNT(DO.drink_order_id) AS "Times Ordered"
@@ -92,6 +92,13 @@ VALUES
         , :can_be_hot
         , :is_flavored_sweetener
     );
+    -- (
+    --       "Mango"
+    --     , 4.5
+    --     , 5
+    --     , FALSE
+    --     , TRUE
+    -- );
 
 
 -- ? Insert a topping
