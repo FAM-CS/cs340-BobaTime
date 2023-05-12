@@ -1,5 +1,5 @@
-/* ---------- BOBA TIME v1.1 ---------- */
--- CS 340-001 / Step 2, Project Draft
+/* ---------- BOBA TIME v1.2 ---------- */
+-- CS 340-001 / Step 3, Project Draft
 -- NULLPTRS / Fatima Moussaoui & Kimberly Yeo
 -- May 8, 2023
 /* ------------------------------------ */
@@ -20,9 +20,9 @@ CREATE TABLE Customers (
       customer_id INT NOT NULL AUTO_INCREMENT
     , email VARCHAR(100) NOT NULL
     , phone_num INT
-    , first_name VARCHAR(100)
-    , last_name VARCHAR(100)
-    , num_orders INT NOT NULL
+    , first_name VARCHAR(100) NOT NULL
+    , last_name VARCHAR(100) NOT NULL
+    , num_orders INT NOT NULL DEFAULT 0
     , num_drinks INT DEFAULT 0
     , total_spent DECIMAL(9,2) DEFAULT 0
     , drinks_to_free INT DEFAULT 10
@@ -33,12 +33,14 @@ CREATE TABLE Customers (
 
 CREATE TABLE Orders (
       order_id INT NOT NULL AUTO_INCREMENT
-    , customer_id INT NOT NULL
+    , customer_id INT
     , order_date TIMESTAMP NOT NULL
     , num_drinks TINYINT NOT NULL
     , total_cost DECIMAL(5,2) NOT NULL
     , PRIMARY KEY (order_id)
-    , FOREIGN KEY (customer_id) REFERENCES Customers(customer_id) ON DELETE CASCADE
+    , FOREIGN KEY (customer_id)
+          REFERENCES Customers(customer_id)
+          ON DELETE SET NULL
 );
 
 
@@ -57,18 +59,23 @@ CREATE TABLE DrinkOrders (
       drink_order_id INT NOT NULL AUTO_INCREMENT
     , order_id INT NOT NULL
     , drink_id INT NOT NULL
+    , seq_number TINYINT NOT NULL DEFAULT 1
     , sweetness_lvl TINYINT NOT NULL
     , is_cold BOOLEAN DEFAULT TRUE
     , drink_size char(1) NOT NULL
     , PRIMARY KEY (drink_order_id)
-    , FOREIGN KEY (order_id) REFERENCES Orders(order_id) ON DELETE CASCADE
-    , FOREIGN KEY (drink_id) REFERENCES Drinks(drink_id) ON DELETE CASCADE
+    , FOREIGN KEY (order_id)
+          REFERENCES Orders(order_id)
+          ON DELETE CASCADE
+    , FOREIGN KEY (drink_id)
+          REFERENCES Drinks(drink_id)
+          ON DELETE RESTRICT
 );
 
 
 CREATE TABLE AddOns (
       add_on_id INT NOT NULL AUTO_INCREMENT
-    , name VARCHAR(50) NOT NULL
+    , topping VARCHAR(50) NOT NULL
     , price DECIMAL(3,2) NOT NULL
     , PRIMARY KEY (add_on_id)
 );
@@ -80,8 +87,12 @@ CREATE TABLE AddOnDetails (
     , add_on_id INT NOT NULL
     , quantity TINYINT DEFAULT 1
     , PRIMARY KEY (add_on_detail_id)
-    , FOREIGN KEY (drink_order_id) REFERENCES DrinkOrders(drink_order_id) ON DELETE CASCADE
-    , FOREIGN KEY (add_on_id) REFERENCES AddOns(add_on_id) ON DELETE CASCADE
+    , FOREIGN KEY (drink_order_id)
+          REFERENCES DrinkOrders(drink_order_id)
+          ON DELETE CASCADE
+    , FOREIGN KEY (add_on_id)
+          REFERENCES AddOns(add_on_id)
+          ON DELETE RESTRICT
 );
 /* ----------------------------------- */
 
@@ -99,7 +110,7 @@ CREATE TABLE AddOnDetails (
 
 /* ---------- EXAMPLE DATA ---------- */
 INSERT INTO Customers (
-        email
+      email
     , first_name
     , last_name
     , num_orders
@@ -112,7 +123,7 @@ VALUES
     (
           "guest1@bobatime.com"
         , "Guest1"
-        , NULL
+        , "Guest1"
         , 3
         , 4
         , 21.05
@@ -209,7 +220,7 @@ VALUES
 
 
 INSERT INTO AddOns (
-      name
+      topping
     , price
 )
 VALUES
@@ -236,6 +247,7 @@ VALUES
 INSERT INTO DrinkOrders (
       order_id
     , drink_id
+    , seq_number
     , sweetness_lvl
     , is_cold
     , drink_size
@@ -244,6 +256,7 @@ VALUES
     (
         (SELECT order_id FROM Orders WHERE order_date = "2023-01-01 13:00:00")
         , (SELECT drink_id FROM Drinks WHERE base_flavor = "Brown Sugar")
+        , 1
         , 100
         , TRUE
         , 'R'
@@ -251,6 +264,7 @@ VALUES
     (
         (SELECT order_id FROM Orders WHERE order_date = "2023-01-15 13:00:00")
         , (SELECT drink_id FROM Drinks WHERE base_flavor = "Black Tea")
+        , 1
         , 75
         , TRUE
         , 'R'
@@ -258,6 +272,7 @@ VALUES
     (
         (SELECT order_id FROM Orders WHERE order_date = "2023-01-15 13:00:00")
         , (SELECT drink_id FROM Drinks WHERE base_flavor = "Taro")
+        , 2
         , 100
         , TRUE
         , 'R'
@@ -265,6 +280,7 @@ VALUES
     (
         (SELECT order_id FROM Orders WHERE order_date = "2023-01-20 16:00:00")
         , (SELECT drink_id FROM Drinks WHERE base_flavor = "Matcha")
+        , 1
         , 50
         , FALSE
         , 'R'
@@ -272,6 +288,7 @@ VALUES
     (
         (SELECT order_id FROM Orders WHERE order_date = "2023-01-27 13:00:00")
         , (SELECT drink_id FROM Drinks WHERE base_flavor = "Black Tea")
+        , 1
         , 75
         , TRUE
         , 'R'
@@ -279,6 +296,7 @@ VALUES
         (
         (SELECT order_id FROM Orders WHERE order_date = "2023-01-28 17:00:00")
         , (SELECT drink_id FROM Drinks WHERE base_flavor = "Green Tea")
+        , 1
         , 75
         , TRUE
         , 'R'
@@ -295,49 +313,42 @@ VALUES
         (SELECT drink_order_id
         FROM DrinkOrders NATURAL JOIN Orders NATURAL JOIN Drinks
         WHERE order_date = "2023-01-01 13:00:00" AND base_flavor = "Brown Sugar")
-        , (SELECT add_on_id FROM AddOns WHERE name = "Boba")
+        , (SELECT add_on_id FROM AddOns WHERE topping = "Boba")
         , 1
     ),
     (
         (SELECT drink_order_id
         FROM DrinkOrders NATURAL JOIN Orders NATURAL JOIN Drinks
         WHERE order_date = "2023-01-15 13:00:00" AND base_flavor = "Black Tea")
-        , (SELECT add_on_id FROM AddOns WHERE name = "Boba")
+        , (SELECT add_on_id FROM AddOns WHERE topping = "Boba")
         , 1
     ),
     (
         (SELECT drink_order_id
         FROM DrinkOrders NATURAL JOIN Orders NATURAL JOIN Drinks
         WHERE order_date = "2023-01-15 13:00:00" AND base_flavor = "Taro")
-        , (SELECT add_on_id FROM AddOns WHERE name = "Pudding")
+        , (SELECT add_on_id FROM AddOns WHERE topping = "Pudding")
         , 1
     ),
     (
         (SELECT drink_order_id
         FROM DrinkOrders NATURAL JOIN Orders NATURAL JOIN Drinks
         WHERE order_date = "2023-01-15 13:00:00" AND base_flavor = "Taro")
-        , (SELECT add_on_id FROM AddOns WHERE name = "Red Bean")
-        , 1
-    ),
-    (
-        (SELECT drink_order_id
-        FROM DrinkOrders NATURAL JOIN Orders NATURAL JOIN Drinks
-        WHERE order_date = "2023-01-20 16:00:00" AND base_flavor = "Matcha")
-        , (SELECT add_on_id FROM AddOns WHERE name = "Boba")
+        , (SELECT add_on_id FROM AddOns WHERE topping = "Red Bean")
         , 1
     ),
     (
         (SELECT drink_order_id
         FROM DrinkOrders NATURAL JOIN Orders NATURAL JOIN Drinks
         WHERE order_date = "2023-01-27 13:00:00" AND base_flavor = "Black Tea")
-        , (SELECT add_on_id FROM AddOns WHERE name = "Boba")
+        , (SELECT add_on_id FROM AddOns WHERE topping = "Boba")
         , 1
     ),
     (
         (SELECT drink_order_id
         FROM DrinkOrders NATURAL JOIN Orders NATURAL JOIN Drinks
         WHERE order_date = "2023-01-28 17:00:00" AND base_flavor = "Green Tea")
-        , (SELECT add_on_id FROM AddOns WHERE name = "Boba")
+        , (SELECT add_on_id FROM AddOns WHERE topping = "Boba")
         , 1
     );
 /* ---------------------------------- */

@@ -1,0 +1,5 @@
+# Node modules
+/node_modules/
+
+# MACOSX ignore
+.DS_STORE
