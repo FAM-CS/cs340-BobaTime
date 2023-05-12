@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <title>Boba Time</title>
+  </head>
+
+  <body>
+  
+    <header>
+      <h1>Menu</h1>
+      <p>[ <a href="index">Home</a> | Menu | <a href="orders">Orders</a> | <a href="customers">Customers</a> | <a href="user">Place Order</a> ]</p>
+    </header>
+    
+    <style>
+      table {
+        border-collapse: collapse;
+      }
+      table tr td {
+        border: 1px solid gray;
+        padding: 10px;
+      }
+      table tr th {
+        border: 1px solid gray;
+        padding: 10px;
+        background-color: #D6EEEE;
+      }
+      form {
+        border-collapse: collapse;
+        border: 1px solid gray;
+        padding: 10px;
+        display: inline-block;
+      }
+    </style>
+    
+    <h2>Drinks</h2>
+    
+    <table>
+      <tbody>
+        <tr>
+          <th><a href= #>New</a></th>
+          <th></th>
+          <th>drink_id</th>
+          <th>base_flavor</th>
+          <th>small_price</th>
+          <th>reg_price</th>
+          <th>can_be_hot</th>
+          <th>is_flavored_sweetener</th>
+        </tr>
+        
+        <tr>
+          <td><a href= #>Edit</a></td>
+          <td><a href= #>Delete</a></td>
+          <td>1</td>
+          <td>Black Tea</td>
+          <td>4.50</td>
+          <td>5.00</td>
+          <td>TRUE</td>
+          <td>FALSE</td>
+        </tr>
+      
+        <tr>
+          <td><a href= #>Edit</a></td>
+          <td><a href= #>Delete</a></td>
+          <td>2</td>
+          <td>Green Tea</td>
+          <td>4.50</td>
+          <td>5.00</td>
+          <td>TRUE</td>
+          <td>FALSE</td>
+        </tr>
+      
+        <tr>
+          <td><a href= #>Edit</a></td>
+          <td><a href= #>Delete</a></td>
+          <td>3</td>
+          <td>Brown Sugar</td>
+          <td>4.80</td>
+          <td>5.20</td>
+          <td>TRUE</td>
+          <td>TRUE</td>
+        </tr>
+      
+        <tr>
+          <td><a href= #>Edit</a></td>
+          <td><a href= #>Delete</a></td>
+          <td>4</td>
+          <td>Taro</td>
+          <td>4.50</td>
+          <td>5.00</td>
+          <td>FALSE</td>
+          <td>TRUE</td>
+        </tr>
+      
+        <tr>
+          <td><a href= #>Edit</a></td>
+          <td><a href= #>Delete</a></td>
+          <td>5</td>
+          <td>Strawberry</td>
+          <td>4.50</td>
+          <td>5.00</td>
+          <td>FALSE</td>
+          <td>TRUE</td>
+        </tr>
+        
+        <tr>
+          <td><a href= #>Edit</a></td>
+          <td><a href= #>Delete</a></td>
+          <td>6</td>
+          <td>Matcha</td>
+          <td>4.50</td>
+          <td>5.00</td>
+          <td>TRUE</td>
+          <td>FALSE</td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <p></p>
+    
+    <form action="/~yeoki/cs340/menu" method="GET">
+        <label for="new_flavor"> Base Flavor</label>
+            <input type="text" id="base_flavor" name="new_flavor" minlength="1" maxlength="20" required>
+        <label for="new_small"> Small Price</label>
+            <input type="text" id="small_price" name="small" minlength="1" maxlength="20" required>
+        <label for="new_reg"> Regular Price</label>
+            <input type="text" id="reg_price" name="new_reg" minlength="1" maxlength="20" required>
+            
+        <label for="new_hot"> Base Flavor</label>
+            <input type="text" id="can_be_hot" name="new_hot" minlength="1" maxlength="20" required>
+        <label for="new_sweetener"> Base Flavor</label>
+            <input type="text" id="is_flavored_sweetener" name="new_sweetener" minlength="1" maxlength="20" required>
+            
+        <p></p>
+        
+        <button type="submit">Add Drink</button>
+        <button type="reset">Cancel</button>
+    </form>
+    
+    <p></p>
+    
+    <form action="/~yeoki/cs340/menu" method="GET">
+        <label for="target_drink"> Drink ID</label>
+            <input type="text" id="drink_id" name="target_drink" minlength="1" maxlength="20" required>
+        <label for="target_category"> Attribute Name</label>
+            <input type="text" id="name" name="target_category" minlength="1" maxlength="20" required>
+        <label for="new_val"> New Value</label>
+            <input type="text" id="value" name="new_value" minlength="1" maxlength="20" required>
+  
+        <p></p>
+        
+        <button type="submit">Update Drink</button>
+        <button type="reset">Cancel</button>
+    </form>
+    
+    <p></p>
+    
+    <form action="/~yeoki/cs340/menu" method="GET">
+        <label for="target_drink"> Drink ID</label>
+            <input type="text" id="drink_id" name="target_drink" minlength="1" maxlength="20" required>
+    
+        <p></p>
+        
+        <button type="submit">Remove Drink</button>
+        <button type="reset">Cancel</button>
+    </form>
+    
+    <p></p>
+    
+    <h2>AddOns</h2>
+    
+    <table>
+      <tbody>
+        <tr>
+          <th><a href= #>New</a></th>
+          <th></th>
+          <th>add_on_id</th>
+          <th>topping</th>
+          <th>price</th>
+        </tr>
+        
+        <tr>
+          <td><a href= #>Edit</a></td>
+          <td><a href= #>Delete</a></td>
+          <td>1</td>
+          <td>Boba</td>
+          <td>0.20</td>
+        </tr>
+      
+        <tr>
+          <td><a href= #>Edit</a></td>
+          <td><a href= #>Delete</a></td>
+          <td>2</td>
+          <td>Crystal Boba</td>
+          <td>0.20</td>
+        </tr>
+      
+        <tr>
+          <td><a href= #>Edit</a></td>
+          <td><a href= #>Delete</a></td>
+          <td>3</td>
+          <td>Popping Boba (Strawberry)</td>
+          <td>0.20</td>
+        </tr>
+      
+        <tr>
+          <td><a href= #>Edit</a></td>
+          <td><a href= #>Delete</a></td>
+          <td>4</td>
+          <td>Lychee</td>
+          <td>0.20</td>
+        </tr>
+      
+        <tr>
+          <td><a href= #>Edit</a></td>
+          <td><a href= #>Delete</a></td>
+          <td>5</td>
+          <td>Red Bean</td>
+          <td>0.25</td>
+        </tr>
+        
+        <tr>
+          <td><a href= #>Edit</a></td>
+          <td><a href= #>Delete</a></td>
+          <td>6</td>
+          <td>Pudding</td>
+          <td>0.20</td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <p></p>
+    
+    <form action="/~yeoki/cs340/menu" method="GET">
+        <label for="new_topping"> Topping</label>
+            <input type="text" id="topping" name="new_topping" minlength="1" maxlength="20" required>
+        <label for="new_price"> Price</label>
+            <input type="text" id="price" name="new_price" minlength="1" maxlength="20" required>
+    
+        <p></p>
+        
+        <button type="submit">Add Topping</button>
+        <button type="reset">Cancel</button>
+    </form>
+    
+    <p></p>
+    
+    <form action="/~yeoki/cs340/menu" method="GET">
+        <label for="target_topping"> Topping ID</label>
+            <input type="text" id="add_on_id" name="target_topping" minlength="1" maxlength="20" required>
+        <label for="target_category"> Attribute Name</label>
+            <input type="text" id="name" name="target_category" minlength="1" maxlength="20" required>
+        <label for="new_val"> New Value</label>
+            <input type="text" id="value" name="new_value" minlength="1" maxlength="20" required>
+  
+        <p></p>
+        
+        <button type="submit">Update Topping</button>
+        <button type="reset">Cancel</button>
+    </form>
+    
+    <p></p>
+    
+    <form action="/~yeoki/cs340/menu" method="GET">
+        <label for="target_topping"> Topping ID</label>
+            <input type="text" id="add_on_id" name="target_topping" minlength="1" maxlength="20" required>
+    
+        <p></p>
+        
+        <button type="submit">Remove Topping</button>
+        <button type="reset">Cancel</button>
+    </form>
+    
+  </body>
+
+</html>

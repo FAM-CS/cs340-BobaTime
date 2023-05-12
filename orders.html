@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset="utf-8">
+    <title>Boba Time</title>
+  </head>
+
+  <body>
+  
+    <header>
+      <h1>Order Information</h1>
+      <p>[ <a href="index">Home</a> | <a href="menu">Menu</a> | Orders | <a href="customers">Customers</a> | <a href="user">Place Order</a> ]</p>
+    </header>
+    
+    <style>
+      table {
+        border-collapse: collapse;
+      }
+      table tr td {
+        border: 1px solid gray;
+        padding: 10px;
+      }
+      table tr th {
+        border: 1px solid gray;
+        padding: 10px;
+        background-color: #D6EEEE;
+      }
+      form {
+        border-collapse: collapse;
+        border: 1px solid gray;
+        padding: 10px;
+        display: inline-block;
+      }
+    </style>
+    
+    <h2>Orders</h2>
+    
+    <table>
+      <tbody>
+        <tr>
+          <th><a href= #>New</a></th>
+          <th>order_id</th>
+          <th>customer_id</th>
+          <th>order_date</th>
+          <th>num_drinks</th>
+          <th>total_cost</th>
+        </tr>
+        
+        <tr>
+          <td><a href= #>Delete</a></td>
+          <td>1</td>
+          <td>1</td>
+          <td>2023-01-01 13:00:00</td>
+          <td>1</td>
+          <td>5.40</td>
+        </tr>
+      
+        <tr>
+          <td><a href= #>Delete</a></td>
+          <td>2</td>
+          <td>1</td>
+          <td>2023-01-15 13:00:00</td>
+          <td>2</td>
+          <td>10.45</td>
+        </tr>
+      
+        <tr>
+          <td><a href= #>Delete</a></td>
+          <td>3</td>
+          <td>1</td>
+          <td>2023-01-20 16:00:00</td>
+          <td>1</td>
+          <td>5.20</td>
+        </tr>
+      
+        <tr>
+          <td><a href= #>Delete</a></td>
+          <td>4</td>
+          <td>2</td>
+          <td>2023-01-27 13:00:00</td>
+          <td>1</td>
+          <td>5.00</td>
+        </tr>
+      
+        <tr>
+          <td><a href= #>Delete</a></td>
+          <td>5</td>
+          <td>2</td>
+          <td>2023-01-28 17:00:00</td>
+          <td>1</td>
+          <td>5.20</td>
+        </tr>
+        
+      </tbody>
+    </table>
+    
+    <p></p>
+    
+    <form action="/~yeoki/cs340/orders" method="GET">
+        <label for="new_order"> Customer ID</label>
+            <input type="text" id="customer_id" name="new_order" minlength="1" maxlength="20" required>
+        <label for="new_date"> Date/Time</label>
+            <input type="text" id="order_date" name="new_date" minlength="1" maxlength="20" required>
+        <label for="new_num"> Number of Drinks</label>
+            <input type="text" id="num_drinks" name="new_num" minlength="1" maxlength="20" required>
+        <label for="new_cost"> Total Cost</label>
+            <input type="text" id="total_cost" name="new_cost" minlength="1" maxlength="20" required>
+        
+        <p></p>
+        
+        <button type="submit">Add Order</button>
+        <button type="reset">Cancel</button>
+    </form>
+    
+    <p></p>
+    
+    <form action="/~yeoki/cs340/orders" method="GET">
+        <label for="target_order"> Order ID</label>
+            <input type="text" id="order_id" name="target_order" minlength="1" maxlength="20" required>
+    
+        <p></p>
+        
+        <button type="submit">Remove Order</button>
+        <button type="reset">Cancel</button>
+    </form>
+    
+    <p></p>
+    
+    <h2>DrinkOrders</h2>
+    
+    <table>
+      <tbody>
+        <tr>
+          <th>drink_order_id</th>
+          <th>order_id</th>
+          <th>drink_id</th>
+          <th>seq_number</th>
+          <th>sweetness_lvl</th>
+          <th>is_cold</th>
+          <th>drink_size</th>
+        </tr>
+        
+        <tr>
+          <td>1</td>
+          <td>1</td>
+          <td>3</td>
+          <td>1</td>
+          <td>100</td>
+          <td>TRUE</td>
+          <td>R</td>
+        </tr>
+      
+        <tr>
+          <td>2</td>
+          <td>2</td>
+          <td>1</td>
+          <td>1</td>
+          <td>75</td>
+          <td>TRUE</td>
+          <td>R</td>
+        </tr>
+      
+        <tr>
+          <td>3</td>
+          <td>2</td>
+          <td>4</td>
+          <td>2</td>
+          <td>100</td>
+          <td>TRUE</td>
+          <td>R</td>
+        </tr>
+      
+        <tr>
+          <td>4</td>
+          <td>3</td>
+          <td>6</td>
+          <td>1</td>
+          <td>50</td>
+          <td>FALSE</td>
+          <td>R</td>
+        </tr>
+      
+        <tr>
+          <td>5</td>
+          <td>4</td>
+          <td>3</td>
+          <td>1</td>
+          <td>75</td>
+          <td>TRUE</td>
+          <td>R</td>
+        </tr>
+        
+        <tr>
+          <td>6</td>
+          <td>5</td>
+          <td>2</td>
+          <td>1</td>
+          <td>75</td>
+          <td>TRUE</td>
+          <td>R</td>
+        </tr>
+      </tbody>
+    </table>
+    
+    <p></p>
+    
+    <h2>AddOnDetails</h2>
+    
+    <table>
+      <tbody>
+        <tr>
+          <th>add_on_detail_id</th>
+          <th>drink_order_id</th>
+          <th>add_on_id</th>
+          <th>quantity</th>
+        </tr>
+        
+        <tr>
+          <td>1</td>
+          <td>1</td>
+          <td>1</td>
+          <td>1</td>
+        </tr>
+      
+        <tr>
+          <td>2</td>
+          <td>2</td>
+          <td>1</td>
+          <td>1</td>
+        </tr>
+      
+        <tr>
+          <td>3</td>
+          <td>3</td>
+          <td>6</td>
+          <td>1</td>
+        </tr>
+      
+        <tr>
+          <td>4</td>
+          <td>3</td>
+          <td>5</td>
+          <td>1</td>
+        </tr>
+      
+        <tr>
+          <td>5</td>
+          <td>5</td>
+          <td>1</td>
+          <td>1</td>
+        </tr>
+        
+        <tr>
+          <td>6</td>
+          <td>6</td>
+          <td>1</td>
+          <td>1</td>
+        </tr>
+      </tbody>
+    </table>
+    
+  </body>
+
+</html>
