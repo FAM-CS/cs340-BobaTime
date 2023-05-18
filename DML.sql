@@ -31,7 +31,7 @@ FROM AddOns;
 -- ? Query to view all customer drink orders (order #,  drink # in order) and their associated toppings
 SELECT
       first_name AS "Name"
-    , O.order_id AS "Order_#"
+    , O.order_id AS "Order #"
     , seq_number AS "Drink # in Order"
     , base_flavor AS "Flavor"
     , topping AS "Topping(s)"
@@ -215,7 +215,7 @@ WHERE add_on_detail_id = :add_on_detail_id;
 -- ? Update Order info to have less/more drinks
 UPDATE Orders
 SET
-      num_drinks = :num_drinks_input
+      num_drinks = :num_drinks
     , total_cost = :cost_input
 WHERE order_id = :order_id_input;
 /* ------------------------------------------- */
