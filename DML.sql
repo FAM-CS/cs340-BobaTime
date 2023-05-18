@@ -116,7 +116,6 @@ VALUES
 -- ? Insert a new customer order given email/guest email and name
 INSERT INTO Customers (
       email
-    , phone_num
     , first_name
     , last_name
 )
@@ -125,7 +124,7 @@ VALUES
           :email
         , :f_name
         , :l_name
-    ),
+    );
 
 
 -- ? Insert a new customer order given email/guest email and name
@@ -202,7 +201,7 @@ WHERE drink_order_id = :drink_order_id;
 
 
 -- ? Update a drink's add on to a different topping
-UPDATE DrinkOrders
+UPDATE AddOnDetails
 SET
       add_on_id = (
           SELECT add_on_id
