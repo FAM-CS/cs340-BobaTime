@@ -60,7 +60,7 @@ CREATE TABLE DrinkOrders (
     , order_id INT NOT NULL
     , drink_id INT NOT NULL
     , seq_number TINYINT NOT NULL DEFAULT 1
-    , sweetness_lvl TINYINT NOT NULL
+    , sweetness_lvl TINYINT NOT NULL DEFAULT 100
     , is_cold BOOLEAN DEFAULT TRUE
     , drink_size char(1) NOT NULL
     , PRIMARY KEY (drink_order_id)
