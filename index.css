@@ -1,0 +1,66 @@
+/* Resources */
+/* https://css-tricks.com/snippets/css/a-guide-to-flexbox/ */
+/* https://www.joshwcomeau.com/css/interactive-guide-to-flexbox/ */
+/* https://fonts.google.com/icons?preview.text=Hangman%20Bob&preview.text_type=custom&icon.query=game&icon.style=Rounded&icon.platform=web */
+
+/* FONTS */
+/* font-family: 'Barlow', sans-serif; */
+/* font-family: 'Righteous', cursive; */
+
+/* COLORS */
+/* OffWhite:     #FDFCFB */
+
+/* Taro:         #DBC2DF */
+/* TaroLight:    #E2CEE5 */
+/* TaroDark:     #B5A5B7 */
+
+/* Matcha:       #A1B27C */
+/* MatchaDark:   #99A976 */
+
+/* ------------------------------------------------------------------------------------ */
+/* META/EFFECTS/SYMBOLS --------------------------------------------------------------- */
+/* ------------------------------------------------------------------------------------ */
+
+body {
+    margin: 0;
+    background-color: #FDFCFB;
+    font-family: 'Barlow', sans-serif;
+}
+
+/* Remove all extra style such as underlining on links */
+a {
+    text-decoration: none;
+}
+
+
+/* ------------------------------------------------------------------------------------ */
+/* HEADER ----------------------------------------------------------------------------- */
+/* ------------------------------------------------------------------------------------ */
+
+.banner {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+
+    color: #FDFCFB;
+
+    padding-left: 2%;
+    padding-right: 2%;
+
+    background-color: #DBC2DF;
+    /* border: 1px solid black; */
+}
+
+h1.logo {
+    font-family: 'Righteous', cursive;
+    font-size: 40px;
+
+    width: 5.5em;
+    margin-right: 2em;
+    border-bottom: 5px solid #FDFCFB;
+}
+
+h2 {
+    font-family: 'Righteous', cursive;
+    font-size: 32px;
+}
