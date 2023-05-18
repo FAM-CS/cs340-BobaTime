@@ -1,7 +1,7 @@
-/* ---------- BOBA TIME v1.2 ----------------- */
--- CS 340-001 / Step 3, Project Draft
+/* ---------- BOBA TIME v1.3 ----------------- */
+-- CS 340-001 / Step 3, Project Final
 -- NULLPTRS / Fatima Moussaoui & Kimberly Yeo
--- May 11, 2023
+-- May 18, 2023
 /* ------------------------------------------- */
 
 -- ! NOTES:
