@@ -1,7 +1,7 @@
 /* Resources */
 /* https://css-tricks.com/snippets/css/a-guide-to-flexbox/ */
 /* https://www.joshwcomeau.com/css/interactive-guide-to-flexbox/ */
-/* https://fonts.google.com/icons?preview.text=Hangman%20Bob&preview.text_type=custom&icon.query=game&icon.style=Rounded&icon.platform=web */
+/* https://unused-css.com/blog/css-rounded-table-corners/ */
 
 /* FONTS */
 /* font-family: 'Barlow', sans-serif; */
@@ -22,11 +22,13 @@
 /* ------------------------------------------------------------------------------------ */
 
 body {
-    height: 100vh;
-    width: 100vw;
+    /* height: 100vh; */
+    /* width: 100vw; */
     margin: 0;
 
     background-color: #FDFCFB;
+
+    /* Default text style */
     font-family: 'Barlow', sans-serif;
 }
 
@@ -39,8 +41,9 @@ h1, h2 {
     margin: 0;
 }
 
-.center-text {
-    text-align: center;
+button {
+    font-family: 'Barlow', sans-serif;
+    font-weight: 500;
 }
 
 /* ------------------------------------------------------------------------------------ */
@@ -48,7 +51,8 @@ h1, h2 {
 /* ------------------------------------------------------------------------------------ */
 
 .banner {
-    max-height: 10vh;
+    /* max-height: 10vh; */
+    max-height: 2rem;
     min-height: 60px;
 
     display: flex;
@@ -72,8 +76,9 @@ h1.logo {
     font-weight: 400;
 
     width: 20%;
-    margin-right: 2em;
-    border: 1px solid black;
+    margin-right: 2rem;
+    padding-bottom: 0.5rem;
+    /* border: 1px solid black; */
 }
 
 h1.logo a {
@@ -87,7 +92,7 @@ h1.logo a {
 h2 a {
     font-family: 'Righteous', cursive;
     /* font-size: 32px; */
-    font-size: calc(70% + 1vw);
+    font-size: calc(80% + 0.5vw);
     text-align: center;
 
     font-weight: 400;
@@ -95,7 +100,7 @@ h2 a {
 }
 
 .navigationbar {
-    width: 75%;
+    width: 80%;
     align-self: flex-end;
 }
 
@@ -106,32 +111,101 @@ h2 a {
 
     margin: 0;
     padding: 0;
-    border: 1px solid black;
+    /* border: 1px solid black; */
 }
 
 .navitem {
     display: inline-block;
-    width: 20%;
+    text-align: center;
+
+    width: 24%;
 
     border-top-left-radius: 1em;
     border-top-right-radius: 1em;
     background-color: #E2CEE5;
 }
 
+.navitem:hover {
+    background-color: #B5A5B7;
+}
+
+.navitem.active {
+    background-color: #A1B27C;
+}
+
+.navitem.active:hover {
+    background-color: #99A976;
+}
+
 .navlink a {
-    padding-top: 0.5em;
-    padding-bottom: 0.5em;
     display: inline-block;
+    overflow-wrap: break-word;
+
+    width: 100%;
+
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
 }
 
 /* ------------------------------------------------------------------------------------ */
 /* CONTENT ---------------------------------------------------------------------------- */
 /* ------------------------------------------------------------------------------------ */
 .content {
-    height: 40vb;
-
     margin-left: 2.5%;
     margin-right: 2.5%;
-    background-color: pink;
-    border: 1px solid black;
+    margin-bottom: 2.5%;
+
+    /* background-color: pink; */
+    /* border: 1px solid black; */
+}
+
+
+
+
+/* ------------------------------------------------------------------------------------ */
+/* TABLE STYLES ---------------------------------------------------------------------------- */
+/* ------------------------------------------------------------------------------------ */
+table {
+    border-top-left-radius: 1em;
+    border-top-right-radius: 1em;
+
+    /* https://unused-css.com/blog/css-rounded-table-corners/ */
+    border-spacing: 0;
+    border-collapse: separate;
+}
+
+table tr th {
+    border-top:  1px solid gray;
+    border-left:  1px solid gray;
+    border-bottom: 1px solid gray;
+
+    padding: 10px;
+    background-color: #e2cee500;
+    background-color: #E2CEE5;
+}
+
+table th:first-child {
+    border-top-left-radius: 1rem;
+}
+
+table th:last-child {
+    border-top-right-radius: 1em;
+    border-right:  1px solid gray;
+}
+
+table tr td {
+    border-left: 1px solid gray;
+    border-bottom: 1px solid gray;
+    padding: 10px;
+}
+
+table td:last-child {
+    border-right: 1px solid gray;
+}
+
+form {
+    border-collapse: collapse;
+    border: 1px solid gray;
+    padding: 10px;
+    display: inline-block;
 }
