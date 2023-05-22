@@ -3,7 +3,7 @@
 /* https://www.joshwcomeau.com/css/interactive-guide-to-flexbox/ */
 /* https://unused-css.com/blog/css-rounded-table-corners/ */
 /* https://www.aleksandrhovhannisyan.com/blog/svg-tutorial-how-to-code-svg-icons-by-hand/#2-polylines */
-
+/* https://developer.mozilla.org/en-US/docs/Web/CSS/background#constituent_properties */
 
 /* FONTS */
 /* font-family: 'Barlow', sans-serif; */
@@ -26,12 +26,15 @@
 body {
     /* height: 100vh; */
     /* width: 100vw; */
+    position: relative;
+    min-height: 100vh;
     margin: 0;
 
     background-color: #FDFCFB;
 
     /* Default text style */
     font-family: 'Barlow', sans-serif;
+
 }
 
 /* Remove all extra style such as underlining on links */
@@ -162,13 +165,15 @@ h2 a {
 .content {
     margin-left: 2.5%;
     margin-right: 2.5%;
-    margin-bottom: 2.5%;
+    padding-bottom: 5%;
 
     /* background-color: pink; */
     /* border: 1px solid black; */
 }
 
-
+section h2 {
+    padding-bottom: 0.2rem;
+}
 
 
 /* ------------------------------------------------------------------------------------ */
@@ -223,19 +228,14 @@ form {
 /* FOOTER ----------------------------------------------------------------------------- */
 /* ------------------------------------------------------------------------------------ */
 .scallop {
-    height: 100px;
-    background: url("./awn_repeat.svg");
+    height: 60px;
+
+    background-image: url("./scallop_motif.svg");
     background-repeat: repeat-x;
 }
 
-.stripes {
-    height: 100px;
-    background-image:
-        repeating-linear-gradient(
-            to right
-            ,  #A1B27C
-            , #A1B27C 50px
-            , #DBC2DF 50px
-            , #DBC2DF 100px
-        );
+#footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 }
