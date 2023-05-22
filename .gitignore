@@ -1,6 +1,9 @@
 # Node modules
 /node_modules/
+
+# VS Code settings / spaces
 BobaTime.code-workspace
+.vscode
 
 # MACOSX ignore
 .DS_STORE
