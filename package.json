@@ -1,0 +1,29 @@
+{
+  "name": "boba-time",
+  "version": "1.0.0",
+  "description": "CRUD website app for a boba shop database",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo No Tests yet",
+    "start": "node app.js",
+    "dev": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/FAM-CS/cs340-BobaTime.git"
+  },
+  "author": "Fatima Moussaoui and Kimkerly Yeo",
+  "license": "none",
+  "bugs": {
+    "url": "https://github.com/FAM-CS/cs340-BobaTime/issues"
+  },
+  "homepage": "https://github.com/FAM-CS/cs340-BobaTime#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-handlebars": "^7.0.7",
+    "mysql": "^2.18.1"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}

@@ -1,9 +1,26 @@
-# Boba Shop Database CRUD
-A web-based CRUD database interface for a boba shop!
+# Boba Time
+A web-based interface for a boba shop database with CRUD functionality (Create Read Update Delete).
 
+## Database Design
+!place schema/erd here
 
-## Getting Started
-+ Add info on node
+## How to Run / Develop
+Install dependencies:
+```
+npm install
+```
+
+Run with command:
+```bash
+npm start
+```
+Or to run in developer mode (changes update with saves)
+```bash
+npm dev
+```
 
 ## Resources
-+ link to fonts/documentation
++ [Express Guide](https://expressjs.com/en/guide/routing.html)
++ [Handlebars Guide](https://handlebarsjs.com/guide/)
++ [SVG 101](https://www.aleksandrhovhannisyan.com/blog/svg-tutorial-how-to-code-svg-icons-by-hand/)
++ [Fonts](https://fonts.google.com/)
