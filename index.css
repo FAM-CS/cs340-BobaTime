@@ -2,6 +2,8 @@
 /* https://css-tricks.com/snippets/css/a-guide-to-flexbox/ */
 /* https://www.joshwcomeau.com/css/interactive-guide-to-flexbox/ */
 /* https://unused-css.com/blog/css-rounded-table-corners/ */
+/* https://www.aleksandrhovhannisyan.com/blog/svg-tutorial-how-to-code-svg-icons-by-hand/#2-polylines */
+
 
 /* FONTS */
 /* font-family: 'Barlow', sans-serif; */
@@ -44,6 +46,13 @@ h1, h2 {
 button {
     font-family: 'Barlow', sans-serif;
     font-weight: 500;
+}
+
+svg {
+    /* https://www.aleksandrhovhannisyan.com/blog/svg-tutorial-how-to-code-svg-icons-by-hand/#2-polylines */
+    /* stroke: currentColor; */
+    stroke-width: 1;
+    /* border: 1px solid; */
 }
 
 /* ------------------------------------------------------------------------------------ */
@@ -163,7 +172,7 @@ h2 a {
 
 
 /* ------------------------------------------------------------------------------------ */
-/* TABLE STYLES ---------------------------------------------------------------------------- */
+/* TABLE STYLES ----------------------------------------------------------------------- */
 /* ------------------------------------------------------------------------------------ */
 table {
     border-top-left-radius: 1em;
@@ -208,4 +217,25 @@ form {
     border: 1px solid gray;
     padding: 10px;
     display: inline-block;
+}
+
+/* ------------------------------------------------------------------------------------ */
+/* FOOTER ----------------------------------------------------------------------------- */
+/* ------------------------------------------------------------------------------------ */
+.scallop {
+    height: 100px;
+    background: url("./awn_repeat.svg");
+    background-repeat: repeat-x;
+}
+
+.stripes {
+    height: 100px;
+    background-image:
+        repeating-linear-gradient(
+            to right
+            ,  #A1B27C
+            , #A1B27C 50px
+            , #DBC2DF 50px
+            , #DBC2DF 100px
+        );
 }
