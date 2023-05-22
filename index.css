@@ -1,7 +1,9 @@
 /* Resources */
 /* https://css-tricks.com/snippets/css/a-guide-to-flexbox/ */
 /* https://www.joshwcomeau.com/css/interactive-guide-to-flexbox/ */
-/* https://fonts.google.com/icons?preview.text=Hangman%20Bob&preview.text_type=custom&icon.query=game&icon.style=Rounded&icon.platform=web */
+/* https://unused-css.com/blog/css-rounded-table-corners/ */
+/* https://www.aleksandrhovhannisyan.com/blog/svg-tutorial-how-to-code-svg-icons-by-hand/#2-polylines */
+/* https://developer.mozilla.org/en-US/docs/Web/CSS/background#constituent_properties */
 
 /* FONTS */
 /* font-family: 'Barlow', sans-serif; */
@@ -22,9 +24,17 @@
 /* ------------------------------------------------------------------------------------ */
 
 body {
+    /* height: 100vh; */
+    /* width: 100vw; */
+    position: relative;
+    min-height: 100vh;
     margin: 0;
+
     background-color: #FDFCFB;
+
+    /* Default text style */
     font-family: 'Barlow', sans-serif;
+
 }
 
 /* Remove all extra style such as underlining on links */
@@ -32,20 +42,40 @@ a {
     text-decoration: none;
 }
 
+h1, h2 {
+    margin: 0;
+}
+
+button {
+    font-family: 'Barlow', sans-serif;
+    font-weight: 500;
+}
+
+svg {
+    /* https://www.aleksandrhovhannisyan.com/blog/svg-tutorial-how-to-code-svg-icons-by-hand/#2-polylines */
+    /* stroke: currentColor; */
+    stroke-width: 1;
+    /* border: 1px solid; */
+}
 
 /* ------------------------------------------------------------------------------------ */
-/* HEADER ----------------------------------------------------------------------------- */
+/* HEADER/NAVBAR ---------------------------------------------------------------------- */
 /* ------------------------------------------------------------------------------------ */
 
 .banner {
+    /* max-height: 10vh; */
+    max-height: 2rem;
+    min-height: 60px;
+
     display: flex;
     justify-content: flex-start;
     align-items: center;
 
     color: #FDFCFB;
 
-    padding-left: 2%;
-    padding-right: 2%;
+    padding-top: 0.5em;
+    padding-left: 2.5%;
+    padding-right: 2.5%;
 
     background-color: #DBC2DF;
     /* border: 1px solid black; */
@@ -53,14 +83,159 @@ a {
 
 h1.logo {
     font-family: 'Righteous', cursive;
-    font-size: 40px;
+    /* font-size: 32px; */
+    font-size: calc(110% + 1vw);
+    font-weight: 400;
 
-    width: 5.5em;
-    margin-right: 2em;
-    border-bottom: 5px solid #FDFCFB;
+    width: 20%;
+    margin-right: 2rem;
+    padding-bottom: 0.5rem;
+    /* border: 1px solid black; */
 }
 
-h2 {
+h1.logo a {
+    display: inline-block;
+    color: #FDFCFB;
+
+    width: 5.5em;
+    border-bottom: 4px solid #FDFCFB;
+}
+
+h2 a {
     font-family: 'Righteous', cursive;
-    font-size: 32px;
+    /* font-size: 32px; */
+    font-size: calc(80% + 0.5vw);
+    text-align: center;
+
+    font-weight: 400;
+    color: #FDFCFB;
+}
+
+.navigationbar {
+    width: 80%;
+    align-self: flex-end;
+}
+
+.navlist {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+
+    margin: 0;
+    padding: 0;
+    /* border: 1px solid black; */
+}
+
+.navitem {
+    display: inline-block;
+    text-align: center;
+
+    width: 24%;
+
+    border-top-left-radius: 1em;
+    border-top-right-radius: 1em;
+    background-color: #E2CEE5;
+}
+
+.navitem:hover {
+    background-color: #B5A5B7;
+}
+
+.navitem.active {
+    background-color: #A1B27C;
+}
+
+.navitem.active:hover {
+    background-color: #99A976;
+}
+
+.navlink a {
+    display: inline-block;
+    overflow-wrap: break-word;
+
+    width: 100%;
+
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+/* ------------------------------------------------------------------------------------ */
+/* CONTENT ---------------------------------------------------------------------------- */
+/* ------------------------------------------------------------------------------------ */
+.content {
+    margin-left: 2.5%;
+    margin-right: 2.5%;
+    padding-bottom: 5%;
+
+    /* background-color: pink; */
+    /* border: 1px solid black; */
+}
+
+section h2 {
+    padding-bottom: 0.2rem;
+}
+
+
+/* ------------------------------------------------------------------------------------ */
+/* TABLE STYLES ----------------------------------------------------------------------- */
+/* ------------------------------------------------------------------------------------ */
+table {
+    border-top-left-radius: 1em;
+    border-top-right-radius: 1em;
+
+    /* https://unused-css.com/blog/css-rounded-table-corners/ */
+    border-spacing: 0;
+    border-collapse: separate;
+}
+
+table tr th {
+    border-top:  1px solid gray;
+    border-left:  1px solid gray;
+    border-bottom: 1px solid gray;
+
+    padding: 10px;
+    background-color: #e2cee500;
+    background-color: #E2CEE5;
+}
+
+table th:first-child {
+    border-top-left-radius: 1rem;
+}
+
+table th:last-child {
+    border-top-right-radius: 1em;
+    border-right:  1px solid gray;
+}
+
+table tr td {
+    border-left: 1px solid gray;
+    border-bottom: 1px solid gray;
+    padding: 10px;
+}
+
+table td:last-child {
+    border-right: 1px solid gray;
+}
+
+form {
+    border-collapse: collapse;
+    border: 1px solid gray;
+    padding: 10px;
+    display: inline-block;
+}
+
+/* ------------------------------------------------------------------------------------ */
+/* FOOTER ----------------------------------------------------------------------------- */
+/* ------------------------------------------------------------------------------------ */
+.scallop {
+    height: 60px;
+
+    background-image: url("./scallop_motif.svg");
+    background-repeat: repeat-x;
+}
+
+#footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
 }

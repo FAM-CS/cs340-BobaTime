@@ -1,0 +1,29 @@
+<svg viewBox="0 0 160 80" width="100" height="80" xmlns="http://www.w3.org/2000/svg">
+    <path
+        d="
+        M -40 40
+        a 40 40 0 1 1 80 0
+        v 80
+        h -80
+        v -80"
+        fill="#A1B27C"
+    />
+    <path
+        d="
+        M 40 40
+        a 40 40 0 1 1 80 0
+        v 80
+        h -80
+        v -80"
+        fill="#DBC2DF"
+    />
+    <path
+        d="
+        M 120 40
+        a 40 40 0 1 1 80 0
+        v 80
+        h -80
+        v -80"
+        fill="#A1B27C"
+    />
+</svg>
