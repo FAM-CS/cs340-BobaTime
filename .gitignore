@@ -1,5 +1,6 @@
 # Node modules
 /node_modules/
+BobaTime.code-workspace
 
 # MACOSX ignore
 .DS_STORE
