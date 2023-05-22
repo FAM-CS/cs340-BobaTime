@@ -12,11 +12,11 @@ npm install
 
 Run with command:
 ```bash
-npm start
+npm run start
 ```
 Or to run in developer mode (changes update with saves)
 ```bash
-npm dev
+npm run dev
 ```
 
 ## Resources
