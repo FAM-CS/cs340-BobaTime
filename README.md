@@ -24,3 +24,4 @@ npm run dev
 + [Handlebars Guide](https://handlebarsjs.com/guide/)
 + [SVG 101](https://www.aleksandrhovhannisyan.com/blog/svg-tutorial-how-to-code-svg-icons-by-hand/)
 + [Fonts](https://fonts.google.com/)
++ [JS Logs](https://dmitripavlutin.com/console-log-tips/)

@@ -1,0 +1,17 @@
+<header class="banner">
+    <h1 class="logo">
+        <a href="/">Boba Time</a>
+    </h1>
+    <nav class="navigationbar">
+        <ul class="navlist">
+            {{!-- Render all options and if it's active highlight it --}}
+            {{#each options}}
+                <li class="navitem navlink {{#if active}}active{{/if}}">
+                <h2>
+                    <a href="{{option}}">{{option_name}}</a>
+                </h2>
+            </li>
+            {{/each}}
+        </ul>
+    </nav>
+</header>

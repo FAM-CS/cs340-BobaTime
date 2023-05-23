@@ -230,7 +230,7 @@ form {
 .scallop {
     height: 60px;
 
-    background-image: url("./scallop_motif.svg");
+    background-image: url("image/scallop_motif.svg");
     background-repeat: repeat-x;
 }
 

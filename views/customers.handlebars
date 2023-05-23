@@ -1,0 +1,114 @@
+<section class="content">
+    <h2>Customers</h2>
+
+    <table>
+        <tbody>
+            <tr>
+                <th><a href=#>New</a></th>
+                <th></th>
+                <th>customer_id</th>
+                <th>email</th>
+                <th>phone_num</th>
+                <th>first_name</th>
+                <th>last_name</th>
+                <th>num_orders</th>
+                <th>num_drinks</th>
+                <th>total_spent</th>
+                <th>drinks_to_free</th>
+                <th>num_free_drinks</th>
+            </tr>
+
+            <tr>
+                <td><a href=#>Edit</a></td>
+                <td><a href=#>Delete</a></td>
+                <td>1</td>
+                <td>guest1@bobatime.com</td>
+                <td></td>
+                <td>Guest1</td>
+                <td>Guest1</td>
+                <td>3</td>
+                <td>4</td>
+                <td>21.05</td>
+                <td>7</td>
+                <td>0</td>
+            </tr>
+
+            <tr>
+                <td><a href=#>Edit</a></td>
+                <td><a href=#>Delete</a></td>
+                <td>2</td>
+                <td>garfield@fake.com</td>
+                <td></td>
+                <td>Grafield</td>
+                <td>Cat</td>
+                <td>2</td>
+                <td>2</td>
+                <td>10.20</td>
+                <td>8</td>
+                <td>0</td>
+            </tr>
+
+            <tr>
+                <td><a href=#>Edit</a></td>
+                <td><a href=#>Delete</a></td>
+                <td>3</td>
+                <td>otto@fake.com</td>
+                <td></td>
+                <td>Otto</td>
+                <td>Dog</td>
+                <td>0</td>
+                <td>0</td>
+                <td>0</td>
+                <td>10</td>
+                <td>0</td>
+            </tr>
+
+        </tbody>
+    </table>
+
+    <p></p>
+
+    <form action="/~yeoki/cs340/customers" method="GET">
+        <label for="new_email"> Email</label>
+        <input type="text" id="email" name="new_email" minlength="1" maxlength="20" required>
+        <label for="new_phone"> Phone Number</label>
+        <input type="text" id="phone_num" name="new_phone" minlength="1" maxlength="20" required>
+        <label for="new_first"> First Name</label>
+        <input type="text" id="first_name" name="new_first" minlength="1" maxlength="20" required>
+        <label for="new_last"> Last Name</label>
+        <input type="text" id="last_name" name="new_last" minlength="1" maxlength="20" required>
+
+        <p></p>
+
+        <button type="submit">Register</button>
+        <button type="reset">Cancel</button>
+    </form>
+
+    <p></p>
+
+    <form action="/~yeoki/cs340/customers" method="GET">
+        <label for="target_customer"> Customer ID</label>
+        <input type="text" id="customer_id" name="target_customer" minlength="1" maxlength="20" required>
+        <label for="target_category"> Attribute Name</label>
+        <input type="text" id="name" name="target_category" minlength="1" maxlength="20" required>
+        <label for="new_val"> New Value</label>
+        <input type="text" id="value" name="new_value" minlength="1" maxlength="20" required>
+
+        <p></p>
+
+        <button type="submit">Update Customer</button>
+        <button type="reset">Cancel</button>
+    </form>
+
+    <p></p>
+
+    <form action="/~yeoki/cs340/customers" method="GET">
+        <label for="target_customer"> Customer ID</label>
+        <input type="text" id="customer_id" name="target_customer" minlength="1" maxlength="20" required>
+
+        <p></p>
+
+        <button type="submit">Remove Customer</button>
+        <button type="reset">Cancel</button>
+    </form>
+</section>
