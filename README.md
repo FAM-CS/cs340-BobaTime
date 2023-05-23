@@ -6,7 +6,7 @@ A web-based interface for a boba shop database with CRUD functionality (Create R
 
 ## How to Run / Develop
 Install dependencies:
-```
+```bash
 npm install
 ```
 
@@ -25,3 +25,4 @@ npm run dev
 + [SVG 101](https://www.aleksandrhovhannisyan.com/blog/svg-tutorial-how-to-code-svg-icons-by-hand/)
 + [Fonts](https://fonts.google.com/)
 + [JS Logs](https://dmitripavlutin.com/console-log-tips/)
++ [Git Workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow)
