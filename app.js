@@ -11,9 +11,28 @@ app.set('views', './views')
 
 app.listen(PORT_NUM, () => {
     console.log("\n----------------- Startup... -----------------")
-    console.log("App is running! 🍵\n")
+    console.log("- App is running! 🍵")
     console.log("- Local: http://localhost:%d/", PORT_NUM)
     console.log("-------------------- Logs --------------------")
+})
+
+
+const mysql = require('mysql')
+const fs = require('fs')
+
+
+const db = mysql.createConnection({
+    host: 'classmysql.engr.oregonstate.edu',
+    user: 'cs340_yeoki',
+    password: '0897',
+    database: 'cs340_yeoki'
+})
+
+db.connect((err) => {
+    if (err) {
+        throw err
+    }
+    console.log('- MySQL Connected')
 })
 
 
