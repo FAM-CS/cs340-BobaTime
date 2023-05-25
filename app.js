@@ -1,3 +1,7 @@
+/*
+    SETUP
+*/
+
 const express = require('express')
 const hbrs_engine = require('express-handlebars')
 
@@ -12,11 +16,18 @@ const mysql = require('mysql')
 const fs = require('fs')
 const db = require('./database/db-connector')
 
+/*
+    ROUTES
+*/
+
+const local_URL = "http://localhost:"
+const flip3_URL = "http://flip3.engr.oregonstate.edu:"
 
 app.listen(PORT_NUM, () => {
     console.log("\n----------------- Startup... -----------------\n")
     console.log("- App is running! 🍵")
-    console.log("- Local: http://localhost:%d/", PORT_NUM)
+    console.log("- Local: %s%d/", local_URL, PORT_NUM)
+    console.log("- Flip: %s%d/", flip3_URL,PORT_NUM)
     console.log("\n-------------------- Logs --------------------")
 })
 

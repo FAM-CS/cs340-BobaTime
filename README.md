@@ -1,16 +1,19 @@
 # Boba Time
 A web-based interface for a boba shop database with CRUD functionality (Create Read Update Delete).
 
+- Local: http://localhost:54321/
+- Flip: http://flip3.engr.oregonstate.edu:54321/
+
 ## Database Design
 !place schema/erd here
 
-## How to Run / Develop
+## How to Develop / Start from Scratch
 Install dependencies:
 ```bash
 npm install
 ```
 
-Run with command:
+Run with command (you should see a link to open site):
 ```bash
 npm run start
 ```
@@ -18,6 +21,11 @@ Or to run in developer mode (changes update with saves)
 ```bash
 npm run dev
 ```
+
+1. Source/make sure the DDL.sql is loaded into a database
+2. Pick a port to connect to
+3. Run `app.js` and open either link (flip link is specifically if on VPN)
+- Assumption is that server is running on `flip3`
 
 ## Resources
 + [Express Guide](https://expressjs.com/en/guide/routing.html)
