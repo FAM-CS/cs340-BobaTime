@@ -21,6 +21,9 @@ SELECT
 FROM Drinks;
 
 
+SELECT * FROM Customers;
+
+
 -- ? Query to see Toppings Menu
 SELECT
       topping AS "Topping"

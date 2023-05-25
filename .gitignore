@@ -1,9 +1,13 @@
 # Node modules
 /node_modules/
 
+# Ignore DB-connection file
+database/db-connector.js
+
 # VS Code settings / spaces
 BobaTime.code-workspace
 .vscode
+.vs
 
 # MACOSX ignore
 .DS_STORE

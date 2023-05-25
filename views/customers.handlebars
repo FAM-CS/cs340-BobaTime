@@ -3,66 +3,34 @@
 
     <table>
         <tbody>
+            {{!-- Table Header --}}
             <tr>
                 <th><a href=#>New</a></th>
                 <th></th>
-                <th>customer_id</th>
-                <th>email</th>
-                <th>phone_num</th>
-                <th>first_name</th>
-                <th>last_name</th>
-                <th>num_orders</th>
-                <th>num_drinks</th>
-                <th>total_spent</th>
-                <th>drinks_to_free</th>
-                <th>num_free_drinks</th>
+                {{#each data.[0]}}
+                <th>
+                    {{@key}}
+                </th>
+                {{/each}}
             </tr>
 
+            {{!-- Rows --}}
+            {{#each data}}
             <tr>
                 <td><a href=#>Edit</a></td>
                 <td><a href=#>Delete</a></td>
-                <td>1</td>
-                <td>guest1@bobatime.com</td>
-                <td></td>
-                <td>Guest1</td>
-                <td>Guest1</td>
-                <td>3</td>
-                <td>4</td>
-                <td>21.05</td>
-                <td>7</td>
-                <td>0</td>
+                <td>{{this.customer_id}}</td>
+                <td>{{this.email}}</td>
+                <td>{{this.phone_num}}</td>
+                <td>{{this.first_name}}</td>
+                <td>{{this.last_name}}</td>
+                <td>{{this.num_orders}}</td>
+                <td>{{this.num_drinks}}</td>
+                <td>{{this.total_spent}}</td>
+                <td>{{this.drinks_to_free}}</td>
+                <td>{{this.num_free_drinks}}</td>
             </tr>
-
-            <tr>
-                <td><a href=#>Edit</a></td>
-                <td><a href=#>Delete</a></td>
-                <td>2</td>
-                <td>garfield@fake.com</td>
-                <td></td>
-                <td>Grafield</td>
-                <td>Cat</td>
-                <td>2</td>
-                <td>2</td>
-                <td>10.20</td>
-                <td>8</td>
-                <td>0</td>
-            </tr>
-
-            <tr>
-                <td><a href=#>Edit</a></td>
-                <td><a href=#>Delete</a></td>
-                <td>3</td>
-                <td>otto@fake.com</td>
-                <td></td>
-                <td>Otto</td>
-                <td>Dog</td>
-                <td>0</td>
-                <td>0</td>
-                <td>0</td>
-                <td>10</td>
-                <td>0</td>
-            </tr>
-
+            {{/each}}
         </tbody>
     </table>
 

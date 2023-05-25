@@ -8,32 +8,28 @@ app.engine('handlebars', hbrs_engine.engine())
 app.set('view engine', 'handlebars')
 app.set('views', './views')
 
-
-app.listen(PORT_NUM, () => {
-    console.log("\n----------------- Startup... -----------------")
-    console.log("- App is running! 🍵")
-    console.log("- Local: http://localhost:%d/", PORT_NUM)
-    console.log("-------------------- Logs --------------------")
-})
-
-
 const mysql = require('mysql')
 const fs = require('fs')
+const db = require('./database/db-connector')
 
 
-const db = mysql.createConnection({
-    host: 'classmysql.engr.oregonstate.edu',
-    user: 'cs340_yeoki',
-    password: '0897',
-    database: 'cs340_yeoki'
+app.listen(PORT_NUM, () => {
+    console.log("\n----------------- Startup... -----------------\n")
+    console.log("- App is running! 🍵")
+    console.log("- Local: http://localhost:%d/", PORT_NUM)
+    console.log("\n-------------------- Logs --------------------")
 })
 
-db.connect((err) => {
-    if (err) {
-        throw err
-    }
-    console.log('- MySQL Connected')
+app.use((req, res, next) => {
+    console.log("\n-- Request recieved --")
+    console.log("Method: ", req.method)
+    console.log("URL: ", req.url)
+    console.log("----------------------")
+    // console.log("Headers: ", req.headers)
+
+    next()		// Go to next middleware/routing function
 })
+
 
 
 // ~ Home Page (Entry point for "GET /"")
@@ -61,7 +57,7 @@ app.get('/', (req, res) => {
         }
     ]
 
-    res.render('home', { options })
+    res.status(200).render('home', { options })
 })
 
 
@@ -95,7 +91,25 @@ app.get('/menu', (req, res) => {
         }
     ]
 
-    res.render('menu', { options })
+    const query1 = "SELECT * FROM Drinks";
+    const query2 = "SELECT * FROM AddOns";
+    db.pool.query(query1, (error1, rows1, fields) => {
+        db.pool.query(query2, (error2, rows2, fields) => {
+            //? Combine header and row data, render() only accepts one object via Object.assign()
+            //? from: https://www.delftstack.com/howto/javascript/javascript-append-to-object/#use-the-object.assign-method-to-append-elements-to-objects-in-javascript
+            const data = Object.assign({options}, {drinks: rows1}, {addons: rows2})
+            console.log("data:", data)
+
+            if (error1 || error2) {
+                console.log("error1:", error1)
+                console.log("error2:", error2)
+                next()  // something wrong occured, go next middleware
+                return
+            }
+
+            res.status(200).render('menu', data)
+        })
+    })
 })
 
 
@@ -124,7 +138,7 @@ app.get('/orders', (req, res) => {
         }
     ]
 
-    res.render('orders', { options })
+    res.status(200).render('orders', { options })
 })
 
 
@@ -153,7 +167,20 @@ app.get('/customers', (req, res) => {
         }
     ]
 
-    res.render('customers', { options })
+
+    const query1 = "SELECT * FROM Customers";
+    db.pool.query(query1, (error1, rows, fields) => {
+        const data = Object.assign({options}, {data: rows})
+
+        if (error1) {
+            console.log("error1:", error1)
+            console.log("error2:", error2)
+            next()  // something wrong occured, go next middleware
+            return
+        }
+
+        res.status(200).render('customers', data)
+    })
 })
 
 
@@ -182,5 +209,34 @@ app.get('/user', (req, res) => {
         }
     ]
 
-    res.render('user', { options })
+    res.status(200).render('user', { options })
+})
+
+
+// ~ Anything else... 404
+app.get('*', (req, res) => {
+    const options = [
+        {
+          option: "menu"
+        , option_name: "Menu"
+        , active: false
+        },
+        {
+             option: "orders"
+            , option_name: "Orders"
+            , active: false
+        },
+        {
+            option: "customers"
+            , option_name: "Customers"
+            , active: false
+        },
+        {
+            option: "user"
+            , option_name: "Place Orders"
+            , active: false
+        }
+    ]
+
+    res.status(404).render('404', { options })
 })

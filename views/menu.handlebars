@@ -3,82 +3,31 @@
 
     <table>
         <tbody>
+            {{!-- Table Header --}}
             <tr>
                 <th><a href=#>New</a></th>
                 <th></th>
-                <th>drink_id</th>
-                <th>base_flavor</th>
-                <th>small_price</th>
-                <th>reg_price</th>
-                <th>can_be_hot</th>
-                <th>is_flavored_sweetener</th>
+                {{#each drinks.[0]}}
+                <th>
+                    {{@key}}
+                </th>
+                {{/each}}
             </tr>
 
+            {{!-- Rows --}}
+            {{#each drinks}}
             <tr>
                 <td><a href=#>Edit</a></td>
                 <td><a href=#>Delete</a></td>
-                <td>1</td>
-                <td>Black Tea</td>
-                <td>4.50</td>
-                <td>5.00</td>
-                <td>TRUE</td>
-                <td>FALSE</td>
-            </tr>
 
-            <tr>
-                <td><a href=#>Edit</a></td>
-                <td><a href=#>Delete</a></td>
-                <td>2</td>
-                <td>Green Tea</td>
-                <td>4.50</td>
-                <td>5.00</td>
-                <td>TRUE</td>
-                <td>FALSE</td>
+                <td>{{this.drink_id}}</td>
+                <td>{{this.base_flavor}}</td>
+                <td>{{this.small_price}}</td>
+                <td>{{this.small_price}}</td>
+                <td>{{this.can_be_hot}}</td>
+                <td>{{this.is_flavored_sweetener}}</td>
             </tr>
-
-            <tr>
-                <td><a href=#>Edit</a></td>
-                <td><a href=#>Delete</a></td>
-                <td>3</td>
-                <td>Brown Sugar</td>
-                <td>4.80</td>
-                <td>5.20</td>
-                <td>TRUE</td>
-                <td>TRUE</td>
-            </tr>
-
-            <tr>
-                <td><a href=#>Edit</a></td>
-                <td><a href=#>Delete</a></td>
-                <td>4</td>
-                <td>Taro</td>
-                <td>4.50</td>
-                <td>5.00</td>
-                <td>FALSE</td>
-                <td>TRUE</td>
-            </tr>
-
-            <tr>
-                <td><a href=#>Edit</a></td>
-                <td><a href=#>Delete</a></td>
-                <td>5</td>
-                <td>Strawberry</td>
-                <td>4.50</td>
-                <td>5.00</td>
-                <td>FALSE</td>
-                <td>TRUE</td>
-            </tr>
-
-            <tr>
-                <td><a href=#>Edit</a></td>
-                <td><a href=#>Delete</a></td>
-                <td>6</td>
-                <td>Matcha</td>
-                <td>4.50</td>
-                <td>5.00</td>
-                <td>TRUE</td>
-                <td>FALSE</td>
-            </tr>
+            {{/each}}
         </tbody>
     </table>
 
@@ -137,61 +86,27 @@
 
     <table>
         <tbody>
+            {{!-- Table Header --}}
             <tr>
                 <th><a href=#>New</a></th>
                 <th></th>
-                <th>add_on_id</th>
-                <th>topping</th>
-                <th>price</th>
+                {{#each addons.[0]}}
+                    <th>
+                        {{@key}}
+                    </th>
+                {{/each}}
             </tr>
 
+            {{!-- Rows --}}
+            {{#each addons}}
             <tr>
                 <td><a href=#>Edit</a></td>
                 <td><a href=#>Delete</a></td>
-                <td>1</td>
-                <td>Boba</td>
-                <td>0.20</td>
+                <td>{{this.add_on_id}}</td>
+                <td>{{this.topping}}</td>
+                <td>{{this.price}}</td>
             </tr>
-
-            <tr>
-                <td><a href=#>Edit</a></td>
-                <td><a href=#>Delete</a></td>
-                <td>2</td>
-                <td>Crystal Boba</td>
-                <td>0.20</td>
-            </tr>
-
-            <tr>
-                <td><a href=#>Edit</a></td>
-                <td><a href=#>Delete</a></td>
-                <td>3</td>
-                <td>Popping Boba (Strawberry)</td>
-                <td>0.20</td>
-            </tr>
-
-            <tr>
-                <td><a href=#>Edit</a></td>
-                <td><a href=#>Delete</a></td>
-                <td>4</td>
-                <td>Lychee</td>
-                <td>0.20</td>
-            </tr>
-
-            <tr>
-                <td><a href=#>Edit</a></td>
-                <td><a href=#>Delete</a></td>
-                <td>5</td>
-                <td>Red Bean</td>
-                <td>0.25</td>
-            </tr>
-
-            <tr>
-                <td><a href=#>Edit</a></td>
-                <td><a href=#>Delete</a></td>
-                <td>6</td>
-                <td>Pudding</td>
-                <td>0.20</td>
-            </tr>
+            {{/each}}
         </tbody>
     </table>
 
