@@ -64,8 +64,8 @@ app.get('/', (req, res) => {
             , active: false
         },
         {
-            option: "user"
-            , option_name: "Place Orders"
+            option: "stats"
+            , option_name: "Stats"
             , active: false
         }
     ]
@@ -98,8 +98,8 @@ app.get('/menu', (req, res) => {
             , active: false
         },
         {
-            option: "user"
-            , option_name: "Place Orders"
+            option: "stats"
+            , option_name: "Stats"
             , active: false
         }
     ]
@@ -145,34 +145,51 @@ app.get('/orders', (req, res) => {
             , active: false
         },
         {
-            option: "user"
-            , option_name: "Place Orders"
+            option: "stats"
+            , option_name: "Stats"
             , active: false
         }
     ]
 
-    const query1 = `SELECT order_id
-                  , customer_id
-                  , DATE_FORMAT(order_date, '%Y-%m-%d %r') as order_date
-                  , num_drinks
-                  , total_cost FROM Orders`;
-    const query2 = "SELECT * FROM DrinkOrders";
-    const query3 = "SELECT * FROM AddOnDetails";
+    const query1 =
+        `SELECT order_id
+        , customer_id
+        , DATE_FORMAT(order_date, '%Y-%m-%d %r') as order_date
+        , num_drinks
+        , total_cost FROM Orders`
+
+    const query2 = "SELECT * FROM DrinkOrders"
+    const query3 = "SELECT * FROM AddOnDetails"
+    const query4 =
+        `SELECT
+          customer_id
+        , CONCAT(first_name, " ", last_name) AS \`Full Name\`
+        FROM Customers`
+
     db.pool.query(query1, (error1, rows1, fields) => {
         db.pool.query(query2, (error2, rows2, fields) => {
             db.pool.query(query3, (error3, rows3, fields) => {
-                const data = Object.assign({options}, {orders: rows1}, {drink_orders: rows2}, {addon_details: rows3})
-                console.log("data:", data)
+                db.pool.query(query4, (error4, rows4, fields) => {
+                    const data = Object.assign(
+                          {options}
+                        , {orders: rows1}
+                        , {drink_orders: rows2}
+                        , {addon_details: rows3}
+                        , {customers: rows4}
+                    )
+                    console.log("data:", data)
 
-                if (error1 || error2 || error3){
-                    console.log("error1:", error1)
-                    console.log("error2:", error2)
-                    console.log("error3:", error3)
-                    next()
-                    return
-                }
+                    if (error1 || error2 || error3 || error4){
+                        console.log("error1:", error1)
+                        console.log("error2:", error2)
+                        console.log("error3:", error3)
+                        console.log("error4:", error4)
+                        next()
+                        return
+                    }
 
-                res.status(200).render('orders', data)
+                    res.status(200).render('orders', data)
+                })
             })
         })
     })
@@ -198,8 +215,8 @@ app.get('/customers', (req, res) => {
             , active: true
         },
         {
-            option: "user"
-            , option_name: "Place Orders"
+            option: "stats"
+            , option_name: "Stats"
             , active: false
         }
     ]
@@ -221,7 +238,7 @@ app.get('/customers', (req, res) => {
 
 
 // ~ Place Orders
-app.get('/user', (req, res) => {
+app.get('/stats', (req, res) => {
     const options = [
         {
           option: "menu"
@@ -239,31 +256,133 @@ app.get('/user', (req, res) => {
             , active: false
         },
         {
-            option: "user"
-            , option_name: "Place Orders"
+            option: "stats"
+            , option_name: "Stats"
             , active: true
         }
     ]
 
-    const query1 = "SELECT * FROM Drinks";
-    const query2 = "SELECT * FROM AddOns";
-    db.pool.query(query1, (error1, rows1, fields) => {
-        db.pool.query(query2, (error2, rows2, fields) => {
-            const data = Object.assign({options}, {orders: rows1}, {drink_orders: rows2})
-            console.log("data:", data)
+    res.status(200).render('stats', {options})
+})
 
-            if (error1 || error2){
-                console.log("error1:", error1)
-                console.log("error2:", error2)
-                next()
-                return
-            }
 
-            res.status(200).render('user', data)
-        })
+/*
+  ~ POST
+*/
+
+app.post('/add-order-ajax', function (req, res) {
+    // Capture the incoming data and parse it back to a JS object
+    let data = req.body;
+    console.log("data:", data)
+
+    // Create the query and run it on the database
+    query1 =
+        `INSERT INTO Orders (customer_id, order_date, num_drinks)
+         VALUES (
+          '${data['customer_id']}'
+        , '${data['order_date']}'
+        , '${data['num_drinks']}'
+        )`;
+
+    db.pool.query(query1, function (error, rows, fields) {
+        if (error) {
+            console.log(error)
+            res.sendStatus(400)
+        }
+        else {
+            query2 =
+            `SELECT
+            order_id
+            , customer_id
+            , DATE_FORMAT(order_date, '%Y-%m-%d %r') as order_date
+            , num_drinks
+            , total_cost FROM Orders`
+
+            db.pool.query(query2, function (error, rows, fields) {
+                if (error) {
+                    console.log(error)
+                    res.sendStatus(400)
+                }
+                else {
+                    res.status(200).send(rows)
+                }
+            })
+        }
     })
 })
 
+/*
+  ~ DELETE
+*/
+
+app.delete('/delete-order-ajax/', function(req,res, next){
+    let data = req.body
+    let order_id = parseInt(data.order_id)
+
+    console.log("data:", data)
+
+    let delete_orders =
+        `DELETE FROM Orders
+        WHERE order_id = ?`
+
+    db.pool.query(delete_orders, [order_id], function(error, rows, fields){
+        if (error) {
+            console.log("delete orders: error")
+            res.sendStatus(400)
+        } else {
+            res.sendStatus(204)
+        }
+    })
+})
+
+
+/*
+  ~ PUT
+*/
+
+app.put('/put-order-ajax', function(req,res,next){
+    let data = req.body
+    console.log("data:", data)
+    let order_id = parseInt(data.order_id)
+    let num_drinks = parseInt(data.num_drinks)
+
+    let query_update_numdrinks =
+        `UPDATE Orders
+        SET
+            num_drinks = ?
+        WHERE order_id = ?`
+
+    // Run the 1st query
+    db.pool.query(query_update_numdrinks, [num_drinks, order_id], function(error, rows, fields){
+        if (error) {
+            console.log(error)
+            res.sendStatus(400)
+        } else {
+            query2 =
+            `SELECT
+            order_id
+            , customer_id
+            , DATE_FORMAT(order_date, '%Y-%m-%d %r') as order_date
+            , num_drinks
+            , total_cost FROM Orders`
+
+            db.pool.query(query2, function (error, rows, fields) {
+                if (error) {
+                    console.log(error)
+                    res.sendStatus(400)
+                }
+                else {
+                    res.status(200).send(rows)
+                }
+            })
+        }
+    })
+})
+
+
+/*
+  ! 404
+*/
 
 // ~ Anything else... 404
 app.get('*', (req, res) => {
@@ -291,45 +410,4 @@ app.get('*', (req, res) => {
     ]
 
     res.status(404).render('404', { options })
-})
-
-/*
-  POST
-*/
-
-app.post('/add-order-ajax', function (req, res) {
-    // Capture the incoming data and parse it back to a JS object
-    let data = req.body;
-
-    // Create the query and run it on the database
-    query1 =
-        `INSERT INTO Orders (customer_id, order_date, num_drinks)
-         VALUES (
-          '${data['customer_id']}'
-        , '${data['order_date']}'
-        , '${data['num_drinks']}'
-        )`;
-
-    db.pool.query(query1, function (error, rows, fields) {
-        if (error) {
-            console.log(error)
-            res.sendStatus(400);
-        }
-        else {
-            query2 = `SELECT order_id
-                  , customer_id
-                  , DATE_FORMAT(order_date, '%Y-%m-%d %r') as order_date
-                  , num_drinks
-                  , total_cost FROM Orders`;
-            db.pool.query(query2, function (error, rows, fields) {
-                if (error) {
-                    console.log(error)
-                    res.sendStatus(400);
-                }
-                else {
-                    res.status(200).send(rows);
-                }
-            })
-        }
-    })
 })

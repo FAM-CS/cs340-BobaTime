@@ -3,7 +3,6 @@ let addOrderForm = document.getElementById('add-order-form-ajax')
 
 // Modify the objects we need
 addOrderForm.addEventListener("submit", function (e) {
-
     // Prevent the form from submitting
     e.preventDefault()
 
@@ -23,6 +22,8 @@ addOrderForm.addEventListener("submit", function (e) {
         order_date: dateValue,
         num_drinks: numValue,
     }
+
+    console.log("add data:", data)
 
     // Setup our AJAX request
     var xhttp = new XMLHttpRequest()
@@ -54,7 +55,7 @@ addOrderForm.addEventListener("submit", function (e) {
 })
 
 
-// Creates a single row from an Object representing a single record from 
+// Creates a single row from an Object representing a single record from
 // bsg_people
 addRowToTable = (data) => {
 
@@ -78,7 +79,7 @@ addRowToTable = (data) => {
     let tCostCell = document.createElement("TD")
 
     // Fill the cells with correct data
-    deleteCell.innerHTML = "<a href=#>Delete</a>"
+    deleteCell.innerHTML = '<button onclick="delete_order(' + newRow.order_id + ')">Delete</button>'
     idCell.innerText = newRow.order_id
     cIDCell.innerText = newRow.customer_id
     dateCell.innerText = newRow.order_date

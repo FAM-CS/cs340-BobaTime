@@ -1,3 +1,6 @@
+{{!-- jQuery for Deleting --}}
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
 <section class="content">
 
     <h2>Orders</h2>
@@ -6,7 +9,7 @@
         <tbody>
             {{!-- Table Header --}}
             <tr>
-                <th><a href=#>Delete</a></th>
+                <th>Delete</th>
                 {{#each orders.[0]}}
                     <th>
                         {{@key}}
@@ -16,7 +19,8 @@
 
             {{#each orders}}
             <tr>
-                <td><a href=#>Delete</a></td>
+                <td><button onclick="delete_order({{this.order_id}})">Delete</button></td>
+                {{!-- <td><a href=#>Delete</a></td> --}}
                 <td>{{this.order_id}}</td>
                 <td>{{this.customer_id}}</td>
                 <td>{{this.order_date}}</td>
@@ -26,14 +30,23 @@
             {{/each}}
         </tbody>
     </table>
+    <script src="delete_order.js"></script>
 
     <p></p>
 
     <form id="add-order-form-ajax">
         <label for="input-customer_id">Customer ID</label>
-        <input type="text" id="input-customer_id" name="input-customer_id" minlength="1" maxlength="20" required>
+        {{!-- <input type="text" id="input-customer_id" name="input-customer_id" minlength="1" maxlength="20" required> --}}
+        <select name="input-customer_id" id="input-customer_id">
+            <option value="">Select a customer</option>
+            {{#each customers}}
+            <option value="{{this.customer_id}}">{{[Full Name]}}</option>
+            {{/each}}
+        </select>
+
         <label for="input-order_date">Date/Time</label>
         <input type="text" id="input-order_date" name="input-order_date" minlength="1" maxlength="20" required>
+
         <label for="input-num_drinks">Number of Drinks</label>
         <input type="number" id="input-num_drinks" name="input-num_drinks" minlength="1" maxlength="20" required>
 
@@ -42,22 +55,31 @@
         <button type="submit">Add Order</button>
         <button type="reset">Cancel</button>
     </form>
-
     <script src="add_order.js"></script>
 
     <p></p>
 
-    <form action="/~yeoki/cs340/orders" method="GET">
-        <label for="target_order"> Order ID</label>
-        <input type="text" id="order_id" name="target_order" minlength="1" maxlength="20" required>
+    <form id="update-order-form-ajax">
+        <label for="input-order_id">Order #</label>
+        <select name="input-order_id" id="input-order_id">
+            <option value="">Select an Order</option>
+            {{#each orders}}
+            <option value="{{this.order_id}}">{{this.order_id}}</option>
+            {{/each}}
+        </select>
+
+        <label for="update-input-num_drinks">Number of Drinks</label>
+        <input type="number" id="update-input-num_drinks" name="update-input-num_drinks" minlength="1" maxlength="20" required>
 
         <p></p>
 
-        <button type="submit">Remove Order</button>
+        <button type="submit">Update Order</button>
         <button type="reset">Cancel</button>
     </form>
+    <script src="update_order.js"></script>
 
     <p></p>
+
 
     <h2>DrinkOrders</h2>
 

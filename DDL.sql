@@ -125,7 +125,7 @@ VALUES
     (
           "guest1@bobatime.com"
         , "Guest1"
-        , "Guest1"
+        , "Guest"
         , 3
         , 4
         , 21.05

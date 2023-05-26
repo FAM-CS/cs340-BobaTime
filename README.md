@@ -27,6 +27,20 @@ npm run dev
 3. Run `app.js` and open either link (flip link is specifically if on VPN)
 - Assumption is that server is running on `flip3`
 
+## How to Launch on Server
+Run below (ignore warnings):
+```bash
+forever start app.js
+# or if not aliased...
+./node_modules/forever/bin/forever start app.js
+```
+To stop:
+```bash
+forever stop app.js
+# or if not aliased...
+./node_modules/forever/bin/forever stop app.js
+```
+
 ## Resources
 + [Express Guide](https://expressjs.com/en/guide/routing.html)
 + [Handlebars Guide](https://handlebarsjs.com/guide/)
