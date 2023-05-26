@@ -41,6 +41,8 @@ CREATE TABLE Orders (
     , FOREIGN KEY (customer_id)
           REFERENCES Customers(customer_id)
           ON DELETE SET NULL
+    , CONSTRAINT NumDrinks CHECK (num_drinks >= 1)
+    , CONSTRAINT OrderCost CHECK (total_cost >= 0)
 );
 
 

@@ -4,74 +4,40 @@
 
     <table>
         <tbody>
+            {{!-- Table Header --}}
             <tr>
-                <th><a href=#>New</a></th>
-                <th>order_id</th>
-                <th>customer_id</th>
-                <th>order_date</th>
-                <th>num_drinks</th>
-                <th>total_cost</th>
+                <th><a href=#>Delete</a></th>
+                {{#each orders.[0]}}
+                    <th>
+                        {{@key}}
+                    </th>
+                {{/each}}
             </tr>
 
-            <tr>
-                <td><a href=#>Delete</a></td>
-                <td>1</td>
-                <td>1</td>
-                <td>2023-01-01 13:00:00</td>
-                <td>1</td>
-                <td>5.40</td>
-            </tr>
-
+            {{#each orders}}
             <tr>
                 <td><a href=#>Delete</a></td>
-                <td>2</td>
-                <td>1</td>
-                <td>2023-01-15 13:00:00</td>
-                <td>2</td>
-                <td>10.45</td>
+                <td>{{this.order_id}}</td>
+                <td>{{this.customer_id}}</td>
+                <td>{{this.order_date}}</td>
+                <td>{{this.num_drinks}}</td>
+                <td>{{this.total_cost}}</td>
             </tr>
-
-            <tr>
-                <td><a href=#>Delete</a></td>
-                <td>3</td>
-                <td>1</td>
-                <td>2023-01-20 16:00:00</td>
-                <td>1</td>
-                <td>5.20</td>
-            </tr>
-
-            <tr>
-                <td><a href=#>Delete</a></td>
-                <td>4</td>
-                <td>2</td>
-                <td>2023-01-27 13:00:00</td>
-                <td>1</td>
-                <td>5.00</td>
-            </tr>
-
-            <tr>
-                <td><a href=#>Delete</a></td>
-                <td>5</td>
-                <td>2</td>
-                <td>2023-01-28 17:00:00</td>
-                <td>1</td>
-                <td>5.20</td>
-            </tr>
-
+            {{/each}}
         </tbody>
     </table>
 
     <p></p>
 
-    <form action="/~yeoki/cs340/orders" method="GET">
-        <label for="new_order"> Customer ID</label>
-        <input type="text" id="customer_id" name="new_order" minlength="1" maxlength="20" required>
-        <label for="new_date"> Date/Time</label>
-        <input type="text" id="order_date" name="new_date" minlength="1" maxlength="20" required>
-        <label for="new_num"> Number of Drinks</label>
-        <input type="text" id="num_drinks" name="new_num" minlength="1" maxlength="20" required>
-        <label for="new_cost"> Total Cost</label>
-        <input type="text" id="total_cost" name="new_cost" minlength="1" maxlength="20" required>
+    <form id="add-order-form" method="POST" action="add-order-form">
+        <label for="customer_id">Customer ID</label>
+        <input type="text" id="customer_id" name="customer_id" minlength="1" maxlength="20" required>
+        <label for="order_date">Date/Time</label>
+        <input type="text" id="order_date" name="order_date" minlength="1" maxlength="20" required>
+        <label for="num_drinks">Number of Drinks</label>
+        <input type="number" id="num_drinks" name="num_drinks" minlength="1" maxlength="20" required>
+        <label for="total_cost">Total Cost</label>
+        <input type="number" id="total_cost" name="total_cost" minlength="1" maxlength="20" required>
 
         <p></p>
 
@@ -97,75 +63,27 @@
 
     <table>
         <tbody>
+            {{!-- Table Header --}}
             <tr>
-                <th>drink_order_id</th>
-                <th>order_id</th>
-                <th>drink_id</th>
-                <th>seq_number</th>
-                <th>sweetness_lvl</th>
-                <th>is_cold</th>
-                <th>drink_size</th>
+                {{#each drink_orders.[0]}}
+                <th>
+                    {{@key}}
+                </th>
+                {{/each}}
             </tr>
 
+            {{!-- Rows --}}
+            {{#each drink_orders}}
             <tr>
-                <td>1</td>
-                <td>1</td>
-                <td>3</td>
-                <td>1</td>
-                <td>100</td>
-                <td>TRUE</td>
-                <td>R</td>
+                <td>{{this.drink_order_id}}</td>
+                <td>{{this.order_id}}</td>
+                <td>{{this.drink_id}}</td>
+                <td>{{this.seq_number}}</td>
+                <td>{{this.sweetness_lvl}}</td>
+                <td>{{this.is_cold}}</td>
+                <td>{{this.drink_size}}</td>
             </tr>
-
-            <tr>
-                <td>2</td>
-                <td>2</td>
-                <td>1</td>
-                <td>1</td>
-                <td>75</td>
-                <td>TRUE</td>
-                <td>R</td>
-            </tr>
-
-            <tr>
-                <td>3</td>
-                <td>2</td>
-                <td>4</td>
-                <td>2</td>
-                <td>100</td>
-                <td>TRUE</td>
-                <td>R</td>
-            </tr>
-
-            <tr>
-                <td>4</td>
-                <td>3</td>
-                <td>6</td>
-                <td>1</td>
-                <td>50</td>
-                <td>FALSE</td>
-                <td>R</td>
-            </tr>
-
-            <tr>
-                <td>5</td>
-                <td>4</td>
-                <td>3</td>
-                <td>1</td>
-                <td>75</td>
-                <td>TRUE</td>
-                <td>R</td>
-            </tr>
-
-            <tr>
-                <td>6</td>
-                <td>5</td>
-                <td>2</td>
-                <td>1</td>
-                <td>75</td>
-                <td>TRUE</td>
-                <td>R</td>
-            </tr>
+            {{/each}}
         </tbody>
     </table>
 
@@ -175,54 +93,24 @@
 
     <table>
         <tbody>
+                {{!-- Table Header --}}
             <tr>
-                <th>add_on_detail_id</th>
-                <th>drink_order_id</th>
-                <th>add_on_id</th>
-                <th>quantity</th>
+                {{#each addon_details.[0]}}
+                <th>
+                    {{@key}}
+                </th>
+                {{/each}}
             </tr>
 
+            {{!-- Rows --}}
+            {{#each addon_details}}
             <tr>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
-                <td>1</td>
+                <td>{{this.add_on_detail_id}}</td>
+                <td>{{this.drink_order_id}}</td>
+                <td>{{this.add_on_id}}</td>
+                <td>{{this.quantity}}</td>
             </tr>
-
-            <tr>
-                <td>2</td>
-                <td>2</td>
-                <td>1</td>
-                <td>1</td>
-            </tr>
-
-            <tr>
-                <td>3</td>
-                <td>3</td>
-                <td>6</td>
-                <td>1</td>
-            </tr>
-
-            <tr>
-                <td>4</td>
-                <td>3</td>
-                <td>5</td>
-                <td>1</td>
-            </tr>
-
-            <tr>
-                <td>5</td>
-                <td>5</td>
-                <td>1</td>
-                <td>1</td>
-            </tr>
-
-            <tr>
-                <td>6</td>
-                <td>6</td>
-                <td>1</td>
-                <td>1</td>
-            </tr>
+            {{/each}}
         </tbody>
     </table>
 </section>
