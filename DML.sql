@@ -11,6 +11,30 @@
 
 
 /* ---------- SELECT(s) ---------------------- */
+-- ? Queries for Table selects (TO BE UPDATED)
+SELECT * FROM Drinks;
+
+SELECT * FROM AddOns;
+
+SELECT order_id
+, customer_id
+, DATE_FORMAT(order_date, '%Y-%m-%d %r') as order_date
+, num_drinks
+, total_cost FROM Orders;
+
+SELECT
+    customer_id
+, CONCAT(first_name, " ", last_name) AS `Full Name`
+FROM Customers;
+
+SELECT * FROM Customers;
+
+SELECT * FROM DrinkOrders;
+
+SELECT * FROM AddOnDetails;
+
+
+
 -- ? Query to see Drink Menu
 SELECT
       base_flavor AS "Flavor"
@@ -220,6 +244,11 @@ UPDATE Orders
 SET
       num_drinks = :num_drinks
     , total_cost = :cost_input
+WHERE order_id = :order_id_input;
+
+UPDATE Orders
+SET
+    num_drinks = :num_drinks
 WHERE order_id = :order_id_input;
 /* ------------------------------------------- */
 
