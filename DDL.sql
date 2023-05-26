@@ -36,7 +36,7 @@ CREATE TABLE Orders (
     , customer_id INT
     , order_date TIMESTAMP NOT NULL
     , num_drinks TINYINT NOT NULL
-    , total_cost DECIMAL(5,2) NOT NULL
+    , total_cost DECIMAL(5,2) NOT NULL DEFAULT 0
     , PRIMARY KEY (order_id)
     , FOREIGN KEY (customer_id)
           REFERENCES Customers(customer_id)
