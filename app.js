@@ -1,3 +1,6 @@
+//? Queries and sql logic is referenced from the lecture demo and the github resource:
+//?  https://github.com/osu-cs340-ecampus/nodejs-starter-app
+
 /*
     SETUP
 */
