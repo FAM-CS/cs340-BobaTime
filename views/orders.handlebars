@@ -2,7 +2,7 @@
 
     <h2>Orders</h2>
 
-    <table>
+    <table id="orders-table">
         <tbody>
             {{!-- Table Header --}}
             <tr>
@@ -29,21 +29,21 @@
 
     <p></p>
 
-    <form id="add-order-form" method="POST" action="add-order-form">
-        <label for="customer_id">Customer ID</label>
-        <input type="text" id="customer_id" name="customer_id" minlength="1" maxlength="20" required>
-        <label for="order_date">Date/Time</label>
-        <input type="text" id="order_date" name="order_date" minlength="1" maxlength="20" required>
-        <label for="num_drinks">Number of Drinks</label>
-        <input type="number" id="num_drinks" name="num_drinks" minlength="1" maxlength="20" required>
-        <label for="total_cost">Total Cost</label>
-        <input type="number" id="total_cost" name="total_cost" minlength="1" maxlength="20" required>
+    <form id="add-order-form-ajax">
+        <label for="input-customer_id">Customer ID</label>
+        <input type="text" id="input-customer_id" name="input-customer_id" minlength="1" maxlength="20" required>
+        <label for="input-order_date">Date/Time</label>
+        <input type="text" id="input-order_date" name="input-order_date" minlength="1" maxlength="20" required>
+        <label for="input-num_drinks">Number of Drinks</label>
+        <input type="number" id="input-num_drinks" name="input-num_drinks" minlength="1" maxlength="20" required>
 
         <p></p>
 
         <button type="submit">Add Order</button>
         <button type="reset">Cancel</button>
     </form>
+
+    <script src="add_order.js"></script>
 
     <p></p>
 

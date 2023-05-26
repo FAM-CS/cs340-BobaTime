@@ -11,6 +11,8 @@ var PORT_NUM = process.env.PORT || 54321
 app.engine('handlebars', hbrs_engine.engine())
 app.set('view engine', 'handlebars')
 app.set('views', './views')
+app.use(express.json())
+app.use(express.urlencoded({extended: true}))
 
 const mysql = require('mysql')
 const fs = require('fs')
@@ -149,7 +151,11 @@ app.get('/orders', (req, res) => {
         }
     ]
 
-    const query1 = "SELECT * FROM Orders";
+    const query1 = `SELECT order_id
+                  , customer_id
+                  , DATE_FORMAT(order_date, '%Y-%m-%d %r') as order_date
+                  , num_drinks
+                  , total_cost FROM Orders`;
     const query2 = "SELECT * FROM DrinkOrders";
     const query3 = "SELECT * FROM AddOnDetails";
     db.pool.query(query1, (error1, rows1, fields) => {
@@ -291,30 +297,39 @@ app.get('*', (req, res) => {
   POST
 */
 
-app.post('/add-order-form', function(req, res){
+app.post('/add-order-ajax', function (req, res) {
     // Capture the incoming data and parse it back to a JS object
     let data = req.body;
 
-    console.log("req:", req)
-    // console.log("data req:", data)
-
     // Create the query and run it on the database
-    const query1 =
-        `INSERT INTO Orders (customer_id, order_date, num_drinks, total_cost)
+    query1 =
+        `INSERT INTO Orders (customer_id, order_date, num_drinks)
          VALUES (
           '${data['customer_id']}'
         , '${data['order_date']}'
         , '${data['num_drinks']}'
-        , '${data['total_cost']}'
-        )`
+        )`;
 
-    db.pool.query(query1, function(error, rows, fields){
+    db.pool.query(query1, function (error, rows, fields) {
         if (error) {
             console.log(error)
             res.sendStatus(400);
         }
         else {
-            res.redirect('/orders');
+            query2 = `SELECT order_id
+                  , customer_id
+                  , DATE_FORMAT(order_date, '%Y-%m-%d %r') as order_date
+                  , num_drinks
+                  , total_cost FROM Orders`;
+            db.pool.query(query2, function (error, rows, fields) {
+                if (error) {
+                    console.log(error)
+                    res.sendStatus(400);
+                }
+                else {
+                    res.status(200).send(rows);
+                }
+            })
         }
     })
 })
