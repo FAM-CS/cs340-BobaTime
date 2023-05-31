@@ -30,6 +30,8 @@ body {
     min-height: 100vh;
     margin: 0;
 
+    z-index: 0;
+
     background-color: #FDFCFB;
 
     /* Default text style */
@@ -238,4 +240,25 @@ form {
     position: absolute;
     bottom: 0;
     width: 100%;
+}
+
+#drink-image {
+    display: flex;
+    justify-content: flex-end;
+    align-content: flex-end;
+}
+
+
+#drink-image img {
+    /* display: block; */
+    /* background-image: url("image/boba.png"); */
+    position: absolute;
+    bottom: 60px;
+    right: 3%;
+    z-index: -1;
+
+    transform: rotate(9.5deg);
+
+    width: 10%;
+    height: auto;
 }
