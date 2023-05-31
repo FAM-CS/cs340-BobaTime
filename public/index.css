@@ -252,8 +252,8 @@ form {
 #drink-image img {
     /* display: block; */
     /* background-image: url("image/boba.png"); */
-    position: fixed;
-    bottom: 10%;
+    position: absolute;
+    bottom: 60px;
     right: 3%;
     z-index: -1;
 
