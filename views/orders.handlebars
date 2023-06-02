@@ -38,7 +38,7 @@
         <label for="input-customer_id">Customer ID</label>
         {{!-- <input type="text" id="input-customer_id" name="input-customer_id" minlength="1" maxlength="20" required> --}}
         <select name="input-customer_id" id="input-customer_id">
-            <option value="">Select a customer</option>
+            <option value=""></option>
             {{#each customers}}
             <option value="{{this.customer_id}}">{{[Full Name]}}</option>
             {{/each}}
@@ -62,7 +62,7 @@
     <form id="update-order-form-ajax">
         <label for="input-order_id">Order #</label>
         <select name="input-order_id" id="input-order_id">
-            <option value="">Select an Order</option>
+            <option value=""></option>
             {{#each orders}}
             <option value="{{this.order_id}}">{{this.order_id}}</option>
             {{/each}}

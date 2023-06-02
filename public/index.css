@@ -224,6 +224,8 @@ form {
     border: 1px solid gray;
     padding: 10px;
     display: inline-block;
+
+    background-color: #FDFCFB;
 }
 
 /* ------------------------------------------------------------------------------------ */

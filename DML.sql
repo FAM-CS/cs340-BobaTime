@@ -214,6 +214,32 @@ VALUES
 
 
 /* ---------- UPDATE(s) ---------------------- */
+-- ? 
+UPDATE Drinks
+SET
+      base_flavor = :base_flavor
+    , small_price = :small_price
+    , reg_price = :reg_price
+    , can_be_hot = :can_be_hot
+    , is_flavored_sweetener = :is_flavored_sweetener
+WHERE drink_id = :drink_id;
+
+-- ? 
+UPDATE AddOns
+SET
+      topping = :topping
+    , price = :price
+WHERE add_on_id = :add_on_id;
+
+
+-- ? 
+UPDATE Customers
+SET
+      phone_num = :phone_num
+    , first_name = :first_name
+    , last_name = :last_name
+WHERE customer_id = :customer_id;
+
 -- ? Update a drink order to have a different flavor, sweetness, and ice/hot level
 UPDATE DrinkOrders
 SET

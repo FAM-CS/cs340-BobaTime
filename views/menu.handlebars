@@ -1,95 +1,120 @@
+{{!-- jQuery for Deleting --}}
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+
 <section class="content">
+
     <h2>Drinks</h2>
 
-    <table>
+    <table id="drinks-table">
         <tbody>
             {{!-- Table Header --}}
             <tr>
-                <th><a href=#>New</a></th>
-                <th></th>
+                <th>Delete</th>
                 {{#each drinks.[0]}}
-                <th>
-                    {{@key}}
-                </th>
+                    <th>
+                      {{@key}}
+                    </th>
                 {{/each}}
             </tr>
 
             {{!-- Rows --}}
             {{#each drinks}}
             <tr>
-                <td><a href=#>Edit</a></td>
-                <td><a href=#>Delete</a></td>
-
+                <td><button onclick="delete_drink({{this.drink_id}})">Delete</button></td>
                 <td>{{this.drink_id}}</td>
                 <td>{{this.base_flavor}}</td>
                 <td>{{this.small_price}}</td>
-                <td>{{this.small_price}}</td>
+                <td>{{this.reg_price}}</td>
                 <td>{{this.can_be_hot}}</td>
                 <td>{{this.is_flavored_sweetener}}</td>
             </tr>
             {{/each}}
         </tbody>
     </table>
+    <script src="delete_drink.js"></script>
 
     <p></p>
 
-    <form action="/~yeoki/cs340/menu" method="GET">
-        <label for="new_flavor"> Base Flavor</label>
-        <input type="text" id="base_flavor" name="new_flavor" minlength="1" maxlength="20" required>
-        <label for="new_small"> Small Price</label>
-        <input type="text" id="small_price" name="small" minlength="1" maxlength="20" required>
-        <label for="new_reg"> Regular Price</label>
-        <input type="text" id="reg_price" name="new_reg" minlength="1" maxlength="20" required>
+    <form id="add-drink-form-ajax">
+        <label for="input-base_flavor"> Base Flavor</label>
+        <input type="text" id="input-base_flavor" name="input-base_flavor" minlength="1" maxlength="20" required>
+        
+        <label for="input-small_price"> Small Price</label>
+        <input type="number" id="input-small_price" name="input-small_price" minlength="1" maxlength="20" required>
+        
+        <label for="input-reg_price"> Regular Price</label>
+        <input type="number" id="input-reg_price" name="input-reg_price" minlength="1" maxlength="20" required>
 
-        <label for="new_hot"> Can Be Hot</label>
-        <input type="text" id="can_be_hot" name="new_hot" minlength="1" maxlength="20" required>
-        <label for="new_sweetener"> Is Flavored Sweetener</label>
-        <input type="text" id="is_flavored_sweetener" name="new_sweetener" minlength="1" maxlength="20" required>
+        <label for="input-can_be_hot"> Can Be Hot</label>
+        {{!-- <input type="text" id="input-can_be_hot" name="input-can_be_hot" minlength="1" maxlength="20" required> --}}
+        <select name="input-can_be_hot" id="input-can_be_hot">
+            <option value=1>TRUE</option>
+            <option value=0>FALSE</option>
+        </select>
+            
+        <label for="input-is_flavored_sweetener"> Is Flavored Sweetener</label>
+        {{!-- <input type="text" id="is_flavored_sweetener" name="new_sweetener" minlength="1" maxlength="20" required> --}}
+        <select name="input-is_flavored_sweetener" id="input-is_flavored_sweetener">
+            <option value=1>TRUE</option>
+            <option value=0>FALSE</option>
+        </select>
 
         <p></p>
 
         <button type="submit">Add Drink</button>
         <button type="reset">Cancel</button>
     </form>
+    <script src="add_drink.js"></script>
 
     <p></p>
 
-    <form action="/~yeoki/cs340/menu" method="GET">
-        <label for="target_drink"> Drink ID</label>
-        <input type="text" id="drink_id" name="target_drink" minlength="1" maxlength="20" required>
-        <label for="target_category"> Attribute Name</label>
-        <input type="text" id="name" name="target_category" minlength="1" maxlength="20" required>
-        <label for="new_val"> New Value</label>
-        <input type="text" id="value" name="new_value" minlength="1" maxlength="20" required>
+    <form id="update-drink-form-ajax">
+        <label for="input-drink_id">Drink #</label>
+        <select name="input-drink_id" id="input-drink_id">
+            <option value=""></option>
+            {{#each drinks}}
+            <option value="{{this.drink_id}}">{{this.drink_id}}</option>
+            {{/each}}
+        </select>
+        
+        <label for="update-base_flavor"> Base Flavor</label>
+        <input type="text" id="update-base_flavor" name="update-base_flavor" minlength="1" maxlength="20" required>
+        
+        <label for="update-small_price"> Small Price</label>
+        <input type="number" id="update-small_price" name="update-small_price" minlength="1" maxlength="20" required>
+        
+        <label for="update-reg_price"> Regular Price</label>
+        <input type="number" id="update-reg_price" name="update-reg_price" minlength="1" maxlength="20" required>
 
+        <label for="update-can_be_hot"> Can Be Hot</label>
+        {{!-- <input type="text" id="input-can_be_hot" name="input-can_be_hot" minlength="1" maxlength="20" required> --}}
+        <select name="update-can_be_hot" id="update-can_be_hot">
+            <option value=1>TRUE</option>
+            <option value=0>FALSE</option>
+        </select>
+            
+        <label for="update-is_flavored_sweetener"> Is Flavored Sweetener</label>
+        {{!-- <input type="text" id="is_flavored_sweetener" name="new_sweetener" minlength="1" maxlength="20" required> --}}
+        <select name="update-is_flavored_sweetener" id="update-is_flavored_sweetener">
+            <option value=1>TRUE</option>
+            <option value=0>FALSE</option>
+        </select>
         <p></p>
 
         <button type="submit">Update Drink</button>
         <button type="reset">Cancel</button>
     </form>
-
-    <p></p>
-
-    <form action="/~yeoki/cs340/menu" method="GET">
-        <label for="target_drink"> Drink ID</label>
-        <input type="text" id="drink_id" name="target_drink" minlength="1" maxlength="20" required>
-
-        <p></p>
-
-        <button type="submit">Remove Drink</button>
-        <button type="reset">Cancel</button>
-    </form>
+    <script src="update_drink.js"></script>
 
     <p></p>
 
     <h2>AddOns</h2>
 
-    <table>
+    <table id="addons-table">
         <tbody>
             {{!-- Table Header --}}
             <tr>
-                <th><a href=#>New</a></th>
-                <th></th>
+                <th>Delete</th>
                 {{#each addons.[0]}}
                     <th>
                         {{@key}}
@@ -100,8 +125,7 @@
             {{!-- Rows --}}
             {{#each addons}}
             <tr>
-                <td><a href=#>Edit</a></td>
-                <td><a href=#>Delete</a></td>
+                <td><button onclick="delete_addon({{this.add_on_id}})">Delete</button></td>
                 <td>{{this.add_on_id}}</td>
                 <td>{{this.topping}}</td>
                 <td>{{this.price}}</td>
@@ -109,46 +133,45 @@
             {{/each}}
         </tbody>
     </table>
+    <script src="delete_addon.js"></script>
 
     <p></p>
 
-    <form action="/~yeoki/cs340/menu" method="GET">
-        <label for="new_topping"> Topping</label>
-        <input type="text" id="topping" name="new_topping" minlength="1" maxlength="20" required>
-        <label for="new_price"> Price</label>
-        <input type="text" id="price" name="new_price" minlength="1" maxlength="20" required>
+    <form id="add-addon-form-ajax">
+        <label for="input-topping"> Topping</label>
+        <input type="text" id="input-topping" name="input-topping" minlength="1" maxlength="20" required>
+        <label for="input-price"> Price</label>
+        <input type="number" id="input-price" name="input-price" minlength="1" maxlength="20" required>
 
         <p></p>
 
         <button type="submit">Add Topping</button>
         <button type="reset">Cancel</button>
     </form>
+    <script src="add_addon.js"></script>
 
     <p></p>
 
-    <form action="/~yeoki/cs340/menu" method="GET">
-        <label for="target_topping"> Topping ID</label>
-        <input type="text" id="add_on_id" name="target_topping" minlength="1" maxlength="20" required>
-        <label for="target_category"> Attribute Name</label>
-        <input type="text" id="name" name="target_category" minlength="1" maxlength="20" required>
-        <label for="new_val"> New Value</label>
-        <input type="text" id="value" name="new_value" minlength="1" maxlength="20" required>
+    <form id="update-addon-form-ajax">
+        <label for="input-topping"> Topping #</label>
+        <select name="input-add_on_id" id="input-add_on_id">
+            <option value=""></option>
+            {{#each addons}}
+            <option value="{{this.add_on_id}}">{{this.add_on_id}}</option>
+            {{/each}}
+        </select>
+        {{!-- <input type="text" id="add_on_id" name="target_topping" minlength="1" maxlength="20" required> --}}
+        
+        <label for="update-topping"> Topping</label>
+        <input type="text" id="update-input-topping" name="update-topping" minlength="1" maxlength="20" required>
+        
+        <label for="update-price"> Price</label>
+        <input type="number" id="update-input-price" name="update-price" minlength="1" maxlength="20" required>
 
         <p></p>
 
-        <button type="submit">Update Topping</button>
+        <button type="submit">Update AddOn</button>
         <button type="reset">Cancel</button>
     </form>
-
-    <p></p>
-
-    <form action="/~yeoki/cs340/menu" method="GET">
-        <label for="target_topping"> Topping ID</label>
-        <input type="text" id="add_on_id" name="target_topping" minlength="1" maxlength="20" required>
-
-        <p></p>
-
-        <button type="submit">Remove Topping</button>
-        <button type="reset">Cancel</button>
-    </form>
+    <script src="update_addon.js"></script>
 </section>
