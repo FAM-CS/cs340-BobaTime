@@ -6,10 +6,20 @@
         <ul class="navlist">
             {{!-- Render all options and if it's active highlight it --}}
             {{#each options}}
-                <li class="navitem navlink {{#if active}}active{{/if}}">
+            <li class="navitem navlink {{#if active}}active{{/if}}">
                 <h2>
                     <a href="{{option}}">{{option_name}}</a>
                 </h2>
+                {{#if_equals option "stats"}}
+                <ul class="dropdown">
+                    <li>
+                        <h3><a href="stats_top">Popular Items</a></h3>
+                    </li>
+                    <li>
+                        <h3><a href="stats_customer">Customer Stats</a>
+                    </li>
+                </ul>
+                {{/if_equals}}
             </li>
             {{/each}}
         </ul>
