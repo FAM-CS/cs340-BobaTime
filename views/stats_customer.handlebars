@@ -1,0 +1,75 @@
+<section class="content">
+    <h2>🚧Work in Progress...🚧</h2>
+
+    <div class="two-column-table">
+        <div>
+            <h2>Top Flavors</h2>
+            <table id="topflavors-table">
+                <tbody>
+                    {{!-- Table Header --}}
+                    <tr>
+                        {{#each topflavors.[0]}}
+                        <th>
+                            {{@key}}
+                        </th>
+                        {{/each}}
+                    </tr>
+
+                    {{#each topflavors}}
+                    <tr>
+                        <td>{{[Flavor]}}</td>
+                        <td>{{[Times Ordered]}}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+
+        <div>
+            <h2>Top AddOns</h2>
+            <table id="topaddons-table">
+                <tbody>
+                    {{!-- Table Header --}}
+                    <tr>
+                        {{#each topaddons.[0]}}
+                        <th>
+                            {{@key}}
+                        </th>
+                        {{/each}}
+                    </tr>
+
+                    {{#each topaddons}}
+                    <tr>
+                        <td>{{[Topping]}}</td>
+                        <td>{{[Times Added]}}</td>
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <h2>Top Drinks</h2>
+    <table id="topdrinks-table">
+        <tbody>
+            {{!-- Table Header --}}
+            <tr>
+                {{#each topdrinks.[0]}}
+                <th>
+                    {{@key}}
+                </th>
+                {{/each}}
+            </tr>
+
+            {{#each topdrinks}}
+            <tr>
+                <td>{{[Drink Flavor]}}</td>
+                <td>{{[Topping(s)]}}</td>
+                <td>{{[Times Ordered]}}</td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+
+
+</section>

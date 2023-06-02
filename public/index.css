@@ -44,7 +44,7 @@ a {
     text-decoration: none;
 }
 
-h1, h2 {
+h1, h2, h3 {
     margin: 0;
 }
 
@@ -78,6 +78,7 @@ svg {
     padding-top: 0.5em;
     padding-left: 2.5%;
     padding-right: 2.5%;
+    margin-bottom: 0.5em;
 
     background-color: #DBC2DF;
     /* border: 1px solid black; */
@@ -111,6 +112,21 @@ h2 a {
 
     font-weight: 400;
     color: #FDFCFB;
+}
+
+h3 a {
+    font-family: 'Barlow', sans-serif;
+    /* font-size: 32px; */
+    font-size: calc(70% + 0.5vw);
+    text-align: left;
+
+    width: auto;
+    padding-left: 0.5rem;
+
+    font-weight: 500;
+    color: #FDFCFB;
+
+    border-top: 2px solid #E2CEE5;
 }
 
 .navigationbar {
@@ -161,6 +177,53 @@ h2 a {
     padding-bottom: 0.5rem;
 }
 
+/* ? Drop down menu source*/
+ul {
+    list-style: none;
+}
+
+ul li {
+    display: inline-block;
+    position: relative;
+}
+
+ul li a {
+    display: block;
+    color: #FDFCFB;
+}
+
+ul.dropdown {
+    padding: 0;
+    overflow: hidden;
+}
+
+/* https://www.youtube.com/watch?v=eKo1NV1qxbc */
+ul li ul.dropdown li {
+    display: block;
+}
+
+ul li ul.dropdown li a {
+    text-align: left;
+}
+
+ul li ul.dropdown {
+    width: 100%;
+    background-color: #DBC2DF;
+    position: absolute;
+    z-index: 999;
+    display: none;
+}
+
+ul li:hover ul.dropdown {
+    display: block;
+}
+
+ul li:hover ul.dropdown li:hover {
+    background-color: #B5A5B7;
+}
+
+
+
 /* ------------------------------------------------------------------------------------ */
 /* CONTENT ---------------------------------------------------------------------------- */
 /* ------------------------------------------------------------------------------------ */
@@ -182,12 +245,14 @@ section h2 {
 /* TABLE STYLES ----------------------------------------------------------------------- */
 /* ------------------------------------------------------------------------------------ */
 table {
-    border-top-left-radius: 1em;
-    border-top-right-radius: 1em;
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
 
     /* https://unused-css.com/blog/css-rounded-table-corners/ */
     border-spacing: 0;
     border-collapse: separate;
+
+    margin-bottom: 1.5rem;
 }
 
 table tr th {
@@ -226,6 +291,12 @@ form {
     display: inline-block;
 }
 
+.two-column-table {
+    display: flex;
+    justify-content: flex-start;
+    gap: 5%;
+}
+
 /* ------------------------------------------------------------------------------------ */
 /* FOOTER ----------------------------------------------------------------------------- */
 /* ------------------------------------------------------------------------------------ */
@@ -257,8 +328,8 @@ form {
     right: 3%;
     z-index: -1;
 
-    transform: rotate(9.5deg);
+    transform: rotate(10deg);
 
-    width: 10%;
+    width: 15%;
     height: auto;
 }

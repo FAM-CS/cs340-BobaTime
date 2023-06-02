@@ -88,7 +88,11 @@ WHERE
     first_name = :f_name AND last_name = :l_name;
     -- first_name = "Guest1" AND last_name = "Guest1";
 
-
+-----*
+----*--*
+---*---*
+----*-*
+-----*
 -- ? Query to see count of ordered drink flavors (top flavors)
 SELECT
       base_flavor AS "Flavor"
@@ -99,6 +103,52 @@ GROUP BY
     base_flavor
 ORDER BY
     `Times Ordered` DESC;
+
+
+-- ? Query to see count of ordered drink toppings (top addons)
+SELECT
+      topping AS "Topping"
+    , IF(SUM(AD.quantity) IS NULL, 0, SUM(AD.quantity)) AS "Times Added"
+FROM
+    AddOns A LEFT JOIN AddOnDetails AD ON A.add_on_id = AD.add_on_id
+GROUP BY
+    topping
+ORDER BY
+    `Times Added` DESC;
+
+
+-- ? Query to see top # drink pairings (all toppings included)
+-- Have to make this a subquery as GROUP BY will act on the nongrouped data
+-- For this query to work we first need to get a table of each drink orders with
+-- all their toppings
+-- Then we can group again on by the matching drink flavor and toppings and then
+-- use COUNT(*) to count all rows
+SELECT
+    drink_flavor AS "Drink Flavor",
+    IF(`Topping(s)` IS NULL, "None", `Topping(s)`) AS `Topping(s)`,
+    COUNT(*) AS "Times Ordered"
+FROM
+    (
+        SELECT
+            D.base_flavor AS drink_flavor,
+            GROUP_CONCAT(A.topping) AS "Topping(s)"
+        FROM
+            DrinkOrders DO
+            INNER JOIN Drinks D ON DO.drink_id = D.drink_id
+            LEFT JOIN AddOnDetails AD ON DO.drink_order_id = AD.drink_order_id
+            LEFT JOIN AddOns A ON AD.add_on_id = A.add_on_id
+        GROUP BY
+            DO.drink_order_id,
+            D.base_flavor
+    ) AS subquery
+GROUP BY
+    drink_flavor,
+    `Topping(s)`
+ORDER BY
+    `Times Ordered` DESC
+LIMIT 10;
+
+
 /* ------------------------------------------- */
 
 

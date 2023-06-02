@@ -7,6 +7,7 @@
 
 const express = require('express')
 const hbrs_engine = require('express-handlebars')
+const handlebars = require("handlebars");
 
 const app = express()
 var PORT_NUM = process.env.PORT || 54321
@@ -20,6 +21,15 @@ app.use(express.urlencoded({extended: true}))
 const mysql = require('mysql')
 const fs = require('fs')
 const db = require('./database/db-connector')
+
+/*
+  HANDLERBAR Helpers
+*/
+
+//? Source: https://stackoverflow.com/questions/34252817/handlebarsjs-check-if-a-string-is-equal-to-a-value
+handlebars.registerHelper('if_equals', function(arg1, arg2, options) {
+    return (arg1 == arg2) ? options.fn(this) : options.inverse(this)
+})
 
 /*
     ROUTES
@@ -240,7 +250,7 @@ app.get('/customers', (req, res) => {
 })
 
 
-// ~ Place Orders
+// ~ See stats
 app.get('/stats', (req, res) => {
     const options = [
         {
@@ -265,7 +275,166 @@ app.get('/stats', (req, res) => {
         }
     ]
 
-    res.status(200).render('stats', {options})
+    const query1 = `
+        SELECT
+            base_flavor AS \`Flavor\`
+            , COUNT(DO.drink_order_id) AS \`Times Ordered\`
+        FROM
+            Drinks D LEFT JOIN DrinkOrders DO on D.drink_id = DO.drink_id
+        GROUP BY
+            base_flavor
+        ORDER BY
+            \`Times Ordered\` DESC`
+
+    const query2 = `
+        SELECT
+            topping AS "Topping"
+        , IF(SUM(AD.quantity) IS NULL, 0, SUM(AD.quantity)) AS "Times Added"
+        FROM
+            AddOns A LEFT JOIN AddOnDetails AD ON A.add_on_id = AD.add_on_id
+        GROUP BY
+            topping
+        ORDER BY
+            \`Times Added\` DESC;`
+
+    const query3 = `
+        SELECT
+            drink_flavor AS "Drink Flavor",
+            IF(\`Topping(s)\` IS NULL, "None", \`Topping(s)\`) AS "Topping(s)",
+            COUNT(*) AS "Times Ordered"
+        FROM
+            (
+                SELECT
+                    D.base_flavor AS drink_flavor,
+                    GROUP_CONCAT(A.topping) AS "Topping(s)"
+                FROM
+                    DrinkOrders DO
+                    INNER JOIN Drinks D ON DO.drink_id = D.drink_id
+                    LEFT JOIN AddOnDetails AD ON DO.drink_order_id = AD.drink_order_id
+                    LEFT JOIN AddOns A ON AD.add_on_id = A.add_on_id
+                GROUP BY
+                    DO.drink_order_id,
+                    D.base_flavor
+            ) AS subquery
+        GROUP BY
+            drink_flavor,
+            \`Topping(s)\`
+        ORDER BY
+            \`Times Ordered\` DESC
+        LIMIT 10;`
+
+    db.pool.query(query1, (error1, rows1, fields) => {
+        db.pool.query(query2, (error2, rows2, fields) => {
+            db.pool.query(query3, (error3, rows3, fields) => {
+                const data = Object.assign({options}, {topflavors: rows1}, {topaddons: rows2}, {topdrinks: rows3})
+                console.log("rows3:", rows3)
+
+                if (error1 || error2 || error3) {
+                    console.log("error1:", error1)
+                    console.log("error2:", error2)
+                    console.log("error3:", error3)
+                    next()  // something wrong occured, go next middleware
+                    return
+                }
+
+                res.status(200).render('stats_top', data)
+            })
+        })
+    })
+})
+
+
+// ~ See stats
+app.get('/stats_top', (req, res) => {
+    const options = [
+        {
+          option: "menu"
+        , option_name: "Menu"
+        , active: false
+        },
+        {
+             option: "orders"
+            , option_name: "Orders"
+            , active: false
+        },
+        {
+            option: "customers"
+            , option_name: "Customers"
+            , active: false
+        },
+        {
+            option: "stats"
+            , option_name: "Stats"
+            , active: true
+        }
+    ]
+
+    const query1 = `
+        SELECT
+            base_flavor AS \`Flavor\`
+            , COUNT(DO.drink_order_id) AS \`Times Ordered\`
+        FROM
+            Drinks D LEFT JOIN DrinkOrders DO on D.drink_id = DO.drink_id
+        GROUP BY
+            base_flavor
+        ORDER BY
+            \`Times Ordered\` DESC`
+
+    const query2 = `
+        SELECT
+            topping AS "Topping"
+        , IF(SUM(AD.quantity) IS NULL, 0, SUM(AD.quantity)) AS "Times Added"
+        FROM
+            AddOns A LEFT JOIN AddOnDetails AD ON A.add_on_id = AD.add_on_id
+        GROUP BY
+            topping
+        ORDER BY
+            \`Times Added\` DESC;`
+
+    const query3 = `
+        SELECT
+            drink_flavor AS "Drink Flavor",
+            IF(\`Topping(s)\` IS NULL, "None", \`Topping(s)\`) AS "Topping(s)",
+            COUNT(*) AS "Times Ordered"
+        FROM
+            (
+                SELECT
+                    D.base_flavor AS drink_flavor,
+                    GROUP_CONCAT(A.topping) AS "Topping(s)"
+                FROM
+                    DrinkOrders DO
+                    INNER JOIN Drinks D ON DO.drink_id = D.drink_id
+                    LEFT JOIN AddOnDetails AD ON DO.drink_order_id = AD.drink_order_id
+                    LEFT JOIN AddOns A ON AD.add_on_id = A.add_on_id
+                GROUP BY
+                    DO.drink_order_id,
+                    D.base_flavor
+            ) AS subquery
+        GROUP BY
+            drink_flavor,
+            \`Topping(s)\`
+        ORDER BY
+            \`Times Ordered\` DESC
+        LIMIT 10;`
+
+    db.pool.query(query1, (error1, rows1, fields) => {
+        db.pool.query(query2, (error2, rows2, fields) => {
+            db.pool.query(query3, (error3, rows3, fields) => {
+                const data = Object.assign({options}, {topflavors: rows1}, {topaddons: rows2}, {topdrinks: rows3})
+                console.log("rows3:", rows3)
+
+                if (error1 || error2 || error3) {
+                    console.log("error1:", error1)
+                    console.log("error2:", error2)
+                    console.log("error3:", error3)
+                    next()  // something wrong occured, go next middleware
+                    return
+                }
+
+                res.status(200).render('stats_top', data)
+            })
+        })
+    })
 })
 
 
@@ -391,12 +560,12 @@ app.put('/put-order-ajax', function(req,res,next){
 app.get('*', (req, res) => {
     const options = [
         {
-          option: "menu"
-        , option_name: "Menu"
-        , active: false
+            option: "menu"
+            , option_name: "Menu"
+            , active: false
         },
         {
-             option: "orders"
+            option: "orders"
             , option_name: "Orders"
             , active: false
         },
@@ -406,8 +575,8 @@ app.get('*', (req, res) => {
             , active: false
         },
         {
-            option: "user"
-            , option_name: "Place Orders"
+            option: "stats"
+            , option_name: "Stats"
             , active: false
         }
     ]
