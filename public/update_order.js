@@ -12,14 +12,10 @@ update_order_form.addEventListener("submit", function (e) {
     let order_id_value = input_order_id.value
     let num_drinks_value = input_num_drinks.value
 
-    // currently the database table for bsg_people does not allow updating values to NULL
-    // so we must abort if being bassed NULL for homeworld
-
     if (isNaN(num_drinks_value))
     {
         return
     }
-
 
     // Put our data we want to send in a javascript object
     let data = {
@@ -65,10 +61,10 @@ function update_row(data, order_id){
             let updateRowIndex = table.getElementsByTagName("tr")[i]
 
             // Get td of num_drinks value
-            let td = updateRowIndex.getElementsByTagName("td")[4]
+            let num_drinks_td = updateRowIndex.getElementsByTagName("td")[4]
 
             // Reassign num_drinks to our value we updated to
-            td.innerHTML = parsedData[i-1].num_drinks
+            num_drinks_td.innerHTML = parsedData[i-1].num_drinks
        }
     }
 }

@@ -12,24 +12,77 @@
 
 /* ---------- SELECT(s) ---------------------- */
 -- ? Queries for Table selects (TO BE UPDATED)
-SELECT * FROM Drinks;
+SELECT
+    drink_id AS "Drink ID"
+    , base_flavor AS "Base Flavor"
+    , small_price AS "Price (Small)"
+    , reg_price AS "Price (Regular)"
+    , IF(can_be_hot, "Yes", "No") AS "Can be Hot"
+    , IF(is_flavored_sweetener, "Yes", "No") AS "Flavored Sweetener"
+FROM Drinks;
 
-SELECT * FROM AddOns;
-
-SELECT order_id
-, customer_id
-, DATE_FORMAT(order_date, '%Y-%m-%d %r') as order_date
-, num_drinks
-, total_cost FROM Orders;
+SELECT 
+      add_on_id AS "Add On ID"
+    , topping AS "Topping"
+    , price AS "Price"
+FROM AddOns;
 
 SELECT
-    customer_id
-, CONCAT(first_name, " ", last_name) AS `Full Name`
+    order_id AS "Order ID"
+    , customer_id AS "Customer ID"
+    , DATE_FORMAT(order_date, '%Y-%m-%d %r') as "Order Date"
+    , num_drinks AS "Number of Drinks"
+    , total_cost AS "Total Cost"
+FROM Orders;
+
+SELECT
+    order_id AS "Order ID"
+    , customer_id AS "Customer ID"
+    , DATE_FORMAT(order_date, '%Y-%m-%d %r') as "Order Date"
+    , num_drinks AS "Number of Drinks"
+    , total_cost AS "Total Cost"
+FROM Orders;
+
+-- ? Select for table drop down
+SELECT
+    customer_id AS "Customer ID"
+    , CONCAT(first_name, " ", last_name) AS `Full Name`
 FROM Customers;
 
-SELECT * FROM Customers;
 
-SELECT * FROM DrinkOrders;
+-- ? Select for Table View
+SELECT 
+    customer_id AS "Customer ID"
+    , email AS "Email"
+    , phone_num AS "Phone Number"
+    , first_name AS "First Name"
+    , last_name AS "Last Name"
+    , num_orders AS "Number of Orders"
+    , num_drinks AS "Number of Drinks"
+    , total_spent AS "Total Spent"
+    , drinks_to_free AS "Drinks to Free"
+    , num_free_drinks AS "Number of Free Drinks"
+FROM Customers;
+
+
+SELECT 
+      drink_order_id AS "Drink Order ID"
+    , order_id AS "Order ID"
+    , drink_id AS "Drink ID"
+    , seq_number AS "Drink Number"
+    , sweetness_lvl AS "Sweetness"
+    ,  IF(is_cold, "Yes", "No") AS "Is Cold"
+    , drink_size AS "Drink Size"
+FROM DrinkOrders;
+
+
+
+SELECT
+    add_on_detail_id AS "Add On Detail ID"
+    , drink_order_id AS "Drink Order ID"
+    , add_on_id AS "Add On ID"
+    , quantity AS "Quantity"
+FROM AddOnDetails;
 
 SELECT * FROM AddOnDetails;
 
@@ -38,8 +91,8 @@ SELECT * FROM AddOnDetails;
 -- ? Query to see Drink Menu
 SELECT
       base_flavor AS "Flavor"
-    , reg_price AS "Price (R)"
-    , small_price AS "Price (S)"
+    , reg_price AS "Price (Regular)"
+    , small_price AS "Price (Small)"
     , can_be_hot AS "Can be Hot"
     , is_flavored_sweetener "Flavored Sweetener"
 FROM Drinks;
@@ -264,6 +317,32 @@ VALUES
 
 
 /* ---------- UPDATE(s) ---------------------- */
+-- ? 
+UPDATE Drinks
+SET
+      base_flavor = :base_flavor
+    , small_price = :small_price
+    , reg_price = :reg_price
+    , can_be_hot = :can_be_hot
+    , is_flavored_sweetener = :is_flavored_sweetener
+WHERE drink_id = :drink_id;
+
+-- ? 
+UPDATE AddOns
+SET
+      topping = :topping
+    , price = :price
+WHERE add_on_id = :add_on_id;
+
+
+-- ? 
+UPDATE Customers
+SET
+      phone_num = :phone_num
+    , first_name = :first_name
+    , last_name = :last_name
+WHERE customer_id = :customer_id;
+
 -- ? Update a drink order to have a different flavor, sweetness, and ice/hot level
 UPDATE DrinkOrders
 SET

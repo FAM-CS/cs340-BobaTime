@@ -19,13 +19,13 @@
 
             {{#each orders}}
             <tr>
-                <td><button onclick="delete_order({{this.order_id}})">Delete</button></td>
+                <td><button onclick="delete_order({{[Order ID]}})">Delete</button></td>
                 {{!-- <td><a href=#>Delete</a></td> --}}
-                <td>{{this.order_id}}</td>
-                <td>{{this.customer_id}}</td>
-                <td>{{this.order_date}}</td>
-                <td>{{this.num_drinks}}</td>
-                <td>{{this.total_cost}}</td>
+                <td>{{[Order ID]}}</td>
+                <td>{{[Customer ID]}}</td>
+                <td>{{[Order Date]}}</td>
+                <td>{{[Number of Drinks]}}</td>
+                <td>{{[Total Cost]}}</td>
             </tr>
             {{/each}}
         </tbody>
@@ -35,22 +35,26 @@
     <p></p>
 
     <form id="add-order-form-ajax">
-        <label for="input-customer_id">Customer ID</label>
+        <label for="input-customer_id" class="required-field">Customer ID</label>
         {{!-- <input type="text" id="input-customer_id" name="input-customer_id" minlength="1" maxlength="20" required> --}}
         <select name="input-customer_id" id="input-customer_id">
-            <option value="">Select a customer</option>
+            <option value=""></option>
             {{#each customers}}
             <option value="{{this.customer_id}}">{{[Full Name]}}</option>
             {{/each}}
         </select>
 
-        <label for="input-order_date">Date/Time</label>
-        <input type="text" id="input-order_date" name="input-order_date" minlength="1" maxlength="20" required>
+        <br/>
 
-        <label for="input-num_drinks">Number of Drinks</label>
+        <label for="input-order_date" class="required-field">Date/Time (YYYY-MM-DD HH:MM:SS):</label>
+        <input type="text" id="input-order_date" name="input-order_date" placeholder="YYYY-MM-DD HH:MM:SS" minlength="1" maxlength="20" required>
+
+        <br/>
+
+        <label for="input-num_drinks" class="required-field">Number of Drinks</label>
         <input type="number" id="input-num_drinks" name="input-num_drinks" minlength="1" maxlength="20" required>
 
-        <p></p>
+        <br/>
 
         <button type="submit">Add Order</button>
         <button type="reset">Cancel</button>
@@ -60,18 +64,20 @@
     <p></p>
 
     <form id="update-order-form-ajax">
-        <label for="input-order_id">Order #</label>
+        <label for="input-order_id" class="required-field">Order ID</label>
         <select name="input-order_id" id="input-order_id">
-            <option value="">Select an Order</option>
+            <option value=""></option>
             {{#each orders}}
-            <option value="{{this.order_id}}">{{this.order_id}}</option>
+            <option value="{{[Order ID]}}">{{[Order ID]}}</option>
             {{/each}}
         </select>
 
-        <label for="update-input-num_drinks">Number of Drinks</label>
+        <br/>
+
+        <label for="update-input-num_drinks" class="required-field">Number of Drinks</label>
         <input type="number" id="update-input-num_drinks" name="update-input-num_drinks" minlength="1" maxlength="20" required>
 
-        <p></p>
+        <br/>
 
         <button type="submit">Update Order</button>
         <button type="reset">Cancel</button>
@@ -97,13 +103,13 @@
             {{!-- Rows --}}
             {{#each drink_orders}}
             <tr>
-                <td>{{this.drink_order_id}}</td>
-                <td>{{this.order_id}}</td>
-                <td>{{this.drink_id}}</td>
-                <td>{{this.seq_number}}</td>
-                <td>{{this.sweetness_lvl}}</td>
-                <td>{{this.is_cold}}</td>
-                <td>{{this.drink_size}}</td>
+                <td>{{[Drink Order ID]}}</td>
+                <td>{{[Order ID]}}</td>
+                <td>{{[Drink ID]}}</td>
+                <td>{{[Drink Number]}}</td>
+                <td>{{[Sweetness]}}</td>
+                <td>{{[Is Cold]}}</td>
+                <td>{{[Drink Size]}}</td>
             </tr>
             {{/each}}
         </tbody>
@@ -127,10 +133,10 @@
             {{!-- Rows --}}
             {{#each addon_details}}
             <tr>
-                <td>{{this.add_on_detail_id}}</td>
-                <td>{{this.drink_order_id}}</td>
-                <td>{{this.add_on_id}}</td>
-                <td>{{this.quantity}}</td>
+                <td>{{[Add On Detail ID]}}</td>
+                <td>{{[Drink Order ID]}}</td>
+                <td>{{[Add On ID]}}</td>
+                <td>{{[Quantity]}}</td>
             </tr>
             {{/each}}
         </tbody>
