@@ -20,17 +20,17 @@
             {{!-- Rows --}}
             {{#each customers}}
             <tr>
-                <td><button onclick="delete_customer({{this.customer_id}})">Delete</button></td>
-                <td>{{this.customer_id}}</td>
-                <td>{{this.email}}</td>
-                <td>{{this.phone_num}}</td>
-                <td>{{this.first_name}}</td>
-                <td>{{this.last_name}}</td>
-                <td>{{this.num_orders}}</td>
-                <td>{{this.num_drinks}}</td>
-                <td>{{this.total_spent}}</td>
-                <td>{{this.drinks_to_free}}</td>
-                <td>{{this.num_free_drinks}}</td>
+                <td><button onclick="delete_customer({{[Customer ID]}})">Delete</button></td>
+                <td>{{[Customer ID]}}</td>
+                <td>{{[Email]}}</td>
+                <td>{{[Phone Number]}}</td>
+                <td>{{[First Name]}}</td>
+                <td>{{[Last Name]}}</td>
+                <td>{{[Number of Orders]}}</td>
+                <td>{{[Number of Drinks]}}</td>
+                <td>{{[Total Spent]}}</td>
+                <td>{{[Drinks to Free]}}</td>
+                <td>{{[Number of Free Drinks]}}</td>
             </tr>
             {{/each}}
         </tbody>
@@ -40,19 +40,25 @@
     <p></p>
 
     <form id="add-customer-form-ajax">
-        <label for="input-email"> Email</label>
+        <label for="input-email" class="required-field"> Email</label>
         <input type="text" id="input-email" name="input-email" minlength="1" maxlength="20" required>
         
+        <br/>
+
         <label for="input-phone_num"> Phone Number</label>
-        <input type="text" id="input-phone_num" name="input-phone_num" minlength="1" maxlength="20">
+        <input type="number" id="input-phone_num" name="input-phone_num" minlength="1" maxlength="20">
         
-        <label for="input-first_name"> First Name</label>
+        <br/>
+
+        <label for="input-first_name" class="required-field"> First Name</label>
         <input type="text" id="input-first_name" name="input-first_name" minlength="1" maxlength="20" required>
         
-        <label for="input-last_name"> Last Name</label>
+        <br/>
+
+        <label for="input-last_name" class="required-field"> Last Name</label>
         <input type="text" id="input-last_name" name="input-last_name" minlength="1" maxlength="20" required>
     
-        <p></p>
+        <br/>
 
         <button type="submit">Register</button>
         <button type="reset">Cancel</button>
@@ -62,24 +68,30 @@
     <p></p>
 
     <form id="update-customer-form-ajax">
-        <label for="input-customer_id">Customer #</label>
+        <label for="input-customer_id" class="required-field">Customer ID</label>
         <select name="input-customer_id" id="input-customer_id">
             <option value=""></option>
             {{#each customers}}
-            <option value="{{this.customer_id}}">{{this.customer_id}}</option>
+            <option value="{{[Customer ID]}}">{{[Customer ID]}}</option>
             {{/each}}
         </select>
+        
+        <br/>
         
         <label for="update-phone_num"> Phone Number</label>
         <input type="number" id="update-phone_num" name="update-phone_num" minlength="1" maxlength="20" required>
         
+        <br/>
+
         <label for="update-first_name"> First Name</label>
         <input type="text" id="update-first_name" name="update-first_name" minlength="1" maxlength="20" required>
         
+        <br/>
+
         <label for="update-last_name"> Last Name</label>
         <input type="text" id="update-last_name" name="update-last_name" minlength="1" maxlength="20" required>
         
-        <p></p>
+        <br/>
 
         <button type="submit">Update Customer</button>
         <button type="reset">Cancel</button>

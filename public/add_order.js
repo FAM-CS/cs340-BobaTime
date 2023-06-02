@@ -86,12 +86,13 @@ addRowToTable = (data) => {
     tCostCell.innerText = newRow.total_cost
 
     // Add the cells to the row
-    row.appendChild(deleteCell)
-    row.appendChild(idCell)
-    row.appendChild(cIDCell)
-    row.appendChild(dateCell)
-    row.appendChild(numCell)
-    row.appendChild(tCostCell)
+    row.append(
+          deleteCell
+        , idCell
+        , cIDCell
+        , dateCell
+        , numCell
+        , tCostCell)
 
     // Add the row to the table
     currentTable.appendChild(row)

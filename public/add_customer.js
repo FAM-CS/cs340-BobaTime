@@ -98,17 +98,18 @@ addRowToTable = (data) => {
     numFreeDrinksCell.innerText = newRow.num_free_drinks
 
     // Add the cells to the row
-    row.appendChild(deleteCell)
-    row.appendChild(idCell)
-    row.appendChild(emailCell)
-    row.appendChild(phoneNumCell)
-    row.appendChild(firstNameCell)
-    row.appendChild(lastNameCell)
-    row.appendChild(numOrdersCell)
-    row.appendChild(numDrinksCell)
-    row.appendChild(totalSpentCell)
-    row.appendChild(drinksToFreeCell)
-    row.appendChild(numFreeDrinksCell)
+    row.append(
+          deleteCell
+        , idCell
+        , emailCell
+        , phoneNumCell
+        , firstNameCell
+        , lastNameCell
+        , numOrdersCell
+        , numDrinksCell
+        , totalSpentCell
+        , drinksToFreeCell
+        , numFreeDrinksCell)
 
     // Add the row to the table
     currentTable.appendChild(row)

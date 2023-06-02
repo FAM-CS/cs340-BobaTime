@@ -43,7 +43,7 @@ addDrinkForm.addEventListener("submit", function (e) {
         if (xhttp.readyState == 4 && xhttp.status == 200) {
 
             // add the new data to the table
-            addRowToTable(xhttp.response)
+            addDrinkRowToTable(xhttp.response)
 
             // clear the input fields for another transaction
             inputBaseFlavor = ''
@@ -63,17 +63,17 @@ addDrinkForm.addEventListener("submit", function (e) {
 
 
 // Creates a single row from an Object representing a single record from
-addRowToTable = (data) => {
-
+addDrinkRowToTable = (data) => {
     // Get a reference to the current table on the page and clear it out.
     let currentTable = document.getElementById("drinks-table")
-
+    
     // Get the location where we should insert the new row (end of table)
     let newRowIndex = currentTable.rows.length
-
+    
     // Get a reference to the new row from the database query (last object)
     let parsedData = JSON.parse(data)
     let newRow = parsedData[parsedData.length - 1]
+    console.log("drink added:", parsedData)
 
     // Create a row and cells
     let row = document.createElement("TR")
@@ -95,13 +95,14 @@ addRowToTable = (data) => {
     isFlavoredSweetenerCell.innerText = newRow.is_flavored_sweetener
 
     // Add the cells to the row
-    row.appendChild(deleteCell)
-    row.appendChild(idCell)
-    row.appendChild(baseFlavorCell)
-    row.appendChild(smallPriceCell)
-    row.appendChild(regPriceCell)
-    row.appendChild(canBeHotCell)
-    row.appendChild(isFlavoredSweetenerCell)
+    row.append(
+          deleteCell
+        , idCell
+        , baseFlavorCell
+        , smallPriceCell
+        , regPriceCell
+        , canBeHotCell
+        , isFlavoredSweetenerCell)
 
     // Add the row to the table
     currentTable.appendChild(row)

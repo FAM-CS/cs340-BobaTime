@@ -20,13 +20,13 @@
             {{!-- Rows --}}
             {{#each drinks}}
             <tr>
-                <td><button onclick="delete_drink({{this.drink_id}})">Delete</button></td>
-                <td>{{this.drink_id}}</td>
-                <td>{{this.base_flavor}}</td>
-                <td>{{this.small_price}}</td>
-                <td>{{this.reg_price}}</td>
-                <td>{{this.can_be_hot}}</td>
-                <td>{{this.is_flavored_sweetener}}</td>
+                <td><button onclick="delete_drink({{[Drink ID]}})">Delete</button></td>
+                <td>{{[Drink ID]}}</td>
+                <td>{{[Base Flavor]}}</td>
+                <td>{{[Price (Small)]}}</td>
+                <td>{{[Price (Regular)]}}</td>
+                <td>{{[Can be Hot]}}</td>
+                <td>{{[Flavored Sweetener]}}</td>
             </tr>
             {{/each}}
         </tbody>
@@ -36,30 +36,38 @@
     <p></p>
 
     <form id="add-drink-form-ajax">
-        <label for="input-base_flavor"> Base Flavor</label>
+        <label for="input-base_flavor" class="required-field"> Base Flavor</label>
         <input type="text" id="input-base_flavor" name="input-base_flavor" minlength="1" maxlength="20" required>
         
-        <label for="input-small_price"> Small Price</label>
+        <br/>
+
+        <label for="input-small_price" class="required-field"> Small Price</label>
         <input type="number" id="input-small_price" name="input-small_price" minlength="1" maxlength="20" required>
         
-        <label for="input-reg_price"> Regular Price</label>
+        <br/>
+
+        <label for="input-reg_price" class="required-field"> Regular Price</label>
         <input type="number" id="input-reg_price" name="input-reg_price" minlength="1" maxlength="20" required>
 
-        <label for="input-can_be_hot"> Can Be Hot</label>
+        <br/>
+
+        <label for="input-can_be_hot" class="required-field"> Can Be Hot</label>
         {{!-- <input type="text" id="input-can_be_hot" name="input-can_be_hot" minlength="1" maxlength="20" required> --}}
         <select name="input-can_be_hot" id="input-can_be_hot">
-            <option value=1>TRUE</option>
-            <option value=0>FALSE</option>
+            <option value=0>No</option>
+            <option value=1>Yes</option>
         </select>
-            
-        <label for="input-is_flavored_sweetener"> Is Flavored Sweetener</label>
+        
+        <br/>
+
+        <label for="input-is_flavored_sweetener" class="required-field"> Is Flavored Sweetener</label>
         {{!-- <input type="text" id="is_flavored_sweetener" name="new_sweetener" minlength="1" maxlength="20" required> --}}
         <select name="input-is_flavored_sweetener" id="input-is_flavored_sweetener">
-            <option value=1>TRUE</option>
-            <option value=0>FALSE</option>
+            <option value=0>No</option>
+            <option value=1>Yes</option>
         </select>
 
-        <p></p>
+        <br/>
 
         <button type="submit">Add Drink</button>
         <button type="reset">Cancel</button>
@@ -69,37 +77,48 @@
     <p></p>
 
     <form id="update-drink-form-ajax">
-        <label for="input-drink_id">Drink #</label>
+        <label for="input-drink_id" class="required-field">Drink ID</label>
         <select name="input-drink_id" id="input-drink_id">
             <option value=""></option>
             {{#each drinks}}
-            <option value="{{this.drink_id}}">{{this.drink_id}}</option>
+            <option value="{{[Drink ID]}}">{{[Drink ID]}}</option>
             {{/each}}
         </select>
         
-        <label for="update-base_flavor"> Base Flavor</label>
+        <br/>
+        
+        <label for="update-base_flavor" class="required-field"> Base Flavor</label>
         <input type="text" id="update-base_flavor" name="update-base_flavor" minlength="1" maxlength="20" required>
         
-        <label for="update-small_price"> Small Price</label>
+        <br/>
+        
+        <label for="update-small_price" class="required-field"> Small Price</label>
         <input type="number" id="update-small_price" name="update-small_price" minlength="1" maxlength="20" required>
         
-        <label for="update-reg_price"> Regular Price</label>
+        <br/>
+
+        <label for="update-reg_price" class="required-field"> Regular Price</label>
         <input type="number" id="update-reg_price" name="update-reg_price" minlength="1" maxlength="20" required>
+
+        <br/>
 
         <label for="update-can_be_hot"> Can Be Hot</label>
         {{!-- <input type="text" id="input-can_be_hot" name="input-can_be_hot" minlength="1" maxlength="20" required> --}}
         <select name="update-can_be_hot" id="update-can_be_hot">
-            <option value=1>TRUE</option>
-            <option value=0>FALSE</option>
+            <option value=0>No</option>
+            <option value=1>Yes</option>
         </select>
-            
+        
+        <br/>
+
         <label for="update-is_flavored_sweetener"> Is Flavored Sweetener</label>
         {{!-- <input type="text" id="is_flavored_sweetener" name="new_sweetener" minlength="1" maxlength="20" required> --}}
         <select name="update-is_flavored_sweetener" id="update-is_flavored_sweetener">
-            <option value=1>TRUE</option>
-            <option value=0>FALSE</option>
+            <option value=0>No</option>
+            <option value=1>Yes</option>
         </select>
-        <p></p>
+        
+        <br/>
 
         <button type="submit">Update Drink</button>
         <button type="reset">Cancel</button>
@@ -125,10 +144,10 @@
             {{!-- Rows --}}
             {{#each addons}}
             <tr>
-                <td><button onclick="delete_addon({{this.add_on_id}})">Delete</button></td>
-                <td>{{this.add_on_id}}</td>
-                <td>{{this.topping}}</td>
-                <td>{{this.price}}</td>
+                <td><button onclick="delete_addon({{[Add On ID]}})">Delete</button></td>
+                <td>{{[Add On ID]}}</td>
+                <td>{{[Topping]}}</td>
+                <td>{{[Price]}}</td>
             </tr>
             {{/each}}
         </tbody>
@@ -138,12 +157,15 @@
     <p></p>
 
     <form id="add-addon-form-ajax">
-        <label for="input-topping"> Topping</label>
+        <label for="input-topping" class="required-field"> Topping</label>
         <input type="text" id="input-topping" name="input-topping" minlength="1" maxlength="20" required>
-        <label for="input-price"> Price</label>
+
+        <br/>
+
+        <label for="input-price" class="required-field"> Price</label>
         <input type="number" id="input-price" name="input-price" minlength="1" maxlength="20" required>
 
-        <p></p>
+        <br/>
 
         <button type="submit">Add Topping</button>
         <button type="reset">Cancel</button>
@@ -153,22 +175,26 @@
     <p></p>
 
     <form id="update-addon-form-ajax">
-        <label for="input-topping"> Topping #</label>
+        <label for="input-topping" class="required-field"> Topping ID</label>
         <select name="input-add_on_id" id="input-add_on_id">
             <option value=""></option>
             {{#each addons}}
-            <option value="{{this.add_on_id}}">{{this.add_on_id}}</option>
+            <option value="{{[Add On ID]}}">{{[Add On ID]}}</option>
             {{/each}}
         </select>
         {{!-- <input type="text" id="add_on_id" name="target_topping" minlength="1" maxlength="20" required> --}}
         
-        <label for="update-topping"> Topping</label>
+        <br/>
+
+        <label for="update-topping" class="required-field"> Topping</label>
         <input type="text" id="update-input-topping" name="update-topping" minlength="1" maxlength="20" required>
         
-        <label for="update-price"> Price</label>
+        <br/>
+        
+        <label for="update-price" class="required-field"> Price</label>
         <input type="number" id="update-input-price" name="update-price" minlength="1" maxlength="20" required>
 
-        <p></p>
+        <br/>
 
         <button type="submit">Update AddOn</button>
         <button type="reset">Cancel</button>

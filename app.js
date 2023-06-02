@@ -107,8 +107,25 @@ app.get('/menu', (req, res) => {
         }
     ]
 
-    const query1 = "SELECT * FROM Drinks";
-    const query2 = "SELECT * FROM AddOns";
+    const query1 = `
+        SELECT
+            drink_id AS "Drink ID"
+            , base_flavor AS "Base Flavor"
+            , small_price AS "Price (Small)"
+            , reg_price AS "Price (Regular)"
+            , IF(can_be_hot, "Yes", "No") AS "Can be Hot"
+            , IF(is_flavored_sweetener, "Yes", "No") AS "Flavored Sweetener"
+        FROM Drinks
+        `
+
+    const query2 = `
+        SELECT 
+            add_on_id AS "Add On ID"
+            , topping AS "Topping"
+            , price AS "Price"
+        FROM AddOns
+        `
+
     db.pool.query(query1, (error1, rows1, fields) => {
         db.pool.query(query2, (error2, rows2, fields) => {
             //? Combine header and row data, render() only accepts one object via Object.assign()
@@ -154,20 +171,43 @@ app.get('/orders', (req, res) => {
         }
     ]
 
-    const query1 =
-        `SELECT order_id
-        , customer_id
-        , DATE_FORMAT(order_date, '%Y-%m-%d %r') as order_date
-        , num_drinks
-        , total_cost FROM Orders`
+    const query1 = `
+        SELECT
+            order_id AS "Order ID"
+            , customer_id AS "Customer ID"
+            , DATE_FORMAT(order_date, '%Y-%m-%d %r') as "Order Date"
+            , num_drinks AS "Number of Drinks"
+            , total_cost AS "Total Cost"
+        FROM Orders
+        `
 
-    const query2 = "SELECT * FROM DrinkOrders"
-    const query3 = "SELECT * FROM AddOnDetails"
-    const query4 =
-        `SELECT
+    const query2 = `
+        SELECT 
+            drink_order_id AS "Drink Order ID"
+            , order_id AS "Order ID"
+            , drink_id AS "Drink ID"
+            , seq_number AS "Drink Number"
+            , sweetness_lvl AS "Sweetness"
+            , is_cold AS "Is Cold"
+            , drink_size AS "Drink Size"
+        FROM DrinkOrders
+        `
+
+    const query3 = `
+        SELECT
+            add_on_detail_id AS "Add On Detail ID"
+            , drink_order_id AS "Drink Order ID"
+            , add_on_id AS "Add On ID"
+            , quantity AS "Quantity"
+        FROM AddOnDetails
+        `
+    
+    const query4 = `
+        SELECT
           customer_id
         , CONCAT(first_name, " ", last_name) AS \`Full Name\`
-        FROM Customers`
+        FROM Customers
+        `
 
     db.pool.query(query1, (error1, rows1, fields) => {
         db.pool.query(query2, (error2, rows2, fields) => {
@@ -225,7 +265,21 @@ app.get('/customers', (req, res) => {
     ]
 
 
-    const query = "SELECT * FROM Customers";
+    const query = `
+        SELECT 
+            customer_id AS "Customer ID"
+            , email AS "Email"
+            , phone_num AS "Phone Number"
+            , first_name AS "First Name"
+            , last_name AS "Last Name"
+            , num_orders AS "Number of Orders"
+            , num_drinks AS "Number of Drinks"
+            , total_spent AS "Total Spent"
+            , drinks_to_free AS "Drinks to Free"
+            , num_free_drinks AS "Number of Free Drinks"
+        FROM Customers
+        `
+
     db.pool.query(query, (error, rows, fields) => {
         const data = Object.assign({options}, {customers: rows})
 
@@ -293,13 +347,15 @@ app.post('/add-order-ajax', function (req, res) {
             res.sendStatus(400)
         }
         else {
-            query2 =
-            `SELECT
-            order_id
-            , customer_id
-            , DATE_FORMAT(order_date, '%Y-%m-%d %r') as order_date
-            , num_drinks
-            , total_cost FROM Orders`
+            query2 = `
+                SELECT
+                    order_id
+                    , customer_id
+                    , DATE_FORMAT(order_date, '%Y-%m-%d %r') as order_date
+                    , num_drinks 
+                    , total_cost
+                FROM Orders
+                `
 
             db.pool.query(query2, function (error, rows, fields) {
                 if (error) {
@@ -336,14 +392,11 @@ app.post('/add-drink-ajax', function (req, res) {
             res.sendStatus(400)
         }
         else {
-            query2 =
-            `SELECT
-            drink_id
-            , base_flavor
-            , small_price
-            , reg_price
-            , can_be_hot
-            , is_flavored_sweetener FROM Drinks`
+            query2 = `
+                SELECT
+                    *
+                FROM Drinks
+                `
 
             db.pool.query(query2, function (error, rows, fields) {
                 if (error) {
@@ -377,11 +430,11 @@ app.post('/add-addon-ajax', function (req, res) {
             res.sendStatus(400)
         }
         else {
-            query2 =
-            `SELECT
-            add_on_id
-            , topping
-            , price FROM AddOns`
+            query2 = `
+                SELECT 
+                    *
+                FROM AddOns
+                `
 
             db.pool.query(query2, function (error, rows, fields) {
                 if (error) {
@@ -422,10 +475,11 @@ app.post('/add-customer-ajax', function (req, res) {
             res.sendStatus(400)
         }
         else {
-            query2 =
-            `SELECT
-            *
-            FROM Customers`
+            query2 = `
+                SELECT 
+                    *
+                FROM Customers
+                `
 
             db.pool.query(query2, function (error, rows, fields) {
                 if (error) {
@@ -546,13 +600,15 @@ app.put('/put-order-ajax', function(req,res,next){
             console.log(error)
             res.sendStatus(400)
         } else {
-            query2 =
-            `SELECT
-            order_id
-            , customer_id
-            , DATE_FORMAT(order_date, '%Y-%m-%d %r') as order_date
-            , num_drinks
-            , total_cost FROM Orders`
+            query2 = `
+                SELECT
+                    order_id
+                    , customer_id
+                    , DATE_FORMAT(order_date, '%Y-%m-%d %r') as order_date
+                    , num_drinks 
+                    , total_cost
+                FROM Orders
+                `
 
             db.pool.query(query2, function (error, rows, fields) {
                 if (error) {
@@ -595,14 +651,11 @@ app.put('/put-drink-ajax', function(req,res,next){
             console.log(error)
             res.sendStatus(400)
         } else {
-            query2 =
-            `SELECT
-            drink_id
-            , base_flavor
-            , small_price
-            , reg_price
-            , can_be_hot
-            , is_flavored_sweetener FROM Drinks`
+            query2 =`
+                SELECT
+                    *
+                FROM Drinks
+                `
 
             db.pool.query(query2, function (error, rows, fields) {
                 if (error) {
@@ -639,11 +692,11 @@ app.put('/put-addon-ajax', function(req,res,next){
             console.log(error)
             res.sendStatus(400)
         } else {
-            query2 =
-            `SELECT
-            add_on_id
-            , topping
-            , price FROM AddOns`
+            query2 = `
+                SELECT 
+                    *
+                FROM AddOns
+                `
 
             db.pool.query(query2, function (error, rows, fields) {
                 if (error) {
@@ -682,10 +735,11 @@ app.put('/put-customer-ajax', function(req,res,next){
             console.log(error)
             res.sendStatus(400)
         } else {
-            query2 =
-            `SELECT
-            *
-            FROM Customers`
+            query2 = `
+                SELECT 
+                    *
+                FROM Customers
+                `
 
             db.pool.query(query2, function (error, rows, fields) {
                 if (error) {

@@ -18,7 +18,7 @@ delete_drink = (drink_id_given) => {
 delete_drink_row = (drink_id) => {
     let table = document.getElementById("drinks-table")
     for (let i = 0, row; row = table.rows[i]; i++) {
-        console.log("ATT:", table.rows[i].cells[1].innerText)
+        // console.log("ATT:", table.rows[i].cells[1].innerText)
         if (table.rows[i].cells[1].innerText == drink_id) {
                 table.deleteRow(i)
                 break

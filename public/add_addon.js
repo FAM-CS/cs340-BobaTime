@@ -34,7 +34,7 @@ addAddOnForm.addEventListener("submit", function (e) {
         if (xhttp.readyState == 4 && xhttp.status == 200) {
 
             // add the new data to the table
-            addRowToTable(xhttp.response)
+            addAddOnRowToTable(xhttp.response)
 
             // clear the input fields for another transaction
             inputTopping.value = ''
@@ -51,7 +51,7 @@ addAddOnForm.addEventListener("submit", function (e) {
 
 
 // Creates a single row from an Object representing a single record from
-addRowToTable = (data) => {
+addAddOnRowToTable = (data) => {
 
     // Get a reference to the current table on the page and clear it out.
     let currentTable = document.getElementById("addons-table")
@@ -77,10 +77,11 @@ addRowToTable = (data) => {
     priceCell.innerText = newRow.price
 
     // Add the cells to the row
-    row.appendChild(deleteCell)
-    row.appendChild(idCell)
-    row.appendChild(toppingCell)
-    row.appendChild(priceCell)
+    row.append(
+          deleteCell
+        , idCell
+        , toppingCell
+        , priceCell)
 
     // Add the row to the table
     currentTable.appendChild(row)
