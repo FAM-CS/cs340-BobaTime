@@ -102,6 +102,11 @@ const set_active_option = (req, res, next) => {
 // ? Get pages/static items in public folder (css, imgs, client JS)
 app.use(express.static(__dirname + '/public'))
 
+
+/*************************************************************************
+ * ROUTES / GET
+ *************************************************************************/
+
 // ~ Home Page (Entry point for "GET /"")
 app.get('/', set_active_option, (req, res) => {
     res.status(200).render('home', { options })
@@ -109,287 +114,114 @@ app.get('/', set_active_option, (req, res) => {
 
 
 // ~ Menu
-app.get('/menu', set_active_option, (req, res) => {
-    const query1 = `
-        SELECT
-            drink_id AS "Drink ID"
-            , base_flavor AS "Base Flavor"
-            , small_price AS "Price (Small)"
-            , reg_price AS "Price (Regular)"
-            , IF(can_be_hot, "Yes", "No") AS "Can be Hot"
-            , IF(is_flavored_sweetener, "Yes", "No") AS "Flavored Sweetener"
-        FROM Drinks
-        `
+app.get('/menu', set_active_option, async (req, res) => {
+    try {
+        const drink_rows = await db_queries.select_all_clean("Drinks")
+        const addon_rows = await db_queries.select_all_clean("AddOns")
 
-    const query2 = `
-        SELECT
-            add_on_id AS "Add On ID"
-            , topping AS "Topping"
-            , price AS "Price"
-        FROM AddOns
-        `
-
-    db.pool.query(query1, (error1, rows1, fields) => {
-        db.pool.query(query2, (error2, rows2, fields) => {
-            //? Combine header and row data, render() only accepts one object via Object.assign()
-            //? from: https://www.delftstack.com/howto/javascript/javascript-append-to-object/#use-the-object.assign-method-to-append-elements-to-objects-in-javascript
-            const data = Object.assign({options}, {drinks: rows1}, {addons: rows2})
-            console.log("data:", data)
-
-            if (error1 || error2) {
-                console.log("error1:", error1)
-                console.log("error2:", error2)
-                next()  // something wrong occured, go next middleware
-                return
-            }
-
-            res.status(200).render('menu', data)
-        })
-    })
+        //? Combine header and row data, render() only accepts one object via Object.assign()
+        //? from: https://www.delftstack.com/howto/javascript/javascript-append-to-object/#use-the-object.assign-method-to-append-elements-to-objects-in-javascript
+        const data = Object.assign({options}, {drinks: drink_rows}, {addons: addon_rows})
+        res.status(200).render('menu', data)
+    }
+    catch (error) {
+        console.log("menu err:", error)
+        res.status(500).render('500', {options})
+    }
 })
 
 
 // ~ Order
-app.get('/orders', set_active_option, (req, res) => {
-    const query1 = `
-        SELECT
-            order_id AS "Order ID"
-            , customer_id AS "Customer ID"
-            , DATE_FORMAT(order_date, '%Y-%m-%d %r') as "Order Date"
-            , num_drinks AS "Number of Drinks"
-            , total_cost AS "Total Cost"
-        FROM Orders
-        `
+app.get('/orders', set_active_option, async (req, res) => {
+    try {
+        const order_rows = await db_queries.select_all_clean("Orders")
+        const drinkorder_rows = await db_queries.select_all_clean("DrinkOrders")
+        const addondetail_rows = await db_queries.select_all_clean("AddOnDetails")
+        const customer_rows = await db_queries.select_customer_names()
 
-    const query2 = `
-        SELECT
-            drink_order_id AS "Drink Order ID"
-            , order_id AS "Order ID"
-            , drink_id AS "Drink ID"
-            , seq_number AS "Drink Number"
-            , sweetness_lvl AS "Sweetness"
-            , is_cold AS "Is Cold"
-            , drink_size AS "Drink Size"
-        FROM DrinkOrders
-        `
+        const data = Object.assign(
+              {options}
+            , {orders: order_rows}
+            , {drink_orders: drinkorder_rows}
+            , {addon_details: addondetail_rows}
+            , {customers: customer_rows}
+            )
+        console.log("data:", data)
 
-    const query3 = `
-        SELECT
-            add_on_detail_id AS "Add On Detail ID"
-            , drink_order_id AS "Drink Order ID"
-            , add_on_id AS "Add On ID"
-            , quantity AS "Quantity"
-        FROM AddOnDetails
-        `
-
-    const query4 = `
-        SELECT
-          customer_id
-        , CONCAT(first_name, " ", last_name) AS \`Full Name\`
-        FROM Customers
-        `
-
-    db.pool.query(query1, (error1, rows1, fields) => {
-        db.pool.query(query2, (error2, rows2, fields) => {
-            db.pool.query(query3, (error3, rows3, fields) => {
-                db.pool.query(query4, (error4, rows4, fields) => {
-                    const data = Object.assign(
-                          {options}
-                        , {orders: rows1}
-                        , {drink_orders: rows2}
-                        , {addon_details: rows3}
-                        , {customers: rows4}
-                    )
-                    console.log("data:", data)
-
-                    if (error1 || error2 || error3 || error4){
-                        console.log("error1:", error1)
-                        console.log("error2:", error2)
-                        console.log("error3:", error3)
-                        console.log("error4:", error4)
-                        next()
-                        return
-                    }
-
-                    res.status(200).render('orders', data)
-                })
-            })
-        })
-    })
+        res.status(200).render('orders', data)
+    }
+    catch (error) {
+        console.log("order err:", error)
+        res.status(500).render('500', {options})
+    }
 })
 
 
 // ~ Customers
-app.get('/customers', set_active_option, (req, res) => {
+app.get('/customers', set_active_option, async (req, res) => {
+    try {
+        const customer_rows = await db_queries.select_all_clean("Customers")
 
-    const query = `
-        SELECT
-            customer_id AS "Customer ID"
-            , email AS "Email"
-            , phone_num AS "Phone Number"
-            , first_name AS "First Name"
-            , last_name AS "Last Name"
-            , num_orders AS "Number of Orders"
-            , num_drinks AS "Number of Drinks"
-            , total_spent AS "Total Spent"
-            , drinks_to_free AS "Drinks to Free"
-            , num_free_drinks AS "Number of Free Drinks"
-        FROM Customers
-        `
-
-    db.pool.query(query, (error, rows, fields) => {
-        const data = Object.assign({options}, {customers: rows})
-
-        if (error) {
-            console.log("error:", error)
-            next()  // something wrong occured, go next middleware
-            return
-        }
+        const data = Object.assign(
+              {options}
+            , {customers: customer_rows}
+            )
+        console.log("data:", data)
 
         res.status(200).render('customers', data)
-    })
+    }
+    catch (error) {
+        console.log("order err:", error)
+        res.status(500).render('500', {options})
+    }
 })
 
 
 // ~ See stats
-app.get('/stats', set_active_option, (req, res) => {
-    const query1 = `
-        SELECT
-            base_flavor AS \`Flavor\`
-            , COUNT(DO.drink_order_id) AS \`Times Ordered\`
-        FROM
-            Drinks D LEFT JOIN DrinkOrders DO on D.drink_id = DO.drink_id
-        GROUP BY
-            base_flavor
-        ORDER BY
-            \`Times Ordered\` DESC`
+app.get('/stats', set_active_option, async (req, res) => {
+    try {
+        const flavor_rows = await db_queries.stats_top_flavors()
+        const topping_rows = await db_queries.stats_top_toppings()
+        const drink_rows = await db_queries.stats_top_drinks()
 
-    const query2 = `
-        SELECT
-            topping AS "Topping"
-        , IF(SUM(AD.quantity) IS NULL, 0, SUM(AD.quantity)) AS "Times Added"
-        FROM
-            AddOns A LEFT JOIN AddOnDetails AD ON A.add_on_id = AD.add_on_id
-        GROUP BY
-            topping
-        ORDER BY
-            \`Times Added\` DESC;`
+        const data = Object.assign(
+            {options}
+            , {topflavors: flavor_rows}
+            , {topaddons: topping_rows}
+            , {topdrinks: drink_rows}
+            )
+        console.log("data:", data)
 
-    const query3 = `
-        SELECT
-            drink_flavor AS "Drink Flavor",
-            IF(\`Topping(s)\` IS NULL, "None", \`Topping(s)\`) AS "Topping(s)",
-            COUNT(*) AS "Times Ordered"
-        FROM
-            (
-                SELECT
-                    D.base_flavor AS drink_flavor,
-                    GROUP_CONCAT(A.topping) AS "Topping(s)"
-                FROM
-                    DrinkOrders DO
-                    INNER JOIN Drinks D ON DO.drink_id = D.drink_id
-                    LEFT JOIN AddOnDetails AD ON DO.drink_order_id = AD.drink_order_id
-                    LEFT JOIN AddOns A ON AD.add_on_id = A.add_on_id
-                GROUP BY
-                    DO.drink_order_id,
-                    D.base_flavor
-            ) AS subquery
-        GROUP BY
-            drink_flavor,
-            \`Topping(s)\`
-        ORDER BY
-            \`Times Ordered\` DESC
-        LIMIT 10;`
-
-    db.pool.query(query1, (error1, rows1, fields) => {
-        db.pool.query(query2, (error2, rows2, fields) => {
-            db.pool.query(query3, (error3, rows3, fields) => {
-                const data = Object.assign({options}, {topflavors: rows1}, {topaddons: rows2}, {topdrinks: rows3})
-                console.log("rows3:", rows3)
-
-                if (error1 || error2 || error3) {
-                    console.log("error1:", error1)
-                    console.log("error2:", error2)
-                    console.log("error3:", error3)
-                    next()  // something wrong occured, go next middleware
-                    return
-                }
-
-                res.status(200).render('stats_top', data)
-            })
-        })
-    })
+        res.status(200).render('stats_top', data)
+    }
+    catch (error) {
+        console.log("order err:", error)
+        res.status(500).render('500', {options})
+    }
 })
 
 
 // ~ See stats
-app.get('/stats/top', set_active_option, (req, res) => {
-    const query1 = `
-        SELECT
-            base_flavor AS \`Flavor\`
-            , COUNT(DO.drink_order_id) AS \`Times Ordered\`
-        FROM
-            Drinks D LEFT JOIN DrinkOrders DO on D.drink_id = DO.drink_id
-        GROUP BY
-            base_flavor
-        ORDER BY
-            \`Times Ordered\` DESC`
+app.get('/stats/top', set_active_option, async (req, res) => {
+    try {
+        const flavor_rows = await db_queries.stats_top_flavors()
+        const topping_rows = await db_queries.stats_top_toppings()
+        const drink_rows = await db_queries.stats_top_drinks()
 
-    const query2 = `
-        SELECT
-            topping AS "Topping"
-        , IF(SUM(AD.quantity) IS NULL, 0, SUM(AD.quantity)) AS "Times Added"
-        FROM
-            AddOns A LEFT JOIN AddOnDetails AD ON A.add_on_id = AD.add_on_id
-        GROUP BY
-            topping
-        ORDER BY
-            \`Times Added\` DESC;`
+        const data = Object.assign(
+            {options}
+            , {topflavors: flavor_rows}
+            , {topaddons: topping_rows}
+            , {topdrinks: drink_rows}
+            )
+        console.log("data:", data)
 
-    const query3 = `
-        SELECT
-            drink_flavor AS "Drink Flavor",
-            IF(\`Topping(s)\` IS NULL, "None", \`Topping(s)\`) AS "Topping(s)",
-            COUNT(*) AS "Times Ordered"
-        FROM
-            (
-                SELECT
-                    D.base_flavor AS drink_flavor,
-                    GROUP_CONCAT(A.topping) AS "Topping(s)"
-                FROM
-                    DrinkOrders DO
-                    INNER JOIN Drinks D ON DO.drink_id = D.drink_id
-                    LEFT JOIN AddOnDetails AD ON DO.drink_order_id = AD.drink_order_id
-                    LEFT JOIN AddOns A ON AD.add_on_id = A.add_on_id
-                GROUP BY
-                    DO.drink_order_id,
-                    D.base_flavor
-            ) AS subquery
-        GROUP BY
-            drink_flavor,
-            \`Topping(s)\`
-        ORDER BY
-            \`Times Ordered\` DESC
-        LIMIT 10;`
-
-    db.pool.query(query1, (error1, rows1, fields) => {
-        db.pool.query(query2, (error2, rows2, fields) => {
-            db.pool.query(query3, (error3, rows3, fields) => {
-                const data = Object.assign({options}, {topflavors: rows1}, {topaddons: rows2}, {topdrinks: rows3})
-                console.log("rows3:", rows3)
-
-                if (error1 || error2 || error3) {
-                    console.log("error1:", error1)
-                    console.log("error2:", error2)
-                    console.log("error3:", error3)
-                    next()  // something wrong occured, go next middleware
-                    return
-                }
-
-                res.status(200).render('stats_top', data)
-            })
-        })
-    })
+        res.status(200).render('stats_top', data)
+    }
+    catch (error) {
+        console.log("order err:", error)
+        res.status(500).render('500', {options})
+    }
 })
 
 
@@ -776,7 +608,7 @@ app.put('/put-customer-ajax', function(req,res,next){
 // ! 404 Error
 // ***********************************************************************
 app.get('*', set_active_option, (req, res) => {
-    res.status(404).render('404', { options })
+    res.status(404).render('404', {options})
 })
 
 
