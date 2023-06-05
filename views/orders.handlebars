@@ -50,7 +50,11 @@
 
         <br/>
 
-        <ol id="add-drinks-list">
+        {{!-- REMOVE LATER --}}
+        <label for="input-num_drinks" class="required-field">Number of Drinks</label>
+        <input type="number" id="input-num_drinks" name="input-num_drinks" minlength="1" maxlength="20" required>
+
+        {{!-- <ol id="add-drinks-list">
             <li>
                 <label for="input-drink_id" class="required-field">Drink Flavor</label>
                 <select name="input-drink_id" id="input-drink_id">
@@ -82,8 +86,9 @@
                     <option value="S">Small</option>
                 </select>
             </li>
-        </ol>
+        </ol> --}}
 
+        <br/>
 
         <button type="submit">Submit Order</button>
         <button type="reset">Cancel</button>

@@ -2,64 +2,36 @@
 //?  https://github.com/osu-cs340-ecampus/nodejs-starter-app
 
 /*
-    SETUP
-*/
+ *   SETUP
+ */
 
+// Express and Handlebars
 const express = require('express')
 const hbrs_engine = require('express-handlebars')
 const handlebars = require("handlebars");
 
 const app = express()
-var PORT_NUM = process.env.PORT || 54321
 
 app.engine('handlebars', hbrs_engine.engine())
 app.set('view engine', 'handlebars')
 app.set('views', './views')
+
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-const mysql = require('mysql')
-const fs = require('fs')
+// Database
+// const mysql = require('mysql')
+// const fs = require('fs')
 const db = require('./database/db-connector')
+const db_queries = require('./database/db-queries')
 
-/*
-  HANDLERBAR Helpers
-*/
 
-//? Source: https://stackoverflow.com/questions/34252817/handlebarsjs-check-if-a-string-is-equal-to-a-value
-handlebars.registerHelper('if_equals', function(arg1, arg2, options) {
-    return (arg1 == arg2) ? options.fn(this) : options.inverse(this)
-})
-
-/*
-    ROUTES
-*/
-
+/*************************************************************************
+ * Global Variables / Constants
+ *************************************************************************/
+var PORT_NUM = process.env.PORT || 54321
 const local_URL = "http://localhost:"
 const flip3_URL = "http://flip3.engr.oregonstate.edu:"
-
-app.listen(PORT_NUM, () => {
-    console.log("\n----------------- Startup... -----------------\n")
-    console.log("- App is running! 🍵")
-    console.log("- Local: %s%d/", local_URL, PORT_NUM)
-    console.log("- Flip: %s%d/", flip3_URL,PORT_NUM)
-    console.log("\n-------------------- Logs --------------------")
-})
-
-app.use((req, res, next) => {
-    console.log("\n-- Request recieved --")
-    console.log("Method: ", req.method)
-    console.log("URL: ", req.url)
-    console.log("----------------------")
-    // console.log("Headers: ", req.headers)
-
-    next()		// Go to next middleware/routing function
-})
-
-
-// ---------------------------------------------------------------------------------------
-// Global Variables / Constants
-// ---------------------------------------------------------------------------------------
 
 let options = [
     {
@@ -84,6 +56,32 @@ let options = [
     }
 ]
 
+
+/*
+ * HANDLERBAR Helpers
+ */
+
+//? Source: https://stackoverflow.com/questions/34252817/handlebarsjs-check-if-a-string-is-equal-to-a-value
+handlebars.registerHelper('if_equals', function(arg1, arg2, options) {
+    return (arg1 == arg2) ? options.fn(this) : options.inverse(this)
+})
+
+
+/*************************************************************************
+ * ROUTES
+ *************************************************************************/
+
+app.use((req, res, next) => {
+    console.log("\n-- Request recieved --")
+    console.log("Method: ", req.method)
+    console.log("URL: ", req.url)
+    console.log("----------------------")
+    // console.log("Headers: ", req.headers)
+
+    next()		// Go to next middleware/routing function
+})
+
+
 /**
  * Set option.active to true or false depending on whether the current route matches
  */
@@ -101,16 +99,13 @@ const set_active_option = (req, res, next) => {
 }
 
 
+// ? Get pages/static items in public folder (css, imgs, client JS)
+app.use(express.static(__dirname + '/public'))
 
 // ~ Home Page (Entry point for "GET /"")
 app.get('/', set_active_option, (req, res) => {
     res.status(200).render('home', { options })
 })
-
-
-// ! Must come after main entry
-// ? Get pages/static items in public folder (css, imgs, client JS)
-app.use(express.static(__dirname + '/public'))
 
 
 // ~ Menu
@@ -416,34 +411,18 @@ app.post('/add-order-ajax', function (req, res) {
         , '${data['num_drinks']}'
         )`;
 
-    db.pool.query(query1, function (error, rows, fields) {
+    db.pool.query(query1, async (error, rows, fields) => {
         if (error) {
             console.log(error)
             res.sendStatus(400)
         }
         else {
-            query2 = `
-                SELECT
-                    order_id
-                    , customer_id
-                    , DATE_FORMAT(order_date, '%Y-%m-%d %r') as order_date
-                    , num_drinks
-                    , total_cost
-                FROM Orders
-                `
-
-            db.pool.query(query2, function (error, rows, fields) {
-                if (error) {
-                    console.log(error)
-                    res.sendStatus(400)
-                }
-                else {
-                    res.status(200).send(rows)
-                }
-            })
+            const rows = await db_queries.select_all_raw('Orders')
+            res.status(200).send(rows)
         }
     })
 })
+
 
 app.post('/add-drink-ajax', function (req, res) {
     // Capture the incoming data and parse it back to a JS object
@@ -461,30 +440,18 @@ app.post('/add-drink-ajax', function (req, res) {
         , '${data['is_flavored_sweetener']}'
         )`;
 
-    db.pool.query(query1, function (error, rows, fields) {
+    db.pool.query(query1, async (error, rows, fields) => {
         if (error) {
             console.log(error)
             res.sendStatus(400)
         }
         else {
-            query2 = `
-                SELECT
-                    *
-                FROM Drinks
-                `
-
-            db.pool.query(query2, function (error, rows, fields) {
-                if (error) {
-                    console.log(error)
-                    res.sendStatus(400)
-                }
-                else {
-                    res.status(200).send(rows)
-                }
-            })
+            const rows = await db_queries.select_all_raw('Drinks')
+            res.status(200).send(rows)
         }
     })
 })
+
 
 app.post('/add-addon-ajax', function (req, res) {
     // Capture the incoming data and parse it back to a JS object
@@ -499,30 +466,18 @@ app.post('/add-addon-ajax', function (req, res) {
         , '${data['price']}'
         )`;
 
-    db.pool.query(query1, function (error, rows, fields) {
+    db.pool.query(query1, async (error, rows, fields) => {
         if (error) {
             console.log(error)
             res.sendStatus(400)
         }
         else {
-            query2 = `
-                SELECT
-                    *
-                FROM AddOns
-                `
-
-            db.pool.query(query2, function (error, rows, fields) {
-                if (error) {
-                    console.log(error)
-                    res.sendStatus(400)
-                }
-                else {
-                    res.status(200).send(rows)
-                }
-            })
+            const rows = await db_queries.select_all_raw('AddOns')
+            res.status(200).send(rows)
         }
     })
 })
+
 
 app.post('/add-customer-ajax', function (req, res) {
     // Capture the incoming data and parse it back to a JS object
@@ -544,27 +499,14 @@ app.post('/add-customer-ajax', function (req, res) {
         , '${data['last_name']}'
         )`;
 
-    db.pool.query(query1, function (error, rows, fields) {
+    db.pool.query(query1, async (error, rows, fields) => {
         if (error) {
             console.log(error)
             res.sendStatus(400)
         }
         else {
-            query2 = `
-                SELECT
-                    *
-                FROM Customers
-                `
-
-            db.pool.query(query2, function (error, rows, fields) {
-                if (error) {
-                    console.log(error)
-                    res.sendStatus(400)
-                }
-                else {
-                    res.status(200).send(rows)
-                }
-            })
+            const rows = await db_queries.select_all_raw('Customers')
+            res.status(200).send(rows)
         }
     })
 })
@@ -830,11 +772,22 @@ app.put('/put-customer-ajax', function(req,res,next){
 })
 
 
-/*
-  ! 404
-*/
-
-// ~ Anything else... 404
+// ***********************************************************************
+// ! 404 Error
+// ***********************************************************************
 app.get('*', set_active_option, (req, res) => {
     res.status(404).render('404', { options })
+})
+
+
+/*
+ * LISTENER
+ */
+
+app.listen(PORT_NUM, () => {
+    console.log("\n----------------- Startup... -----------------\n")
+    console.log("- App is running! 🍵")
+    console.log("- Local: %s%d/", local_URL, PORT_NUM)
+    console.log("- Flip: %s%d/", flip3_URL,PORT_NUM)
+    console.log("\n-------------------- Logs --------------------")
 })
