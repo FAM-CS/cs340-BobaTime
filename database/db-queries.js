@@ -31,6 +31,10 @@ const run_query_param = (query_input, parameters) => {
 module.exports.run_query_param = run_query_param
 
 
+// -----------------------------------------------------------------------
+// SELECT QUERIES
+// -----------------------------------------------------------------------
+
 const select_all_raw = async (table) => {
     let query =
         'SELECT * FROM ' + table + ';'
@@ -135,6 +139,38 @@ const select_all_clean = async (table) => {
 
 module.exports.select_all_clean = select_all_clean
 
+// -----------------------------------------------------------------------
+// INSERT QUERIES
+// -----------------------------------------------------------------------
+
+const delete_row = async (parameters) => {
+    const query = `
+        DELETE FROM ??
+        WHERE ?? = ?
+        `
+    return await run_query_param(query, parameters)
+}
+
+module.exports.delete_row = delete_row
+
+
+// -----------------------------------------------------------------------
+// DELETE QUERIES
+// -----------------------------------------------------------------------
+
+const insert_values = async (parameters) => {
+    const query = `
+        INSERT INTO ?? (??)
+        VALUES (?)
+        RETURNING *
+        `
+    return await run_query_param(query, parameters)
+}
+
+module.exports.insert_values = insert_values
+// -----------------------------------------------------------------------
+// CUSTOM QUERIES
+// -----------------------------------------------------------------------
 
 const select_customer_names = async () => {
     const query = `

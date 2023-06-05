@@ -48,3 +48,4 @@ forever stop app.js
 + [Fonts](https://fonts.google.com/)
 + [JS Logs](https://dmitripavlutin.com/console-log-tips/)
 + [Git Workflow](https://www.atlassian.com/git/tutorials/comparing-workflows/gitflow-workflow)
++ [Git Troubleshoot](https://ohshitgit.com/)

@@ -229,202 +229,199 @@ app.get('/stats/top', set_active_option, async (req, res) => {
   ~ POST
 */
 
-app.post('/add-order-ajax', function (req, res) {
-    // Capture the incoming data and parse it back to a JS object
-    let data = req.body;
-    console.log("data:", data)
+app.post('/add-order-ajax', async (req, res) => {
+    try {
+        // Capture the incoming data and parse it back to a JS object
+        let req_data = await req.body;
+        console.log("req_data:", req_data)
 
-    // Create the query and run it on the database
-    query1 =
-        `INSERT INTO Orders (customer_id, order_date, num_drinks)
-         VALUES (
-          '${data['customer_id']}'
-        , '${data['order_date']}'
-        , '${data['num_drinks']}'
-        )`;
+        // Create the query and run it on the database
+        const table = "Orders"
+        const columns = ["customer_id", "order_date", "num_drinks"]
+        const parameters = [table, columns, [req_data.customer_id, req_data.order_date, req_data.num_drinks]]
 
-    db.pool.query(query1, async (error, rows, fields) => {
-        if (error) {
-            console.log(error)
-            res.sendStatus(400)
-        }
-        else {
-            const rows = await db_queries.select_all_raw('Orders')
-            res.status(200).send(rows)
-        }
-    })
-})
+        // Run query and wait on result (for orders we need formatted dates, use raw)
+        const result = await db_queries.insert_values(parameters)
+        const rows = await db_queries.select_all_raw('Orders')
 
-
-app.post('/add-drink-ajax', function (req, res) {
-    // Capture the incoming data and parse it back to a JS object
-    let data = req.body;
-    console.log("data:", data)
-
-    // Create the query and run it on the database
-    query1 =
-        `INSERT INTO Drinks (base_flavor, small_price, reg_price, can_be_hot, is_flavored_sweetener)
-         VALUES (
-          '${data['base_flavor']}'
-        , '${data['small_price']}'
-        , '${data['reg_price']}'
-        , '${data['can_be_hot']}'
-        , '${data['is_flavored_sweetener']}'
-        )`;
-
-    db.pool.query(query1, async (error, rows, fields) => {
-        if (error) {
-            console.log(error)
-            res.sendStatus(400)
-        }
-        else {
-            const rows = await db_queries.select_all_raw('Drinks')
-            res.status(200).send(rows)
-        }
-    })
-})
-
-
-app.post('/add-addon-ajax', function (req, res) {
-    // Capture the incoming data and parse it back to a JS object
-    let data = req.body;
-    console.log("data:", data)
-
-    // Create the query and run it on the database
-    query1 =
-        `INSERT INTO AddOns (topping, price)
-         VALUES (
-          '${data['topping']}'
-        , '${data['price']}'
-        )`;
-
-    db.pool.query(query1, async (error, rows, fields) => {
-        if (error) {
-            console.log(error)
-            res.sendStatus(400)
-        }
-        else {
-            const rows = await db_queries.select_all_raw('AddOns')
-            res.status(200).send(rows)
-        }
-    })
-})
-
-
-app.post('/add-customer-ajax', function (req, res) {
-    // Capture the incoming data and parse it back to a JS object
-    let data = req.body;
-
-    if (data.phone_num == '') {
-        data.phone_num = 'NULL'
+        res.status(200).send(rows)
     }
+    catch (error) {
+        console.log("order err:", error)
+        res.status(500).render('500', {options})
+    }
+})
 
-    console.log("data:", data)
 
-    // Create the query and run it on the database
-    query1 =
-        `INSERT INTO Customers (email, phone_num, first_name, last_name)
-         VALUES (
-          '${data['email']}'
-        , '${data['phone_num']}'
-        , '${data['first_name']}'
-        , '${data['last_name']}'
-        )`;
+app.post('/add-drink-ajax', async (req, res) => {
+    try {
+        // Capture the incoming data and parse it back to a JS object
+        let data = await req.body;
+        console.log("req_data:", data)
 
-    db.pool.query(query1, async (error, rows, fields) => {
-        if (error) {
-            console.log(error)
-            res.sendStatus(400)
+        // Create the query and run it on the database
+        const table = "Drinks"
+        const columns = ["base_flavor", "small_price", "reg_price", "can_be_hot", "is_flavored_sweetener"]
+        const parameters = [table, columns, [data.base_flavor, data.small_price, data.reg_price, data.can_be_hot, data.is_flavored_sweetener]]
+
+        // Run query and wait on result (for orders we need formatted dates, use raw)
+        const result = await db_queries.insert_values(parameters)
+        console.log(result)
+
+        res.status(200).send(result)
+    }
+    catch (error) {
+        console.log("drink err:", error)
+        res.status(500).render('500', {options})
+    }
+})
+
+
+app.post('/add-addon-ajax', async (req, res) => {
+    try {
+        // Capture the incoming data and parse it back to a JS object
+        let data = await req.body;
+        console.log("req_data:", data)
+
+        // Create the query and run it on the database
+        const table = "AddOns"
+        const columns = ["topping", "price"]
+        const parameters = [table, columns, [data.topping, data.price]]
+
+        // Run query and wait on result (for orders we need formatted dates, use raw)
+        const result = await db_queries.insert_values(parameters)
+        console.log(result)
+
+        res.status(200).send(result)
+    }
+    catch (error) {
+        console.log("addon err:", error)
+        res.status(500).render('500', {options})
+    }
+})
+
+
+app.post('/add-customer-ajax', async (req, res) => {
+    try {
+        // Capture the incoming data and parse it back to a JS object
+        let data = await req.body;
+        console.log("req_data:", data)
+
+        if (data.phone_num == '') {
+            data.phone_num = 'NULL'
         }
-        else {
-            const rows = await db_queries.select_all_raw('Customers')
-            res.status(200).send(rows)
-        }
-    })
+
+        // Create the query and run it on the database
+        const table = "Customers"
+        const columns = ["email", "phone_num", "first_name", "last_name"]
+        const parameters = [table, columns, [data.email, data.phone_num, data.first_name, data.last_name]]
+
+        // Run query and wait on result (for orders we need formatted dates, use raw)
+        const result = await db_queries.insert_values(parameters)
+        console.log(result)
+
+        res.status(200).send(result)
+    }
+    catch (error) {
+        console.log("customer err:", error)
+        res.status(500).render('500', {options})
+    }
 })
 
 /*
   ~ DELETE
 */
 
-app.delete('/delete-order-ajax/', function(req,res, next){
-    let data = req.body
-    let order_id = parseInt(data.order_id)
+app.delete('/delete-order-ajax/', async (req, res, next) => {
+    try {
+        // Capture the incoming data and parse it back to a JS object
+        let data = await req.body;
+        console.log("req_data:", data)
 
-    console.log("data:", data)
+        // Create the query and run it on the database
+        const table = "Orders"
+        const id_name = "order_id"
+        const id_value = parseInt(data[id_name])
+        const parameters = [table, id_name, id_value]
 
-    let delete_orders =
-        `DELETE FROM Orders
-        WHERE order_id = ?`
-
-    db.pool.query(delete_orders, [order_id], function(error, rows, fields){
-        if (error) {
-            console.log("delete orders: error")
-            res.sendStatus(400)
-        } else {
-            res.sendStatus(204)
-        }
-    })
+        // Run query and wait on result (for orders we need formatted dates, use raw)
+        const result = await db_queries.delete_row(parameters)
+        console.log(result)
+        res.sendStatus(204)
+    }
+    catch (error) {
+        console.log("order err:", error)
+        res.sendStatus(500)
+    }
 })
 
-app.delete('/delete-drink-ajax/', function(req,res, next){
-    let data = req.body
-    let drink_id = parseInt(data.drink_id)
 
-    console.log("data:", data)
+app.delete('/delete-drink-ajax/', async (req, res, next) => {
+    try {
+        // Capture the incoming data and parse it back to a JS object
+        let data = await req.body;
 
-    let delete_drinks =
-        `DELETE FROM Drinks
-        WHERE drink_id = ?`
+        // Create the query and run it on the database
+        const table = "Drinks"
+        const id_name = "drink_id"
+        const id_value = parseInt(data[id_name])
+        const parameters = [table, id_name, id_value]
 
-    db.pool.query(delete_drinks, [drink_id], function(error, rows, fields){
-        if (error) {
-            console.log("delete drink: error")
-            res.sendStatus(400)
-        } else {
-            res.sendStatus(204)
-        }
-    })
+        // Run query and wait on result (for orders we need formatted dates, use raw)
+        const result = await db_queries.delete_row(parameters)
+        console.log(result)
+        res.sendStatus(204)
+    }
+    catch (error) {
+        console.log("drink err:", error)
+        res.sendStatus(500)
+    }
 })
 
-app.delete('/delete-addon-ajax/', function(req,res, next){
-    let data = req.body
-    let add_on_id = parseInt(data.add_on_id)
 
-    console.log("data:", data)
+app.delete('/delete-addon-ajax/', async (req, res, next) => {
+    try {
+        // Capture the incoming data and parse it back to a JS object
+        let data = await req.body;
 
-    let delete_addons =
-        `DELETE FROM AddOns
-        WHERE add_on_id = ?`
+        // Create the query and run it on the database
+        const table = "AddOns"
+        const id_name = "add_on_id"
+        const id_value = parseInt(data[id_name])
+        const parameters = [table, id_name, id_value]
 
-    db.pool.query(delete_addons, [add_on_id], function(error, rows, fields){
-        if (error) {
-            console.log("delete addon: error")
-            res.sendStatus(400)
-        } else {
-            res.sendStatus(204)
-        }
-    })
+        // Run query and wait on result (for orders we need formatted dates, use raw)
+        const result = await db_queries.delete_row(parameters)
+        console.log(result)
+        res.sendStatus(204)
+    }
+    catch (error) {
+        console.log("addon err:", error)
+        res.sendStatus(500)
+    }
 })
 
-app.delete('/delete-customer-ajax/', function(req,res, next){
-    let data = req.body
-    let customer_id = parseInt(data.customer_id)
 
-    console.log("data:", data)
+app.delete('/delete-customer-ajax/', async (req, res, next) => {
+    try {
+        // Capture the incoming data and parse it back to a JS object
+        let data = await req.body;
 
-    let delete_customers =
-        `DELETE FROM Customers
-        WHERE customer_id = ?`
+        // Create the query and run it on the database
+        const table = "Customers"
+        const id_name = "customer_id"
+        const id_value = parseInt(data[id_name])
+        const parameters = [table, id_name, id_value]
 
-    db.pool.query(delete_customers, [customer_id], function(error, rows, fields){
-        if (error) {
-            console.log("delete customer: error")
-            res.sendStatus(400)
-        } else {
-            res.sendStatus(204)
-        }
-    })
+        // Run query and wait on result (for orders we need formatted dates, use raw)
+        const result = await db_queries.delete_row(parameters)
+        console.log(result)
+        res.sendStatus(204)
+    }
+    catch (error) {
+        console.log("customer err:", error)
+        res.sendStatus(500)
+    }
 })
 
 /*

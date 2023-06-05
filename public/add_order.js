@@ -66,6 +66,7 @@ addRowToTable = (data) => {
 
     // Get a reference to the new row from the database query (last object)
     let parsedData = JSON.parse(data)
+    console.log("parsedData", parsedData)
     let newRow = parsedData[parsedData.length - 1]
 
     // Create a row and 4 cells
