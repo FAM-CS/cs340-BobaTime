@@ -57,32 +57,53 @@ app.use((req, res, next) => {
 })
 
 
+// ---------------------------------------------------------------------------------------
+// Global Variables / Constants
+// ---------------------------------------------------------------------------------------
+
+let options = [
+    {
+        option: "/menu"
+        , option_name: "Menu"
+        , active: false
+    },
+    {
+        option: "/orders"
+        , option_name: "Orders"
+        , active: false
+    },
+    {
+        option: "/customers"
+        , option_name: "Customers"
+        , active: false
+    },
+    {
+        option: "/stats"
+        , option_name: "Stats"
+        , active: false
+    }
+]
+
+/**
+ * Set option.active to true or false depending on whether the current route matches
+ */
+const set_active_option = (req, res, next) => {
+    const current_route = req.path
+
+    options.forEach((option) => {
+        option.active = option.option === current_route
+        if (option.option === "/stats" && current_route.startsWith("/stats/")) {
+            option.active = true
+        }
+    })
+
+    next()
+}
+
+
 
 // ~ Home Page (Entry point for "GET /"")
-app.get('/', (req, res) => {
-    const options = [
-        {
-            option: "menu"
-            , option_name: "Menu"
-            , active: false
-        },
-        {
-            option: "orders"
-            , option_name: "Orders"
-            , active: false
-        },
-        {
-            option: "customers"
-            , option_name: "Customers"
-            , active: false
-        },
-        {
-            option: "stats"
-            , option_name: "Stats"
-            , active: false
-        }
-    ]
-
+app.get('/', set_active_option, (req, res) => {
     res.status(200).render('home', { options })
 })
 
@@ -93,30 +114,7 @@ app.use(express.static(__dirname + '/public'))
 
 
 // ~ Menu
-app.get('/menu', (req, res) => {
-    const options = [
-        {
-          option: "menu"
-        , option_name: "Menu"
-        , active: true
-        },
-        {
-             option: "orders"
-            , option_name: "Orders"
-            , active: false
-        },
-        {
-            option: "customers"
-            , option_name: "Customers"
-            , active: false
-        },
-        {
-            option: "stats"
-            , option_name: "Stats"
-            , active: false
-        }
-    ]
-
+app.get('/menu', set_active_option, (req, res) => {
     const query1 = `
         SELECT
             drink_id AS "Drink ID"
@@ -129,7 +127,7 @@ app.get('/menu', (req, res) => {
         `
 
     const query2 = `
-        SELECT 
+        SELECT
             add_on_id AS "Add On ID"
             , topping AS "Topping"
             , price AS "Price"
@@ -157,30 +155,7 @@ app.get('/menu', (req, res) => {
 
 
 // ~ Order
-app.get('/orders', (req, res) => {
-    const options = [
-        {
-          option: "menu"
-        , option_name: "Menu"
-        , active: false
-        },
-        {
-             option: "orders"
-            , option_name: "Orders"
-            , active: true
-        },
-        {
-            option: "customers"
-            , option_name: "Customers"
-            , active: false
-        },
-        {
-            option: "stats"
-            , option_name: "Stats"
-            , active: false
-        }
-    ]
-
+app.get('/orders', set_active_option, (req, res) => {
     const query1 = `
         SELECT
             order_id AS "Order ID"
@@ -192,7 +167,7 @@ app.get('/orders', (req, res) => {
         `
 
     const query2 = `
-        SELECT 
+        SELECT
             drink_order_id AS "Drink Order ID"
             , order_id AS "Order ID"
             , drink_id AS "Drink ID"
@@ -211,7 +186,7 @@ app.get('/orders', (req, res) => {
             , quantity AS "Quantity"
         FROM AddOnDetails
         `
-    
+
     const query4 = `
         SELECT
           customer_id
@@ -250,33 +225,10 @@ app.get('/orders', (req, res) => {
 
 
 // ~ Customers
-app.get('/customers', (req, res) => {
-    const options = [
-        {
-          option: "menu"
-        , option_name: "Menu"
-        , active: false
-        },
-        {
-             option: "orders"
-            , option_name: "Orders"
-            , active: false
-        },
-        {
-            option: "customers"
-            , option_name: "Customers"
-            , active: true
-        },
-        {
-            option: "stats"
-            , option_name: "Stats"
-            , active: false
-        }
-    ]
-
+app.get('/customers', set_active_option, (req, res) => {
 
     const query = `
-        SELECT 
+        SELECT
             customer_id AS "Customer ID"
             , email AS "Email"
             , phone_num AS "Phone Number"
@@ -305,30 +257,7 @@ app.get('/customers', (req, res) => {
 
 
 // ~ See stats
-app.get('/stats', (req, res) => {
-    const options = [
-        {
-          option: "menu"
-        , option_name: "Menu"
-        , active: false
-        },
-        {
-             option: "orders"
-            , option_name: "Orders"
-            , active: false
-        },
-        {
-            option: "customers"
-            , option_name: "Customers"
-            , active: false
-        },
-        {
-            option: "stats"
-            , option_name: "Stats"
-            , active: true
-        }
-    ]
-
+app.get('/stats', set_active_option, (req, res) => {
     const query1 = `
         SELECT
             base_flavor AS \`Flavor\`
@@ -399,30 +328,7 @@ app.get('/stats', (req, res) => {
 
 
 // ~ See stats
-app.get('/stats_top', (req, res) => {
-    const options = [
-        {
-          option: "menu"
-        , option_name: "Menu"
-        , active: false
-        },
-        {
-             option: "orders"
-            , option_name: "Orders"
-            , active: false
-        },
-        {
-            option: "customers"
-            , option_name: "Customers"
-            , active: false
-        },
-        {
-            option: "stats"
-            , option_name: "Stats"
-            , active: true
-        }
-    ]
-
+app.get('/stats/top', set_active_option, (req, res) => {
     const query1 = `
         SELECT
             base_flavor AS \`Flavor\`
@@ -521,7 +427,7 @@ app.post('/add-order-ajax', function (req, res) {
                     order_id
                     , customer_id
                     , DATE_FORMAT(order_date, '%Y-%m-%d %r') as order_date
-                    , num_drinks 
+                    , num_drinks
                     , total_cost
                 FROM Orders
                 `
@@ -600,7 +506,7 @@ app.post('/add-addon-ajax', function (req, res) {
         }
         else {
             query2 = `
-                SELECT 
+                SELECT
                     *
                 FROM AddOns
                 `
@@ -621,7 +527,7 @@ app.post('/add-addon-ajax', function (req, res) {
 app.post('/add-customer-ajax', function (req, res) {
     // Capture the incoming data and parse it back to a JS object
     let data = req.body;
-    
+
     if (data.phone_num == '') {
         data.phone_num = 'NULL'
     }
@@ -645,7 +551,7 @@ app.post('/add-customer-ajax', function (req, res) {
         }
         else {
             query2 = `
-                SELECT 
+                SELECT
                     *
                 FROM Customers
                 `
@@ -774,7 +680,7 @@ app.put('/put-order-ajax', function(req,res,next){
                     order_id
                     , customer_id
                     , DATE_FORMAT(order_date, '%Y-%m-%d %r') as order_date
-                    , num_drinks 
+                    , num_drinks
                     , total_cost
                 FROM Orders
                 `
@@ -813,7 +719,7 @@ app.put('/put-drink-ajax', function(req,res,next){
         WHERE drink_id = ?;`
 
     const query_vals = [data.base_flavor, small_price, reg_price, can_be_hot, is_flavored_sweetener, drink_id]
-    
+
     // Run the 1st query
     db.pool.query(query_update_drink, query_vals, function(error, rows, fields){
         if (error) {
@@ -852,9 +758,9 @@ app.put('/put-addon-ajax', function(req,res,next){
             topping = ?
             , price = ?
         WHERE add_on_id = ?;`
-    
+
     const query_vals = [data.topping, price, add_on_id]
-    
+
     // Run the 1st query
     db.pool.query(query_update_addon, query_vals, function(error, rows, fields){
         if (error) {
@@ -862,7 +768,7 @@ app.put('/put-addon-ajax', function(req,res,next){
             res.sendStatus(400)
         } else {
             query2 = `
-                SELECT 
+                SELECT
                     *
                 FROM AddOns
                 `
@@ -895,9 +801,9 @@ app.put('/put-customer-ajax', function(req,res,next){
             , first_name = ?
             , last_name = ?
         WHERE customer_id = ?;`
-    
+
     const query_vals = [data.phone_num, data.first_name, data.last_name, customer_id]
-    
+
     // Run the 1st query
     db.pool.query(query_update_customer, query_vals, function(error, rows, fields){
         if (error) {
@@ -905,7 +811,7 @@ app.put('/put-customer-ajax', function(req,res,next){
             res.sendStatus(400)
         } else {
             query2 = `
-                SELECT 
+                SELECT
                     *
                 FROM Customers
                 `
@@ -929,29 +835,6 @@ app.put('/put-customer-ajax', function(req,res,next){
 */
 
 // ~ Anything else... 404
-app.get('*', (req, res) => {
-    const options = [
-        {
-            option: "menu"
-            , option_name: "Menu"
-            , active: false
-        },
-        {
-            option: "orders"
-            , option_name: "Orders"
-            , active: false
-        },
-        {
-            option: "customers"
-            , option_name: "Customers"
-            , active: false
-        },
-        {
-            option: "stats"
-            , option_name: "Stats"
-            , active: false
-        }
-    ]
-
+app.get('*', set_active_option, (req, res) => {
     res.status(404).render('404', { options })
 })
