@@ -32,13 +32,12 @@
     </table>
     <script src="delete_order.js"></script>
 
-    <p></p>
 
     <form id="add-order-form-ajax">
+        <h3>Create an Order</h3>
         <label for="input-customer_id" class="required-field">Customer ID</label>
-        {{!-- <input type="text" id="input-customer_id" name="input-customer_id" minlength="1" maxlength="20" required> --}}
         <select name="input-customer_id" id="input-customer_id">
-            <option value=""></option>
+            <option value="" aria-placeholder="Name"></option>
             {{#each customers}}
             <option value="{{this.customer_id}}">{{[Full Name]}}</option>
             {{/each}}
@@ -51,12 +50,42 @@
 
         <br/>
 
-        <label for="input-num_drinks" class="required-field">Number of Drinks</label>
-        <input type="number" id="input-num_drinks" name="input-num_drinks" minlength="1" maxlength="20" required>
+        <ol id="add-drinks-list">
+            <li>
+                <label for="input-drink_id" class="required-field">Drink Flavor</label>
+                <select name="input-drink_id" id="input-drink_id">
+                    <option value=""></option>
+                    {{#each drinks}}
+                    <option value="{{this.drink_id}}">{{[Flavor]}}</option>
+                    {{/each}}
+                </select>
 
-        <br/>
+                <label for="input-add_on_id">Topping</label>
+                <select name="input-add_on_id" id="input-add_on_id">
+                    <option value=""></option>
+                    {{#each addons}}
+                    <option value="{{this.add_on_id}}">{{[Topping]}}</option>
+                    {{/each}}
+                </select>
 
-        <button type="submit">Add Order</button>
+                <label for="input-sweetness_lvl" class="required-field">Sweetness</label>
+                <select name="input-sweetness_lvl" id="input-sweetness_lvl">
+                    <option value="100">100%</option>
+                    <option value="75">75%</option>
+                    <option value="25">25%</option>
+                    <option value="0">0%</option>
+                </select>
+
+                <label for="input-drink_size" class="required-field">Size</label>
+                <select name="input-drink_size" id="input-drink_size">
+                    <option value="R">Regular</option>
+                    <option value="S">Small</option>
+                </select>
+            </li>
+        </ol>
+
+
+        <button type="submit">Submit Order</button>
         <button type="reset">Cancel</button>
     </form>
     <script src="add_order.js"></script>
