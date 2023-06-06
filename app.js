@@ -428,176 +428,122 @@ app.delete('/delete-customer-ajax/', async (req, res, next) => {
   ~ PUT
 */
 
-app.put('/put-order-ajax', function(req,res,next){
-    let data = req.body
-    console.log("data:", data)
-    let order_id = parseInt(data.order_id)
-    let num_drinks = parseInt(data.num_drinks)
+app.put('/put-order-ajax', async (req, res, next) => {
+    try {
+        // Capture the incoming data and parse it back to a JS object
+        let data = await req.body
+        console.log("data:", data)
 
-    let query_update_numdrinks =
-        `UPDATE Orders
-        SET
-            num_drinks = ?
-        WHERE order_id = ?`
+        // Create the query and run it on the database
+        const table = "Orders"
+        const set_values = {num_drinks: parseInt(data["num_drinks"])}
+        const id_name = "order_id"
+        const id_value = parseInt(data[id_name])
+        const parameters = [table, set_values, id_name, id_value]
 
-    // Run the 1st query
-    db.pool.query(query_update_numdrinks, [num_drinks, order_id], function(error, rows, fields){
-        if (error) {
-            console.log(error)
-            res.sendStatus(400)
-        } else {
-            query2 = `
-                SELECT
-                    order_id
-                    , customer_id
-                    , DATE_FORMAT(order_date, '%Y-%m-%d %r') as order_date
-                    , num_drinks
-                    , total_cost
-                FROM Orders
-                `
-
-            db.pool.query(query2, function (error, rows, fields) {
-                if (error) {
-                    console.log(error)
-                    res.sendStatus(400)
-                }
-                else {
-                    res.status(200).send(rows)
-                }
-            })
-        }
-    })
+        // Run query and wait on result (for orders we need formatted dates, use raw)
+        const result = await db_queries.update_row(parameters)
+        const rows = await db_queries.select_all_raw(table)
+        console.log(result)
+        res.status(200).send(rows)
+    }
+    catch (error) {
+        console.log("order err:", error)
+        res.sendStatus(500)
+    }
 })
 
-app.put('/put-drink-ajax', function(req,res,next){
-    let data = req.body
-    console.log("data:", data)
+app.put('/put-drink-ajax', async (req, res, next) => {
+    try {
+        // Capture the incoming data and parse it back to a JS object
+        let data = await req.body
+        console.log("data:", data)
 
-    const drink_id = parseInt(data.drink_id)
-    const small_price = parseFloat(data.small_price)
-    const reg_price = parseFloat(data.reg_price)
-    const can_be_hot = parseInt(data.can_be_hot)
-    const is_flavored_sweetener = parseInt(data.is_flavored_sweetener)
-
-    const query_update_drink =
-        `UPDATE Drinks
-        SET
-              base_flavor = ?
-            , small_price = ?
-            , reg_price = ?
-            , can_be_hot = ?
-            , is_flavored_sweetener = ?
-        WHERE drink_id = ?;`
-
-    const query_vals = [data.base_flavor, small_price, reg_price, can_be_hot, is_flavored_sweetener, drink_id]
-
-    // Run the 1st query
-    db.pool.query(query_update_drink, query_vals, function(error, rows, fields){
-        if (error) {
-            console.log(error)
-            res.sendStatus(400)
-        } else {
-            query2 =`
-                SELECT
-                    *
-                FROM Drinks
-                `
-
-            db.pool.query(query2, function (error, rows, fields) {
-                if (error) {
-                    console.log(error)
-                    res.sendStatus(400)
-                }
-                else {
-                    res.status(200).send(rows)
-                }
-            })
+        // Create the query and run it on the database
+        const table = "Drinks"
+        const set_values = {
+              base_flavor: data["base_flavor"]
+            , small_price: parseFloat(data.small_price)
+            , reg_price: parseFloat(data.reg_price)
+            , can_be_hot: parseInt(data.can_be_hot)
+            , is_flavored_sweetener: parseInt(data.is_flavored_sweetener)
         }
-    })
-})
+        const id_name = "drink_id"
+        const id_value = parseInt(data[id_name])
+        const parameters = [table, set_values, id_name, id_value]
 
-app.put('/put-addon-ajax', function(req,res,next){
-    let data = req.body
-    console.log("data:", data)
+        // Run query and wait on result (for orders we need formatted dates, use raw)
+        const result = await db_queries.update_row(parameters)
+        const rows = await db_queries.select_all_raw(table)
+        console.log(result)
 
-    let add_on_id = parseInt(data.add_on_id)
-    let price = parseFloat(data.price)
-
-    const query_update_addon = `
-        UPDATE AddOns
-        SET
-            topping = ?
-            , price = ?
-        WHERE add_on_id = ?;`
-
-    const query_vals = [data.topping, price, add_on_id]
-
-    // Run the 1st query
-    db.pool.query(query_update_addon, query_vals, function(error, rows, fields){
-        if (error) {
-            console.log(error)
-            res.sendStatus(400)
-        } else {
-            query2 = `
-                SELECT
-                    *
-                FROM AddOns
-                `
-
-            db.pool.query(query2, function (error, rows, fields) {
-                if (error) {
-                    console.log(error)
-                    res.sendStatus(400)
-                }
-                else {
-                    res.status(200).send(rows)
-                }
-            })
-        }
-    })
+        res.status(200).send(rows)
+    }
+    catch (error) {
+        console.log("drink err:", error)
+        res.sendStatus(500)
+    }
 })
 
 
-app.put('/put-customer-ajax', function(req,res,next){
-    let data = req.body
-    console.log("data:", data)
+app.put('/put-addon-ajax', async (req, res, next) => {
+    try {
+        // Capture the incoming data and parse it back to a JS object
+        let data = await req.body
+        console.log("data:", data)
 
-    let customer_id = parseInt(data.customer_id)
-    let phone_num = parseInt(data.phone_num)
-
-    const query_update_customer = `
-        UPDATE Customers
-        SET
-            phone_num = ?
-            , first_name = ?
-            , last_name = ?
-        WHERE customer_id = ?;`
-
-    const query_vals = [data.phone_num, data.first_name, data.last_name, customer_id]
-
-    // Run the 1st query
-    db.pool.query(query_update_customer, query_vals, function(error, rows, fields){
-        if (error) {
-            console.log(error)
-            res.sendStatus(400)
-        } else {
-            query2 = `
-                SELECT
-                    *
-                FROM Customers
-                `
-
-            db.pool.query(query2, function (error, rows, fields) {
-                if (error) {
-                    console.log(error)
-                    res.sendStatus(400)
-                }
-                else {
-                    res.status(200).send(rows)
-                }
-            })
+        // Create the query and run it on the database
+        const table = "AddOns"
+        const set_values = {
+              topping: data["topping"]
+            , price: parseFloat(data.price)
         }
-    })
+        const id_name = "add_on_id"
+        const id_value = parseInt(data[id_name])
+        const parameters = [table, set_values, id_name, id_value]
+
+        // Run query and wait on result (for orders we need formatted dates, use raw)
+        const result = await db_queries.update_row(parameters)
+        const rows = await db_queries.select_all_raw(table)
+        console.log(result)
+
+        res.status(200).send(rows)
+    }
+    catch (error) {
+        console.log("drink err:", error)
+        res.sendStatus(500)
+    }
+})
+
+
+app.put('/put-customer-ajax', async (req, res, next) => {
+    try {
+        // Capture the incoming data and parse it back to a JS object
+        let data = await req.body
+        console.log("data:", data)
+
+        // Create the query and run it on the database
+        const table = "Customers"
+        const set_values = {
+              phone_num: data["phone_num"]
+            , first_name: data["first_name"]
+            , last_name: data["last_name"]
+        }
+        const id_name = "customer_id"
+        const id_value = parseInt(data[id_name])
+        const parameters = [table, set_values, id_name, id_value]
+
+        // Run query and wait on result (for orders we need formatted dates, use raw)
+        const result = await db_queries.update_row(parameters)
+        const rows = await db_queries.select_all_raw(table)
+        console.log(result)
+
+        res.status(200).send(rows)
+    }
+    catch (error) {
+        console.log("customer err:", error)
+        res.sendStatus(500)
+    }
 })
 
 

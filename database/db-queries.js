@@ -1,6 +1,8 @@
 // ? Source: https://darifnemma.medium.com/how-to-interact-with-mysql-database-using-async-await-promises-in-node-js-9e6c81b683da
+
 // ? Async info: https://stackoverflow.com/questions/49432579/await-is-only-valid-in-async-function
 // ? Params queries: https://github.com/mysqljs/mysql#escaping-query-values
+// ? Avoid re-querying: https://dzone.com/articles/use-returning-clause-to-avoid-unnecessary-sql-stat
 
 // Connect and run queries
 const db = require("./db-connector")
@@ -143,21 +145,6 @@ module.exports.select_all_clean = select_all_clean
 // INSERT QUERIES
 // -----------------------------------------------------------------------
 
-const delete_row = async (parameters) => {
-    const query = `
-        DELETE FROM ??
-        WHERE ?? = ?
-        `
-    return await run_query_param(query, parameters)
-}
-
-module.exports.delete_row = delete_row
-
-
-// -----------------------------------------------------------------------
-// DELETE QUERIES
-// -----------------------------------------------------------------------
-
 const insert_values = async (parameters) => {
     const query = `
         INSERT INTO ?? (??)
@@ -168,6 +155,37 @@ const insert_values = async (parameters) => {
 }
 
 module.exports.insert_values = insert_values
+
+// -----------------------------------------------------------------------
+// DELETE QUERIES
+// -----------------------------------------------------------------------
+
+const delete_row = async (parameters) => {
+    const query = `
+        DELETE FROM ??
+        WHERE ?? = ?
+        `
+    return await run_query_param(query, parameters)
+}
+
+module.exports.delete_row = delete_row
+
+// -----------------------------------------------------------------------
+// UPDATE QUERIES
+// -----------------------------------------------------------------------
+
+const update_row = async (parameters) => {
+    const query = `
+        UPDATE ??
+        SET ?
+        WHERE ?? = ?
+        `
+    return await run_query_param(query, parameters)
+}
+
+module.exports.update_row = update_row
+
+
 // -----------------------------------------------------------------------
 // CUSTOM QUERIES
 // -----------------------------------------------------------------------
