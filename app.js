@@ -2,49 +2,74 @@
 //?  https://github.com/osu-cs340-ecampus/nodejs-starter-app
 
 /*
-    SETUP
-*/
+ *   SETUP
+ */
 
+// Express and Handlebars
 const express = require('express')
 const hbrs_engine = require('express-handlebars')
 const handlebars = require("handlebars");
 
 const app = express()
-var PORT_NUM = process.env.PORT || 54321
 
 app.engine('handlebars', hbrs_engine.engine())
 app.set('view engine', 'handlebars')
 app.set('views', './views')
+
 app.use(express.json())
 app.use(express.urlencoded({extended: true}))
 
-const mysql = require('mysql')
-const fs = require('fs')
+// Database
+// const mysql = require('mysql')
+// const fs = require('fs')
 const db = require('./database/db-connector')
+const db_queries = require('./database/db-queries')
+
+
+/*************************************************************************
+ * Global Variables / Constants
+ *************************************************************************/
+var PORT_NUM = process.env.PORT || 54321
+const local_URL = "http://localhost:"
+const flip3_URL = "http://flip3.engr.oregonstate.edu:"
+
+let options = [
+    {
+        option: "/menu"
+        , option_name: "Menu"
+        , active: false
+    },
+    {
+        option: "/orders"
+        , option_name: "Orders"
+        , active: false
+    },
+    {
+        option: "/customers"
+        , option_name: "Customers"
+        , active: false
+    },
+    {
+        option: "/stats"
+        , option_name: "Stats"
+        , active: false
+    }
+]
+
 
 /*
-  HANDLERBAR Helpers
-*/
+ * HANDLERBAR Helpers
+ */
 
 //? Source: https://stackoverflow.com/questions/34252817/handlebarsjs-check-if-a-string-is-equal-to-a-value
 handlebars.registerHelper('if_equals', function(arg1, arg2, options) {
     return (arg1 == arg2) ? options.fn(this) : options.inverse(this)
 })
 
-/*
-    ROUTES
-*/
 
-const local_URL = "http://localhost:"
-const flip3_URL = "http://flip3.engr.oregonstate.edu:"
-
-app.listen(PORT_NUM, () => {
-    console.log("\n----------------- Startup... -----------------\n")
-    console.log("- App is running! 🍵")
-    console.log("- Local: %s%d/", local_URL, PORT_NUM)
-    console.log("- Flip: %s%d/", flip3_URL,PORT_NUM)
-    console.log("\n-------------------- Logs --------------------")
-})
+/*************************************************************************
+ * ROUTES
+ *************************************************************************/
 
 app.use((req, res, next) => {
     console.log("\n-- Request recieved --")
@@ -57,438 +82,146 @@ app.use((req, res, next) => {
 })
 
 
+/**
+ * Set option.active to true or false depending on whether the current route matches
+ */
+const set_active_option = (req, res, next) => {
+    const current_route = req.path
 
-// ~ Home Page (Entry point for "GET /"")
-app.get('/', (req, res) => {
-    const options = [
-        {
-            option: "menu"
-            , option_name: "Menu"
-            , active: false
-        },
-        {
-            option: "orders"
-            , option_name: "Orders"
-            , active: false
-        },
-        {
-            option: "customers"
-            , option_name: "Customers"
-            , active: false
-        },
-        {
-            option: "stats"
-            , option_name: "Stats"
-            , active: false
+    options.forEach((option) => {
+        option.active = option.option === current_route
+        if (option.option === "/stats" && current_route.startsWith("/stats/")) {
+            option.active = true
         }
-    ]
+    })
 
-    res.status(200).render('home', { options })
-})
+    next()
+}
 
 
-// ! Must come after main entry
 // ? Get pages/static items in public folder (css, imgs, client JS)
 app.use(express.static(__dirname + '/public'))
 
 
+/*************************************************************************
+ * ROUTES / GET
+ *************************************************************************/
+
+// ~ Home Page (Entry point for "GET /"")
+app.get('/', set_active_option, (req, res) => {
+    res.status(200).render('home', { options })
+})
+
+
 // ~ Menu
-app.get('/menu', (req, res) => {
-    const options = [
-        {
-          option: "menu"
-        , option_name: "Menu"
-        , active: true
-        },
-        {
-             option: "orders"
-            , option_name: "Orders"
-            , active: false
-        },
-        {
-            option: "customers"
-            , option_name: "Customers"
-            , active: false
-        },
-        {
-            option: "stats"
-            , option_name: "Stats"
-            , active: false
-        }
-    ]
+app.get('/menu', set_active_option, async (req, res) => {
+    try {
+        const drink_rows = await db_queries.select_all_clean("Drinks")
+        const addon_rows = await db_queries.select_all_clean("AddOns")
 
-    const query1 = `
-        SELECT
-            drink_id AS "Drink ID"
-            , base_flavor AS "Base Flavor"
-            , small_price AS "Price (Small)"
-            , reg_price AS "Price (Regular)"
-            , IF(can_be_hot, "Yes", "No") AS "Can be Hot"
-            , IF(is_flavored_sweetener, "Yes", "No") AS "Flavored Sweetener"
-        FROM Drinks
-        `
-
-    const query2 = `
-        SELECT 
-            add_on_id AS "Add On ID"
-            , topping AS "Topping"
-            , price AS "Price"
-        FROM AddOns
-        `
-
-    db.pool.query(query1, (error1, rows1, fields) => {
-        db.pool.query(query2, (error2, rows2, fields) => {
-            //? Combine header and row data, render() only accepts one object via Object.assign()
-            //? from: https://www.delftstack.com/howto/javascript/javascript-append-to-object/#use-the-object.assign-method-to-append-elements-to-objects-in-javascript
-            const data = Object.assign({options}, {drinks: rows1}, {addons: rows2})
-            console.log("data:", data)
-
-            if (error1 || error2) {
-                console.log("error1:", error1)
-                console.log("error2:", error2)
-                next()  // something wrong occured, go next middleware
-                return
-            }
-
-            res.status(200).render('menu', data)
-        })
-    })
+        //? Combine header and row data, render() only accepts one object via Object.assign()
+        //? from: https://www.delftstack.com/howto/javascript/javascript-append-to-object/#use-the-object.assign-method-to-append-elements-to-objects-in-javascript
+        const data = Object.assign({options}, {drinks: drink_rows}, {addons: addon_rows})
+        res.status(200).render('menu', data)
+    }
+    catch (error) {
+        console.log("menu err:", error)
+        res.status(500).render('500', {options})
+    }
 })
 
 
 // ~ Order
-app.get('/orders', (req, res) => {
-    const options = [
-        {
-          option: "menu"
-        , option_name: "Menu"
-        , active: false
-        },
-        {
-             option: "orders"
-            , option_name: "Orders"
-            , active: true
-        },
-        {
-            option: "customers"
-            , option_name: "Customers"
-            , active: false
-        },
-        {
-            option: "stats"
-            , option_name: "Stats"
-            , active: false
-        }
-    ]
+app.get('/orders', set_active_option, async (req, res) => {
+    try {
+        const order_rows = await db_queries.select_all_clean("Orders")
+        const drinkorder_rows = await db_queries.select_all_clean("DrinkOrders")
+        const addondetail_rows = await db_queries.select_all_clean("AddOnDetails")
+        const customer_rows = await db_queries.select_customer_names()
 
-    const query1 = `
-        SELECT
-            order_id AS "Order ID"
-            , customer_id AS "Customer ID"
-            , DATE_FORMAT(order_date, '%Y-%m-%d %r') as "Order Date"
-            , num_drinks AS "Number of Drinks"
-            , total_cost AS "Total Cost"
-        FROM Orders
-        `
+        const data = Object.assign(
+              {options}
+            , {orders: order_rows}
+            , {drink_orders: drinkorder_rows}
+            , {addon_details: addondetail_rows}
+            , {customers: customer_rows}
+            )
+        console.log("data:", data)
 
-    const query2 = `
-        SELECT 
-            drink_order_id AS "Drink Order ID"
-            , order_id AS "Order ID"
-            , drink_id AS "Drink ID"
-            , seq_number AS "Drink Number"
-            , sweetness_lvl AS "Sweetness"
-            , is_cold AS "Is Cold"
-            , drink_size AS "Drink Size"
-        FROM DrinkOrders
-        `
-
-    const query3 = `
-        SELECT
-            add_on_detail_id AS "Add On Detail ID"
-            , drink_order_id AS "Drink Order ID"
-            , add_on_id AS "Add On ID"
-            , quantity AS "Quantity"
-        FROM AddOnDetails
-        `
-    
-    const query4 = `
-        SELECT
-          customer_id
-        , CONCAT(first_name, " ", last_name) AS \`Full Name\`
-        FROM Customers
-        `
-
-    db.pool.query(query1, (error1, rows1, fields) => {
-        db.pool.query(query2, (error2, rows2, fields) => {
-            db.pool.query(query3, (error3, rows3, fields) => {
-                db.pool.query(query4, (error4, rows4, fields) => {
-                    const data = Object.assign(
-                          {options}
-                        , {orders: rows1}
-                        , {drink_orders: rows2}
-                        , {addon_details: rows3}
-                        , {customers: rows4}
-                    )
-                    console.log("data:", data)
-
-                    if (error1 || error2 || error3 || error4){
-                        console.log("error1:", error1)
-                        console.log("error2:", error2)
-                        console.log("error3:", error3)
-                        console.log("error4:", error4)
-                        next()
-                        return
-                    }
-
-                    res.status(200).render('orders', data)
-                })
-            })
-        })
-    })
+        res.status(200).render('orders', data)
+    }
+    catch (error) {
+        console.log("order err:", error)
+        res.status(500).render('500', {options})
+    }
 })
 
 
 // ~ Customers
-app.get('/customers', (req, res) => {
-    const options = [
-        {
-          option: "menu"
-        , option_name: "Menu"
-        , active: false
-        },
-        {
-             option: "orders"
-            , option_name: "Orders"
-            , active: false
-        },
-        {
-            option: "customers"
-            , option_name: "Customers"
-            , active: true
-        },
-        {
-            option: "stats"
-            , option_name: "Stats"
-            , active: false
-        }
-    ]
+app.get('/customers', set_active_option, async (req, res) => {
+    try {
+        const customer_rows = await db_queries.select_all_clean("Customers")
 
-
-    const query = `
-        SELECT 
-            customer_id AS "Customer ID"
-            , email AS "Email"
-            , phone_num AS "Phone Number"
-            , first_name AS "First Name"
-            , last_name AS "Last Name"
-            , num_orders AS "Number of Orders"
-            , num_drinks AS "Number of Drinks"
-            , total_spent AS "Total Spent"
-            , drinks_to_free AS "Drinks to Free"
-            , num_free_drinks AS "Number of Free Drinks"
-        FROM Customers
-        `
-
-    db.pool.query(query, (error, rows, fields) => {
-        const data = Object.assign({options}, {customers: rows})
-
-        if (error) {
-            console.log("error:", error)
-            next()  // something wrong occured, go next middleware
-            return
-        }
+        const data = Object.assign(
+              {options}
+            , {customers: customer_rows}
+            )
+        console.log("data:", data)
 
         res.status(200).render('customers', data)
-    })
+    }
+    catch (error) {
+        console.log("order err:", error)
+        res.status(500).render('500', {options})
+    }
 })
 
 
 // ~ See stats
-app.get('/stats', (req, res) => {
-    const options = [
-        {
-          option: "menu"
-        , option_name: "Menu"
-        , active: false
-        },
-        {
-             option: "orders"
-            , option_name: "Orders"
-            , active: false
-        },
-        {
-            option: "customers"
-            , option_name: "Customers"
-            , active: false
-        },
-        {
-            option: "stats"
-            , option_name: "Stats"
-            , active: true
-        }
-    ]
+app.get('/stats', set_active_option, async (req, res) => {
+    try {
+        const flavor_rows = await db_queries.stats_top_flavors()
+        const topping_rows = await db_queries.stats_top_toppings()
+        const drink_rows = await db_queries.stats_top_drinks()
 
-    const query1 = `
-        SELECT
-            base_flavor AS \`Flavor\`
-            , COUNT(DO.drink_order_id) AS \`Times Ordered\`
-        FROM
-            Drinks D LEFT JOIN DrinkOrders DO on D.drink_id = DO.drink_id
-        GROUP BY
-            base_flavor
-        ORDER BY
-            \`Times Ordered\` DESC`
+        const data = Object.assign(
+            {options}
+            , {topflavors: flavor_rows}
+            , {topaddons: topping_rows}
+            , {topdrinks: drink_rows}
+            )
+        console.log("data:", data)
 
-    const query2 = `
-        SELECT
-            topping AS "Topping"
-        , IF(SUM(AD.quantity) IS NULL, 0, SUM(AD.quantity)) AS "Times Added"
-        FROM
-            AddOns A LEFT JOIN AddOnDetails AD ON A.add_on_id = AD.add_on_id
-        GROUP BY
-            topping
-        ORDER BY
-            \`Times Added\` DESC;`
-
-    const query3 = `
-        SELECT
-            drink_flavor AS "Drink Flavor",
-            IF(\`Topping(s)\` IS NULL, "None", \`Topping(s)\`) AS "Topping(s)",
-            COUNT(*) AS "Times Ordered"
-        FROM
-            (
-                SELECT
-                    D.base_flavor AS drink_flavor,
-                    GROUP_CONCAT(A.topping) AS "Topping(s)"
-                FROM
-                    DrinkOrders DO
-                    INNER JOIN Drinks D ON DO.drink_id = D.drink_id
-                    LEFT JOIN AddOnDetails AD ON DO.drink_order_id = AD.drink_order_id
-                    LEFT JOIN AddOns A ON AD.add_on_id = A.add_on_id
-                GROUP BY
-                    DO.drink_order_id,
-                    D.base_flavor
-            ) AS subquery
-        GROUP BY
-            drink_flavor,
-            \`Topping(s)\`
-        ORDER BY
-            \`Times Ordered\` DESC
-        LIMIT 10;`
-
-    db.pool.query(query1, (error1, rows1, fields) => {
-        db.pool.query(query2, (error2, rows2, fields) => {
-            db.pool.query(query3, (error3, rows3, fields) => {
-                const data = Object.assign({options}, {topflavors: rows1}, {topaddons: rows2}, {topdrinks: rows3})
-                console.log("rows3:", rows3)
-
-                if (error1 || error2 || error3) {
-                    console.log("error1:", error1)
-                    console.log("error2:", error2)
-                    console.log("error3:", error3)
-                    next()  // something wrong occured, go next middleware
-                    return
-                }
-
-                res.status(200).render('stats_top', data)
-            })
-        })
-    })
+        res.status(200).render('stats_top', data)
+    }
+    catch (error) {
+        console.log("order err:", error)
+        res.status(500).render('500', {options})
+    }
 })
 
 
 // ~ See stats
-app.get('/stats_top', (req, res) => {
-    const options = [
-        {
-          option: "menu"
-        , option_name: "Menu"
-        , active: false
-        },
-        {
-             option: "orders"
-            , option_name: "Orders"
-            , active: false
-        },
-        {
-            option: "customers"
-            , option_name: "Customers"
-            , active: false
-        },
-        {
-            option: "stats"
-            , option_name: "Stats"
-            , active: true
-        }
-    ]
+app.get('/stats/top', set_active_option, async (req, res) => {
+    try {
+        const flavor_rows = await db_queries.stats_top_flavors()
+        const topping_rows = await db_queries.stats_top_toppings()
+        const drink_rows = await db_queries.stats_top_drinks()
 
-    const query1 = `
-        SELECT
-            base_flavor AS \`Flavor\`
-            , COUNT(DO.drink_order_id) AS \`Times Ordered\`
-        FROM
-            Drinks D LEFT JOIN DrinkOrders DO on D.drink_id = DO.drink_id
-        GROUP BY
-            base_flavor
-        ORDER BY
-            \`Times Ordered\` DESC`
+        const data = Object.assign(
+            {options}
+            , {topflavors: flavor_rows}
+            , {topaddons: topping_rows}
+            , {topdrinks: drink_rows}
+            )
+        console.log("data:", data)
 
-    const query2 = `
-        SELECT
-            topping AS "Topping"
-        , IF(SUM(AD.quantity) IS NULL, 0, SUM(AD.quantity)) AS "Times Added"
-        FROM
-            AddOns A LEFT JOIN AddOnDetails AD ON A.add_on_id = AD.add_on_id
-        GROUP BY
-            topping
-        ORDER BY
-            \`Times Added\` DESC;`
-
-    const query3 = `
-        SELECT
-            drink_flavor AS "Drink Flavor",
-            IF(\`Topping(s)\` IS NULL, "None", \`Topping(s)\`) AS "Topping(s)",
-            COUNT(*) AS "Times Ordered"
-        FROM
-            (
-                SELECT
-                    D.base_flavor AS drink_flavor,
-                    GROUP_CONCAT(A.topping) AS "Topping(s)"
-                FROM
-                    DrinkOrders DO
-                    INNER JOIN Drinks D ON DO.drink_id = D.drink_id
-                    LEFT JOIN AddOnDetails AD ON DO.drink_order_id = AD.drink_order_id
-                    LEFT JOIN AddOns A ON AD.add_on_id = A.add_on_id
-                GROUP BY
-                    DO.drink_order_id,
-                    D.base_flavor
-            ) AS subquery
-        GROUP BY
-            drink_flavor,
-            \`Topping(s)\`
-        ORDER BY
-            \`Times Ordered\` DESC
-        LIMIT 10;`
-
-    db.pool.query(query1, (error1, rows1, fields) => {
-        db.pool.query(query2, (error2, rows2, fields) => {
-            db.pool.query(query3, (error3, rows3, fields) => {
-                const data = Object.assign({options}, {topflavors: rows1}, {topaddons: rows2}, {topdrinks: rows3})
-                console.log("rows3:", rows3)
-
-                if (error1 || error2 || error3) {
-                    console.log("error1:", error1)
-                    console.log("error2:", error2)
-                    console.log("error3:", error3)
-                    next()  // something wrong occured, go next middleware
-                    return
-                }
-
-                res.status(200).render('stats_top', data)
-            })
-        })
-    })
+        res.status(200).render('stats_top', data)
+    }
+    catch (error) {
+        console.log("order err:", error)
+        res.status(500).render('500', {options})
+    }
 })
 
 
@@ -496,462 +229,340 @@ app.get('/stats_top', (req, res) => {
   ~ POST
 */
 
-app.post('/add-order-ajax', function (req, res) {
-    // Capture the incoming data and parse it back to a JS object
-    let data = req.body;
-    console.log("data:", data)
+app.post('/add-order-ajax', async (req, res) => {
+    try {
+        // Capture the incoming data and parse it back to a JS object
+        let req_data = await req.body;
+        console.log("req_data:", req_data)
 
-    // Create the query and run it on the database
-    query1 =
-        `INSERT INTO Orders (customer_id, order_date, num_drinks)
-         VALUES (
-          '${data['customer_id']}'
-        , '${data['order_date']}'
-        , '${data['num_drinks']}'
-        )`;
+        // Create the query and run it on the database
+        const table = "Orders"
+        const columns = ["customer_id", "order_date", "num_drinks"]
+        const parameters = [table, columns, [req_data.customer_id, req_data.order_date, req_data.num_drinks]]
 
-    db.pool.query(query1, function (error, rows, fields) {
-        if (error) {
-            console.log(error)
-            res.sendStatus(400)
-        }
-        else {
-            query2 = `
-                SELECT
-                    order_id
-                    , customer_id
-                    , DATE_FORMAT(order_date, '%Y-%m-%d %r') as order_date
-                    , num_drinks 
-                    , total_cost
-                FROM Orders
-                `
+        // Run query and wait on result (for orders we need formatted dates, use raw)
+        const result = await db_queries.insert_values(parameters)
+        const rows = await db_queries.select_all_raw('Orders')
 
-            db.pool.query(query2, function (error, rows, fields) {
-                if (error) {
-                    console.log(error)
-                    res.sendStatus(400)
-                }
-                else {
-                    res.status(200).send(rows)
-                }
-            })
-        }
-    })
-})
-
-app.post('/add-drink-ajax', function (req, res) {
-    // Capture the incoming data and parse it back to a JS object
-    let data = req.body;
-    console.log("data:", data)
-
-    // Create the query and run it on the database
-    query1 =
-        `INSERT INTO Drinks (base_flavor, small_price, reg_price, can_be_hot, is_flavored_sweetener)
-         VALUES (
-          '${data['base_flavor']}'
-        , '${data['small_price']}'
-        , '${data['reg_price']}'
-        , '${data['can_be_hot']}'
-        , '${data['is_flavored_sweetener']}'
-        )`;
-
-    db.pool.query(query1, function (error, rows, fields) {
-        if (error) {
-            console.log(error)
-            res.sendStatus(400)
-        }
-        else {
-            query2 = `
-                SELECT
-                    *
-                FROM Drinks
-                `
-
-            db.pool.query(query2, function (error, rows, fields) {
-                if (error) {
-                    console.log(error)
-                    res.sendStatus(400)
-                }
-                else {
-                    res.status(200).send(rows)
-                }
-            })
-        }
-    })
-})
-
-app.post('/add-addon-ajax', function (req, res) {
-    // Capture the incoming data and parse it back to a JS object
-    let data = req.body;
-    console.log("data:", data)
-
-    // Create the query and run it on the database
-    query1 =
-        `INSERT INTO AddOns (topping, price)
-         VALUES (
-          '${data['topping']}'
-        , '${data['price']}'
-        )`;
-
-    db.pool.query(query1, function (error, rows, fields) {
-        if (error) {
-            console.log(error)
-            res.sendStatus(400)
-        }
-        else {
-            query2 = `
-                SELECT 
-                    *
-                FROM AddOns
-                `
-
-            db.pool.query(query2, function (error, rows, fields) {
-                if (error) {
-                    console.log(error)
-                    res.sendStatus(400)
-                }
-                else {
-                    res.status(200).send(rows)
-                }
-            })
-        }
-    })
-})
-
-app.post('/add-customer-ajax', function (req, res) {
-    // Capture the incoming data and parse it back to a JS object
-    let data = req.body;
-    
-    if (data.phone_num == '') {
-        data.phone_num = 'NULL'
+        res.status(200).send(rows)
     }
+    catch (error) {
+        console.log("order err:", error)
+        res.status(500).render('500', {options})
+    }
+})
 
-    console.log("data:", data)
 
-    // Create the query and run it on the database
-    query1 =
-        `INSERT INTO Customers (email, phone_num, first_name, last_name)
-         VALUES (
-          '${data['email']}'
-        , '${data['phone_num']}'
-        , '${data['first_name']}'
-        , '${data['last_name']}'
-        )`;
+app.post('/add-drink-ajax', async (req, res) => {
+    try {
+        // Capture the incoming data and parse it back to a JS object
+        let data = await req.body;
+        console.log("req_data:", data)
 
-    db.pool.query(query1, function (error, rows, fields) {
-        if (error) {
-            console.log(error)
-            res.sendStatus(400)
+        // Create the query and run it on the database
+        const table = "Drinks"
+        const columns = ["base_flavor", "small_price", "reg_price", "can_be_hot", "is_flavored_sweetener"]
+        const parameters = [table, columns, [data.base_flavor, data.small_price, data.reg_price, data.can_be_hot, data.is_flavored_sweetener]]
+
+        // Run query and wait on result (for orders we need formatted dates, use raw)
+        const result = await db_queries.insert_values(parameters)
+        console.log(result)
+
+        res.status(200).send(result)
+    }
+    catch (error) {
+        console.log("drink err:", error)
+        res.status(500).render('500', {options})
+    }
+})
+
+
+app.post('/add-addon-ajax', async (req, res) => {
+    try {
+        // Capture the incoming data and parse it back to a JS object
+        let data = await req.body;
+        console.log("req_data:", data)
+
+        // Create the query and run it on the database
+        const table = "AddOns"
+        const columns = ["topping", "price"]
+        const parameters = [table, columns, [data.topping, data.price]]
+
+        // Run query and wait on result (for orders we need formatted dates, use raw)
+        const result = await db_queries.insert_values(parameters)
+        console.log(result)
+
+        res.status(200).send(result)
+    }
+    catch (error) {
+        console.log("addon err:", error)
+        res.status(500).render('500', {options})
+    }
+})
+
+
+app.post('/add-customer-ajax', async (req, res) => {
+    try {
+        // Capture the incoming data and parse it back to a JS object
+        let data = await req.body;
+        console.log("req_data:", data)
+
+        if (data.phone_num == '') {
+            data.phone_num = 'NULL'
         }
-        else {
-            query2 = `
-                SELECT 
-                    *
-                FROM Customers
-                `
 
-            db.pool.query(query2, function (error, rows, fields) {
-                if (error) {
-                    console.log(error)
-                    res.sendStatus(400)
-                }
-                else {
-                    res.status(200).send(rows)
-                }
-            })
-        }
-    })
+        // Create the query and run it on the database
+        const table = "Customers"
+        const columns = ["email", "phone_num", "first_name", "last_name"]
+        const parameters = [table, columns, [data.email, data.phone_num, data.first_name, data.last_name]]
+
+        // Run query and wait on result (for orders we need formatted dates, use raw)
+        const result = await db_queries.insert_values(parameters)
+        console.log(result)
+
+        res.status(200).send(result)
+    }
+    catch (error) {
+        console.log("customer err:", error)
+        res.status(500).render('500', {options})
+    }
 })
 
 /*
   ~ DELETE
 */
 
-app.delete('/delete-order-ajax/', function(req,res, next){
-    let data = req.body
-    let order_id = parseInt(data.order_id)
+app.delete('/delete-order-ajax/', async (req, res, next) => {
+    try {
+        // Capture the incoming data and parse it back to a JS object
+        let data = await req.body;
+        console.log("req_data:", data)
 
-    console.log("data:", data)
+        // Create the query and run it on the database
+        const table = "Orders"
+        const id_name = "order_id"
+        const id_value = parseInt(data[id_name])
+        const parameters = [table, id_name, id_value]
 
-    let delete_orders =
-        `DELETE FROM Orders
-        WHERE order_id = ?`
-
-    db.pool.query(delete_orders, [order_id], function(error, rows, fields){
-        if (error) {
-            console.log("delete orders: error")
-            res.sendStatus(400)
-        } else {
-            res.sendStatus(204)
-        }
-    })
+        // Run query and wait on result (for orders we need formatted dates, use raw)
+        const result = await db_queries.delete_row(parameters)
+        console.log(result)
+        res.sendStatus(204)
+    }
+    catch (error) {
+        console.log("order err:", error)
+        res.sendStatus(500)
+    }
 })
 
-app.delete('/delete-drink-ajax/', function(req,res, next){
-    let data = req.body
-    let drink_id = parseInt(data.drink_id)
 
-    console.log("data:", data)
+app.delete('/delete-drink-ajax/', async (req, res, next) => {
+    try {
+        // Capture the incoming data and parse it back to a JS object
+        let data = await req.body;
 
-    let delete_drinks =
-        `DELETE FROM Drinks
-        WHERE drink_id = ?`
+        // Create the query and run it on the database
+        const table = "Drinks"
+        const id_name = "drink_id"
+        const id_value = parseInt(data[id_name])
+        const parameters = [table, id_name, id_value]
 
-    db.pool.query(delete_drinks, [drink_id], function(error, rows, fields){
-        if (error) {
-            console.log("delete drink: error")
-            res.sendStatus(400)
-        } else {
-            res.sendStatus(204)
-        }
-    })
+        // Run query and wait on result (for orders we need formatted dates, use raw)
+        const result = await db_queries.delete_row(parameters)
+        console.log(result)
+        res.sendStatus(204)
+    }
+    catch (error) {
+        console.log("drink err:", error)
+        res.sendStatus(500)
+    }
 })
 
-app.delete('/delete-addon-ajax/', function(req,res, next){
-    let data = req.body
-    let add_on_id = parseInt(data.add_on_id)
 
-    console.log("data:", data)
+app.delete('/delete-addon-ajax/', async (req, res, next) => {
+    try {
+        // Capture the incoming data and parse it back to a JS object
+        let data = await req.body;
 
-    let delete_addons =
-        `DELETE FROM AddOns
-        WHERE add_on_id = ?`
+        // Create the query and run it on the database
+        const table = "AddOns"
+        const id_name = "add_on_id"
+        const id_value = parseInt(data[id_name])
+        const parameters = [table, id_name, id_value]
 
-    db.pool.query(delete_addons, [add_on_id], function(error, rows, fields){
-        if (error) {
-            console.log("delete addon: error")
-            res.sendStatus(400)
-        } else {
-            res.sendStatus(204)
-        }
-    })
+        // Run query and wait on result (for orders we need formatted dates, use raw)
+        const result = await db_queries.delete_row(parameters)
+        console.log(result)
+        res.sendStatus(204)
+    }
+    catch (error) {
+        console.log("addon err:", error)
+        res.sendStatus(500)
+    }
 })
 
-app.delete('/delete-customer-ajax/', function(req,res, next){
-    let data = req.body
-    let customer_id = parseInt(data.customer_id)
 
-    console.log("data:", data)
+app.delete('/delete-customer-ajax/', async (req, res, next) => {
+    try {
+        // Capture the incoming data and parse it back to a JS object
+        let data = await req.body;
 
-    let delete_customers =
-        `DELETE FROM Customers
-        WHERE customer_id = ?`
+        // Create the query and run it on the database
+        const table = "Customers"
+        const id_name = "customer_id"
+        const id_value = parseInt(data[id_name])
+        const parameters = [table, id_name, id_value]
 
-    db.pool.query(delete_customers, [customer_id], function(error, rows, fields){
-        if (error) {
-            console.log("delete customer: error")
-            res.sendStatus(400)
-        } else {
-            res.sendStatus(204)
-        }
-    })
+        // Run query and wait on result (for orders we need formatted dates, use raw)
+        const result = await db_queries.delete_row(parameters)
+        console.log(result)
+        res.sendStatus(204)
+    }
+    catch (error) {
+        console.log("customer err:", error)
+        res.sendStatus(500)
+    }
 })
 
 /*
   ~ PUT
 */
 
-app.put('/put-order-ajax', function(req,res,next){
-    let data = req.body
-    console.log("data:", data)
-    let order_id = parseInt(data.order_id)
-    let num_drinks = parseInt(data.num_drinks)
+app.put('/put-order-ajax', async (req, res, next) => {
+    try {
+        // Capture the incoming data and parse it back to a JS object
+        let data = await req.body
+        console.log("data:", data)
 
-    let query_update_numdrinks =
-        `UPDATE Orders
-        SET
-            num_drinks = ?
-        WHERE order_id = ?`
+        // Create the query and run it on the database
+        const table = "Orders"
+        const set_values = {num_drinks: parseInt(data["num_drinks"])}
+        const id_name = "order_id"
+        const id_value = parseInt(data[id_name])
+        const parameters = [table, set_values, id_name, id_value]
 
-    // Run the 1st query
-    db.pool.query(query_update_numdrinks, [num_drinks, order_id], function(error, rows, fields){
-        if (error) {
-            console.log(error)
-            res.sendStatus(400)
-        } else {
-            query2 = `
-                SELECT
-                    order_id
-                    , customer_id
-                    , DATE_FORMAT(order_date, '%Y-%m-%d %r') as order_date
-                    , num_drinks 
-                    , total_cost
-                FROM Orders
-                `
-
-            db.pool.query(query2, function (error, rows, fields) {
-                if (error) {
-                    console.log(error)
-                    res.sendStatus(400)
-                }
-                else {
-                    res.status(200).send(rows)
-                }
-            })
-        }
-    })
+        // Run query and wait on result (for orders we need formatted dates, use raw)
+        const result = await db_queries.update_row(parameters)
+        const rows = await db_queries.select_all_raw(table)
+        console.log(result)
+        res.status(200).send(rows)
+    }
+    catch (error) {
+        console.log("order err:", error)
+        res.sendStatus(500)
+    }
 })
 
-app.put('/put-drink-ajax', function(req,res,next){
-    let data = req.body
-    console.log("data:", data)
+app.put('/put-drink-ajax', async (req, res, next) => {
+    try {
+        // Capture the incoming data and parse it back to a JS object
+        let data = await req.body
+        console.log("data:", data)
 
-    const drink_id = parseInt(data.drink_id)
-    const small_price = parseFloat(data.small_price)
-    const reg_price = parseFloat(data.reg_price)
-    const can_be_hot = parseInt(data.can_be_hot)
-    const is_flavored_sweetener = parseInt(data.is_flavored_sweetener)
-
-    const query_update_drink =
-        `UPDATE Drinks
-        SET
-              base_flavor = ?
-            , small_price = ?
-            , reg_price = ?
-            , can_be_hot = ?
-            , is_flavored_sweetener = ?
-        WHERE drink_id = ?;`
-
-    const query_vals = [data.base_flavor, small_price, reg_price, can_be_hot, is_flavored_sweetener, drink_id]
-    
-    // Run the 1st query
-    db.pool.query(query_update_drink, query_vals, function(error, rows, fields){
-        if (error) {
-            console.log(error)
-            res.sendStatus(400)
-        } else {
-            query2 =`
-                SELECT
-                    *
-                FROM Drinks
-                `
-
-            db.pool.query(query2, function (error, rows, fields) {
-                if (error) {
-                    console.log(error)
-                    res.sendStatus(400)
-                }
-                else {
-                    res.status(200).send(rows)
-                }
-            })
+        // Create the query and run it on the database
+        const table = "Drinks"
+        const set_values = {
+              base_flavor: data["base_flavor"]
+            , small_price: parseFloat(data.small_price)
+            , reg_price: parseFloat(data.reg_price)
+            , can_be_hot: parseInt(data.can_be_hot)
+            , is_flavored_sweetener: parseInt(data.is_flavored_sweetener)
         }
-    })
-})
+        const id_name = "drink_id"
+        const id_value = parseInt(data[id_name])
+        const parameters = [table, set_values, id_name, id_value]
 
-app.put('/put-addon-ajax', function(req,res,next){
-    let data = req.body
-    console.log("data:", data)
+        // Run query and wait on result (for orders we need formatted dates, use raw)
+        const result = await db_queries.update_row(parameters)
+        const rows = await db_queries.select_all_raw(table)
+        console.log(result)
 
-    let add_on_id = parseInt(data.add_on_id)
-    let price = parseFloat(data.price)
-
-    const query_update_addon = `
-        UPDATE AddOns
-        SET
-            topping = ?
-            , price = ?
-        WHERE add_on_id = ?;`
-    
-    const query_vals = [data.topping, price, add_on_id]
-    
-    // Run the 1st query
-    db.pool.query(query_update_addon, query_vals, function(error, rows, fields){
-        if (error) {
-            console.log(error)
-            res.sendStatus(400)
-        } else {
-            query2 = `
-                SELECT 
-                    *
-                FROM AddOns
-                `
-
-            db.pool.query(query2, function (error, rows, fields) {
-                if (error) {
-                    console.log(error)
-                    res.sendStatus(400)
-                }
-                else {
-                    res.status(200).send(rows)
-                }
-            })
-        }
-    })
+        res.status(200).send(rows)
+    }
+    catch (error) {
+        console.log("drink err:", error)
+        res.sendStatus(500)
+    }
 })
 
 
-app.put('/put-customer-ajax', function(req,res,next){
-    let data = req.body
-    console.log("data:", data)
+app.put('/put-addon-ajax', async (req, res, next) => {
+    try {
+        // Capture the incoming data and parse it back to a JS object
+        let data = await req.body
+        console.log("data:", data)
 
-    let customer_id = parseInt(data.customer_id)
-    let phone_num = parseInt(data.phone_num)
-
-    const query_update_customer = `
-        UPDATE Customers
-        SET
-            phone_num = ?
-            , first_name = ?
-            , last_name = ?
-        WHERE customer_id = ?;`
-    
-    const query_vals = [data.phone_num, data.first_name, data.last_name, customer_id]
-    
-    // Run the 1st query
-    db.pool.query(query_update_customer, query_vals, function(error, rows, fields){
-        if (error) {
-            console.log(error)
-            res.sendStatus(400)
-        } else {
-            query2 = `
-                SELECT 
-                    *
-                FROM Customers
-                `
-
-            db.pool.query(query2, function (error, rows, fields) {
-                if (error) {
-                    console.log(error)
-                    res.sendStatus(400)
-                }
-                else {
-                    res.status(200).send(rows)
-                }
-            })
+        // Create the query and run it on the database
+        const table = "AddOns"
+        const set_values = {
+              topping: data["topping"]
+            , price: parseFloat(data.price)
         }
-    })
+        const id_name = "add_on_id"
+        const id_value = parseInt(data[id_name])
+        const parameters = [table, set_values, id_name, id_value]
+
+        // Run query and wait on result (for orders we need formatted dates, use raw)
+        const result = await db_queries.update_row(parameters)
+        const rows = await db_queries.select_all_raw(table)
+        console.log(result)
+
+        res.status(200).send(rows)
+    }
+    catch (error) {
+        console.log("drink err:", error)
+        res.sendStatus(500)
+    }
+})
+
+
+app.put('/put-customer-ajax', async (req, res, next) => {
+    try {
+        // Capture the incoming data and parse it back to a JS object
+        let data = await req.body
+        console.log("data:", data)
+
+        // Create the query and run it on the database
+        const table = "Customers"
+        const set_values = {
+              phone_num: data["phone_num"]
+            , first_name: data["first_name"]
+            , last_name: data["last_name"]
+        }
+        const id_name = "customer_id"
+        const id_value = parseInt(data[id_name])
+        const parameters = [table, set_values, id_name, id_value]
+
+        // Run query and wait on result (for orders we need formatted dates, use raw)
+        const result = await db_queries.update_row(parameters)
+        const rows = await db_queries.select_all_raw(table)
+        console.log(result)
+
+        res.status(200).send(rows)
+    }
+    catch (error) {
+        console.log("customer err:", error)
+        res.sendStatus(500)
+    }
+})
+
+
+// ***********************************************************************
+// ! 404 Error
+// ***********************************************************************
+app.get('*', set_active_option, (req, res) => {
+    res.status(404).render('404', {options})
 })
 
 
 /*
-  ! 404
-*/
+ * LISTENER
+ */
 
-// ~ Anything else... 404
-app.get('*', (req, res) => {
-    const options = [
-        {
-            option: "menu"
-            , option_name: "Menu"
-            , active: false
-        },
-        {
-            option: "orders"
-            , option_name: "Orders"
-            , active: false
-        },
-        {
-            option: "customers"
-            , option_name: "Customers"
-            , active: false
-        },
-        {
-            option: "stats"
-            , option_name: "Stats"
-            , active: false
-        }
-    ]
-
-    res.status(404).render('404', { options })
+app.listen(PORT_NUM, () => {
+    console.log("\n----------------- Startup... -----------------\n")
+    console.log("- App is running! 🍵")
+    console.log("- Local: %s%d/", local_URL, PORT_NUM)
+    console.log("- Flip: %s%d/", flip3_URL,PORT_NUM)
+    console.log("\n-------------------- Logs --------------------")
 })

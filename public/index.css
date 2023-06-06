@@ -284,6 +284,17 @@ table td:last-child {
     border-right: 1px solid gray;
 }
 
+.two-column-table {
+    display: flex;
+    justify-content: flex-start;
+    gap: 5%;
+}
+
+
+/* ------------------------------------------------------------------------------------ */
+/* FORM STYLES ----------------------------------------------------------------------- */
+/* ------------------------------------------------------------------------------------ */
+
 form {
     border-collapse: collapse;
     border: 1px solid gray;
@@ -291,6 +302,10 @@ form {
     display: inline-block;
 
     background-color: #FDFCFB;
+}
+
+form h3 {
+    margin-bottom: 0.5rem;
 }
 
 /* ? Source: artist file demo */
@@ -302,21 +317,21 @@ form {
 
 input {
     margin-bottom: 0.5rem;
+    margin-right: 0.5rem;
 }
 
 select {
     margin-bottom: 0.5rem;
-
+    margin-right: 0.5rem;
 }
 
-.two-column-table {
-    display: flex;
-    justify-content: flex-start;
-    gap: 5%;
+#add-drinks-list {
+    padding-left: 1rem;
 }
+
 
 /* ------------------------------------------------------------------------------------ */
-/* FOOTER ----------------------------------------------------------------------------- */
+/* FOOTER/BACKGROUND ------------------------------------------------------------------ */
 /* ------------------------------------------------------------------------------------ */
 .scallop {
     height: 60px;
