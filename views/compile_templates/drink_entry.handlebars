@@ -1,0 +1,35 @@
+<li>
+    <label for="input-drink_id" class="required-field">Drink Flavor</label>
+    <select name="input-drink_id" class="input-drink_id">
+        <option value=""></option>
+        {{#each drinks}}
+        <option value="{{this.drink_id}}">{{[Base Flavor]}}</option>
+        {{/each}}
+    </select>
+
+    <label for="input-add_on_id">Topping</label>
+    <select name="input-add_on_id" class="input-add_on_id">
+        <option value=""></option>
+        {{#each addons}}
+        <option value="{{this.add_on_id}}">{{[Topping]}}</option>
+        {{/each}}
+    </select>
+
+    <label for="input-sweetness_lvl" class="required-field">Sweetness</label>
+    <select name="input-sweetness_lvl" class="input-sweetness_lvl">
+        <option value="100">100%</option>
+        <option value="75">75%</option>
+        <option value="25">25%</option>
+        <option value="0">0%</option>
+    </select>
+
+    <label for="input-drink_size" class="required-field">Size</label>
+    <select name="input-drink_size" class="input-drink_size">
+        <option value="R">Regular</option>
+        {{!-- <option value="R">{{[Price (Regular)]}}</option> --}}
+        <option value="S">Small</option>
+    </select>
+
+
+    <button class="remove-drink">−</button>
+</li>

@@ -138,6 +138,8 @@ app.get('/orders', set_active_option, async (req, res) => {
         const drinkorder_rows = await db_queries.select_all_clean("DrinkOrders")
         const addondetail_rows = await db_queries.select_all_clean("AddOnDetails")
         const customer_rows = await db_queries.select_customer_names()
+        const drink_rows = await db_queries.select_all_clean("Drinks")
+        const topping_rows = await db_queries.select_all_clean("AddOns")
 
         const data = Object.assign(
               {options}
@@ -145,6 +147,8 @@ app.get('/orders', set_active_option, async (req, res) => {
             , {drink_orders: drinkorder_rows}
             , {addon_details: addondetail_rows}
             , {customers: customer_rows}
+            , {drinks: drink_rows}
+            , {addons: topping_rows}
             )
         console.log("data:", data)
 
@@ -224,6 +228,32 @@ app.get('/stats/top', set_active_option, async (req, res) => {
     }
 })
 
+
+// ~ Handle client requests for data
+app.get('/api/:client_type', async (req, res) => {
+    try {
+        data = null
+        switch(req.params.client_type) {
+            case 'order-drink':
+                const drink_rows = await db_queries.select_all_clean("Drinks")
+                const topping_rows = await db_queries.select_all_clean("AddOns")
+                data = Object.assign(
+                      {drinks: drink_rows}
+                    , {addons: topping_rows}
+                    )
+                console.log("data:", data)
+
+                res.status(200).json(data)
+                break
+            default:
+                break
+        }
+    }
+    catch (error) {
+        console.log("api err", req.params.client_type, error)
+        res.status(500).render('500', {options})
+    }
+})
 
 /*
   ~ POST

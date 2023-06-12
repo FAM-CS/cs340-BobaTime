@@ -6,7 +6,10 @@
   "scripts": {
     "test": "echo No Tests yet",
     "start": "node app.js",
-    "dev": "nodemon app.js"
+    "dev": "nodemon app.js",
+    "build": "handlebars views/compile_templates -f public/templates.js",
+    "prestart": "npm run build",
+    "predev": "npm run build"
   },
   "repository": {
     "type": "git",

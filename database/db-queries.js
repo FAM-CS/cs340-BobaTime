@@ -141,6 +141,40 @@ const select_all_clean = async (table) => {
 
 module.exports.select_all_clean = select_all_clean
 
+
+const drink_data = async () => {
+    query = `
+        SELECT
+            drink_id
+            , base_flavor
+            , small_price
+            , reg_price
+            , IF(can_be_hot, "Yes", "No")
+            , IF(is_flavored_sweetener, "Yes", "No")
+        FROM Drinks
+        `
+
+    return await run_query(query)
+}
+
+module.exports.drink_data = drink_data
+
+
+const topping_data = async () => {
+    query = `
+        SELECT
+            add_on_id
+            , topping
+            , price
+        FROM AddOns
+        `
+
+    return await run_query(query)
+}
+
+module.exports.topping_data = topping_data
+
+
 // -----------------------------------------------------------------------
 // INSERT QUERIES
 // -----------------------------------------------------------------------

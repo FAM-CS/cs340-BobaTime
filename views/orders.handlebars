@@ -1,5 +1,7 @@
 {{!-- jQuery for Deleting --}}
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+{{!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script> --}}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+<script src="orders.js" defer></script>
 
 <section class="content">
 
@@ -46,54 +48,31 @@
         <br/>
 
         <label for="input-order_date" class="required-field">Date/Time (YYYY-MM-DD HH:MM:SS):</label>
-        <input type="text" id="input-order_date" name="input-order_date" placeholder="YYYY-MM-DD HH:MM:SS" minlength="1" maxlength="20" required>
+        <input type="text" id="input-order_date" name="input-order_date" placeholder="YYYY-MM-DD HH:MM:SS" minlength="1" maxlength="20">
+        {{!-- put back --}}
+        {{!-- <input type="text" id="input-order_date" name="input-order_date" placeholder="YYYY-MM-DD HH:MM:SS" minlength="1" maxlength="20" required> --}}
 
         <br/>
 
         {{!-- REMOVE LATER --}}
-        <label for="input-num_drinks" class="required-field">Number of Drinks</label>
-        <input type="number" id="input-num_drinks" name="input-num_drinks" minlength="1" maxlength="20" required>
+        {{!-- <label for="input-num_drinks" class="required-field">Number of Drinks</label>
+        <input type="number" id="input-num_drinks" name="input-num_drinks" minlength="1" maxlength="20" required> --}}
+        <label for="input-num_drinks">
+            Number of Drinks:
+            <output id="input-num_drinks" name="input-num_drinks">1</output>
+        </label>
 
-        {{!-- <ol id="add-drinks-list">
-            <li>
-                <label for="input-drink_id" class="required-field">Drink Flavor</label>
-                <select name="input-drink_id" id="input-drink_id">
-                    <option value=""></option>
-                    {{#each drinks}}
-                    <option value="{{this.drink_id}}">{{[Flavor]}}</option>
-                    {{/each}}
-                </select>
+        <div class="drink-entry-container">
+            <ol id="add-drinks-list">
+                {{> drink_entry}}
+            </ol>
+            <button id="add-new-drink">+</button>
+        </div>
 
-                <label for="input-add_on_id">Topping</label>
-                <select name="input-add_on_id" id="input-add_on_id">
-                    <option value=""></option>
-                    {{#each addons}}
-                    <option value="{{this.add_on_id}}">{{[Topping]}}</option>
-                    {{/each}}
-                </select>
-
-                <label for="input-sweetness_lvl" class="required-field">Sweetness</label>
-                <select name="input-sweetness_lvl" id="input-sweetness_lvl">
-                    <option value="100">100%</option>
-                    <option value="75">75%</option>
-                    <option value="25">25%</option>
-                    <option value="0">0%</option>
-                </select>
-
-                <label for="input-drink_size" class="required-field">Size</label>
-                <select name="input-drink_size" id="input-drink_size">
-                    <option value="R">Regular</option>
-                    <option value="S">Small</option>
-                </select>
-            </li>
-        </ol> --}}
-
-        <br/>
-
-        <button type="submit">Submit Order</button>
+        <button type="submit" id="submit-order">Submit Order</button>
         <button type="reset">Cancel</button>
     </form>
-    <script src="add_order.js"></script>
+    {{!-- <script src="add_order.js"></script> --}}
 
     <p></p>
 
@@ -116,7 +95,7 @@
         <button type="submit">Update Order</button>
         <button type="reset">Cancel</button>
     </form>
-    <script src="update_order.js"></script>
+    {{!-- <script src="update_order.js"></script> --}}
 
     <p></p>
 

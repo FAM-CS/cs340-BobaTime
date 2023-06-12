@@ -325,10 +325,32 @@ select {
     margin-right: 0.5rem;
 }
 
+.drink-entry-container {
+    margin-bottom: 0.5rem;
+}
+
 #add-drinks-list {
+    margin: 0;
     padding-left: 1rem;
 }
 
+
+button {
+    box-sizing: border-box;
+}
+
+#add-new-drink, .remove-drink {
+    font-weight: 600;
+    padding: 2px 6px;
+    font-size: 1.5em;
+    line-height: 1.25rem;
+}
+
+.remove-drink {
+    position: relative;
+    padding: 1px 5px;
+    top: 0.25rem;
+}
 
 /* ------------------------------------------------------------------------------------ */
 /* FOOTER/BACKGROUND ------------------------------------------------------------------ */

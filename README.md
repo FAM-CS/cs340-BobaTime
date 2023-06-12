@@ -44,6 +44,7 @@ forever stop app.js
 ## Resources
 + [Express Guide](https://expressjs.com/en/guide/routing.html)
 + [Handlebars Guide](https://handlebarsjs.com/guide/)
+  + [Partials and compiling templates](https://handlebarsjs.com/installation/precompilation.html#getting-started)
 + [SVG 101](https://www.aleksandrhovhannisyan.com/blog/svg-tutorial-how-to-code-svg-icons-by-hand/)
 + [Fonts](https://fonts.google.com/)
 + [JS Logs](https://dmitripavlutin.com/console-log-tips/)
