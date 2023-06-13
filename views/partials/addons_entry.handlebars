@@ -1,0 +1,16 @@
+<li>
+    <label for="input-add_on_id">Topping</label>
+    <select name="input-add_on_id" class="input-add_on_id">
+        <option value=""></option>
+        {{#each addons}}
+        <option value="{{[Add On ID]}}">{{[Topping]}}, ${{[Price]}}</option>
+        {{/each}}
+    </select>
+
+    <label for="input-add_on_quantity">Quantity</label>
+    <select name="input-add_on_quantity" class="input-add_on_quantity">
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+    </select>
+</li>

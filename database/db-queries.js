@@ -175,6 +175,40 @@ const search = async(table, parameters) => {
 
 module.exports.search = search
 
+
+const drink_data = async () => {
+    query = `
+        SELECT
+            drink_id
+            , base_flavor
+            , small_price
+            , reg_price
+            , IF(can_be_hot, "Yes", "No")
+            , IF(is_flavored_sweetener, "Yes", "No")
+        FROM Drinks
+        `
+
+    return await run_query(query)
+}
+
+module.exports.drink_data = drink_data
+
+
+const topping_data = async () => {
+    query = `
+        SELECT
+            add_on_id
+            , topping
+            , price
+        FROM AddOns
+        `
+
+    return await run_query(query)
+}
+
+module.exports.topping_data = topping_data
+
+
 // -----------------------------------------------------------------------
 // INSERT QUERIES
 // -----------------------------------------------------------------------
@@ -189,6 +223,17 @@ const insert_values = async (parameters) => {
 }
 
 module.exports.insert_values = insert_values
+
+const insert_values_many= async (parameters) => {
+    const query = `
+        INSERT INTO ?? (??)
+        VALUES ?
+        RETURNING *
+        `
+    return await run_query_param(query, parameters)
+}
+
+module.exports.insert_values_many = insert_values_many
 
 // -----------------------------------------------------------------------
 // DELETE QUERIES

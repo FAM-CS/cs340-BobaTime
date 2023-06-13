@@ -138,6 +138,8 @@ app.get('/orders', set_active_option, async (req, res) => {
         const drinkorder_rows = await db_queries.select_all_clean("DrinkOrders")
         const addondetail_rows = await db_queries.select_all_clean("AddOnDetails")
         const customer_rows = await db_queries.select_customer_names()
+        const drink_rows = await db_queries.select_all_clean("Drinks")
+        const topping_rows = await db_queries.select_all_clean("AddOns")
 
         const data = Object.assign(
               {options}
@@ -145,8 +147,10 @@ app.get('/orders', set_active_option, async (req, res) => {
             , {drink_orders: drinkorder_rows}
             , {addon_details: addondetail_rows}
             , {customers: customer_rows}
+            , {drinks: drink_rows}
+            , {addons: topping_rows}
             )
-        console.log("data:", data)
+        // console.log("data:", data)
 
         res.status(200).render('orders', data)
     }
@@ -167,7 +171,7 @@ app.get('/customers', set_active_option, async (req, res) => {
         } else {
             customer_rows = await db_queries.search("Customers", [req.query.email+"%"])
         }
-        
+
         console.log("req.query.email", req.query.email)
         const data = Object.assign(
               {options}
@@ -232,6 +236,32 @@ app.get('/stats/top', set_active_option, async (req, res) => {
 })
 
 
+// ~ Handle client requests for data
+app.get('/api/:client_type', async (req, res) => {
+    try {
+        data = null
+        switch(req.params.client_type) {
+            case 'order-drink':
+                const drink_rows = await db_queries.select_all_clean("Drinks")
+                const topping_rows = await db_queries.select_all_clean("AddOns")
+                data = Object.assign(
+                      {drinks: drink_rows}
+                    , {addons: topping_rows}
+                    )
+                console.log("data:", data)
+
+                res.status(200).json(data)
+                break
+            default:
+                break
+        }
+    }
+    catch (error) {
+        console.log("api err", req.params.client_type, error)
+        res.status(500).render('500', {options})
+    }
+})
+
 /*
   ~ POST
 */
@@ -241,17 +271,33 @@ app.post('/add-order-ajax', async (req, res) => {
         // Capture the incoming data and parse it back to a JS object
         let req_data = await req.body;
         console.log("req_data:", req_data)
-
+        // JSON.stringify(req_data.drinkorders.toppings)
         // Create the query and run it on the database
-        const table = "Orders"
-        const columns = ["customer_id", "order_date", "num_drinks"]
-        const parameters = [table, columns, [req_data.customer_id, req_data.order_date, req_data.num_drinks]]
-
+        let table = "Orders"
+        let columns = ["customer_id", "order_date", "num_drinks", "total_cost"]
+        let parameters = [table, columns, [req_data.customer_id, req_data.order_date, req_data.num_drinks, req_data.total_cost]]
         // Run query and wait on result (for orders we need formatted dates, use raw)
-        const result = await db_queries.insert_values(parameters)
-        const rows = await db_queries.select_all_raw('Orders')
+        let result = await db_queries.insert_values(parameters)
+        console.log("result", result[0]["order_id"])
+        //
+        // req_data = JSON.parse(req_data.drinkorders)
+        // console.log("req_data", req_data)
+        let drinkorder_data = JSON.parse(JSON.stringify(req_data.drinkorders))
+        let drink_data = []
 
-        res.status(200).send(rows)
+        drinkorder_data.forEach((item) => {
+            item["order_id"] = result[0]["order_id"]
+            delete item["toppings"]
+            drink_data.push(Object.values(item))
+        })
+        console.log("drink_data", drink_data)
+
+        table = "DrinkOrders"
+        columns = ["drink_id", "seq_number", "sweetness_lvl", "is_cold", "drink_size", "order_id"]
+        parameters = [table, columns, drink_data]
+        result = await db_queries.insert_values_many(parameters)
+
+        res.status(200).redirect("/orders")
     }
     catch (error) {
         console.log("order err:", error)
