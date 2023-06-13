@@ -35,7 +35,7 @@
 
     <form id="add-order-form-ajax">
         <h3>Create an Order</h3>
-        <label for="input-customer_id" class="required-field">Customer ID</label>
+        <label for="input-customer_id" class="required-field" required>Customer ID</label>
         <select name="input-customer_id" id="input-customer_id">
             <option value=""></option>
             {{#each customers}}
@@ -45,7 +45,7 @@
 
         <br/>
 
-        <label for="input-order_date" class="required-field">Date/Time (YYYY-MM-DD HH:MM:SS):</label>
+        <label for="input-order_date" class="required-field" required>Date/Time (YYYY-MM-DD HH:MM:SS):</label>
         <input type="text" id="input-order_date" name="input-order_date" placeholder="YYYY-MM-DD HH:MM:SS" minlength="1" maxlength="20">
         {{!-- put back --}}
         {{!-- <input type="text" id="input-order_date" name="input-order_date" placeholder="YYYY-MM-DD HH:MM:SS" minlength="1" maxlength="20" required> --}}

@@ -4,30 +4,87 @@
 const drink_list = document.getElementById("add-drinks-list")
 const add_drink_button = document.getElementById('add-new-drink')
 const add_order_form = document.getElementById('add-order-form-ajax')
+let ORDER_DATA = {}
+
 
 const capture_order_data = () => {
-    // let data = {
-    //     customer_id: idValue,
-    //     order_date: dateValue,
-    //     num_drinks: numValue,
-    // }
-    const data = {}
+    const data = {
+        customer_id: null,
+        order_date: null,
+        num_drinks: null,
+        drinkorders: [
 
-    const drink_list_items = drink_list.getElementsByTagName("li")
-    console.log("drink_list_items", drink_list_items)
-
-    drink_list_items.forEach((item, idx) => {
-
-    })
+        ],
+        total_cost: 0
+    }
 
     const id_value = document.getElementById('input-customer_id').value
     const date_value = document.getElementById('input-order_date').value
     const num_drinks_value = document.getElementById('input-num_drinks').value
 
+    data["customer_id"] = id_value
+    data["order_date"] = date_value
+    data["num_drinks"] = num_drinks_value
 
+    // iterate
+    const drink_list_items = document.querySelectorAll("#add-drinks-list li.drink-item")
+    console.log("drink_list_items", drink_list_items)
+
+    drink_list_items.forEach((item, idx1) => {
+        // console.log("item", item)
+        // console.log("item.querySelector('.input-drink_id').value", item.querySelector('.input-drink_id').value)
+        // console.log("item.querySelector('.input-amt_add_on').value", item.querySelector('.input-amt_add_on').value)
+        // console.log("item.querySelector('.input-sweetness_lvl').value", item.querySelector('.input-sweetness_lvl').value)
+        // console.log("item.querySelector('.input-drink_size').value", item.querySelector('.input-drink_size').value)
+        // console.log("item.querySelector('.input-price').value", item.querySelector('.input-price').value)
+        //
+        const drink_order_obj = {
+            toppings: []
+        }
+
+        let drink_id_value = item.querySelector('.input-drink_id').value
+        let num_toppings_value = item.querySelector('.input-amt_add_on').value
+        let sweetness_lvl_value = item.querySelector('.input-sweetness_lvl').value
+        let drink_size_value = item.querySelector('.input-drink_size').value
+        let price_value = item.querySelector('.input-price').value
+
+        data["total_cost"] += parseFloat(price_value)
+        drink_order_obj["drink_id"] = drink_id_value
+        drink_order_obj["seq_number"] = idx1 + 1
+        drink_order_obj["sweetness_lvl"] = parseInt(sweetness_lvl_value)
+        drink_order_obj["is_cold"] = 1
+        drink_order_obj["drink_size"] = drink_size_value
+
+        let drink_addons = item.querySelectorAll(".drink-addons li")
+
+        drink_addons.forEach((addon_item, idx2) => {
+            // console.log("addon_item.querySelector('.input-add_on_id').options", addon_item.querySelector('.input-add_on_id').options)
+            const addon_obj = {}
+            //~ id and quantity
+            let add_on_id_value = addon_item.querySelector('.input-add_on_id').value
+            let quantity_value = addon_item.querySelector('.input-add_on_quantity').value
+            addon_obj["add_on_id"] = add_on_id_value
+            addon_obj["quantity"] = quantity_value
+            //~ price
+            let addon_options = addon_item.querySelector('.input-add_on_id').options
+            let option_text = addon_options[addon_options.selectedIndex].textContent
+            let price = option_text.substring(option_text.indexOf('$') + 1)
+            data["total_cost"] += parseInt(quantity_value) * parseFloat(price)
+
+            drink_order_obj["toppings"].push(addon_obj)
+        })
+
+        data["drinkorders"].push(drink_order_obj)
+    })
+
+    console.log("fin data:====", data)
+
+    return data
 }
 
 add_order_form.addEventListener("change", (event) => {
+    event.preventDefault()
+
     fetch("/api/order-drink", {
         method: 'GET',
         headers: {
@@ -38,7 +95,15 @@ add_order_form.addEventListener("change", (event) => {
     })
     .then((response) => response.json())
     .then((data) => {
-        capture_order_data()
+        client_data = capture_order_data()
+
+        let total_cost = document.getElementById("input-total_cost")
+        if (isNaN(client_data["total_cost"])) {
+            total_cost.innerText = "- -"
+        } else {
+            total_cost.innerText = Number((client_data["total_cost"]).toFixed(2))
+            ORDER_DATA = client_data
+        }
     })
     .catch(console.error)
 })
@@ -238,24 +303,9 @@ add_order_button.addEventListener("click", function (e) {
     // Prevent the form from submitting
     e.preventDefault()
 
-    // Get form fields we need to get data from
-    let inputID = document.getElementById("input-customer_id")
-    let inputDate = document.getElementById("input-order_date")
-    let inputNum = document.getElementById("input-num_drinks")
-
-    // Get the values from the form fields
-    let idValue = inputID.value
-    let dateValue = inputDate.value
-    let numValue = inputNum.value
-
-    // Put our data we want to send in a javascript object
-    let data = {
-        customer_id: idValue,
-        order_date: dateValue,
-        num_drinks: numValue,
-    }
-
-    console.log("add data:", data)
+    // Data is in json object
+    console.log("ORDER_DATA", ORDER_DATA)
+    let data = ORDER_DATA
 
     // Setup our AJAX request
     var xhttp = new XMLHttpRequest()
@@ -264,18 +314,17 @@ add_order_button.addEventListener("click", function (e) {
     xhttp.setRequestHeader("Access-Control-Allow-Origin", "GET, POST, PUT, DELETE, OPTIONS")
     xhttp.setRequestHeader("Access-Control-Allow-Headers", "Content-type")
 
-
     // tell our ajax request how to resolve
     xhttp.onreadystatechange = () => {
         if (xhttp.readyState == 4 && xhttp.status == 200) {
-
+            // no longer doing anything, just redirect
             // add the new data to the table
-            addRowToTable(xhttp.response)
+            // addRowToTable(xhttp.response)
 
             // clear the input fields for another transaction
-            inputID.value = ''
-            inputDate.value = ''
-            inputNum.value = ''
+            // inputID.value = ''
+            // inputDate.value = ''
+            // inputNum.value = ''
         }
         else if (xhttp.readyState == 4 && xhttp.status != 200) {
             console.log("there was an error with the input.")

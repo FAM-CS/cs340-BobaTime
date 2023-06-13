@@ -190,6 +190,17 @@ const insert_values = async (parameters) => {
 
 module.exports.insert_values = insert_values
 
+const insert_values_many= async (parameters) => {
+    const query = `
+        INSERT INTO ?? (??)
+        VALUES ?
+        RETURNING *
+        `
+    return await run_query_param(query, parameters)
+}
+
+module.exports.insert_values_many = insert_values_many
+
 // -----------------------------------------------------------------------
 // DELETE QUERIES
 // -----------------------------------------------------------------------
