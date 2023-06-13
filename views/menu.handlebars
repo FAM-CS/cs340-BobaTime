@@ -38,16 +38,16 @@
     <form id="add-drink-form-ajax">
         <label for="input-base_flavor" class="required-field"> Base Flavor</label>
         <input type="text" id="input-base_flavor" name="input-base_flavor" minlength="1" maxlength="20" required>
-        
+
         <br/>
 
         <label for="input-small_price" class="required-field"> Small Price</label>
-        <input type="number" id="input-small_price" name="input-small_price" minlength="1" maxlength="20" required>
-        
+        <input type="number" step="0.01" id="input-small_price" name="input-small_price" minlength="1" maxlength="20" required>
+
         <br/>
 
         <label for="input-reg_price" class="required-field"> Regular Price</label>
-        <input type="number" id="input-reg_price" name="input-reg_price" minlength="1" maxlength="20" required>
+        <input type="number" step="0.01" id="input-reg_price" name="input-reg_price" minlength="1" maxlength="20" required>
 
         <br/>
 
@@ -57,7 +57,7 @@
             <option value=0>No</option>
             <option value=1>Yes</option>
         </select>
-        
+
         <br/>
 
         <label for="input-is_flavored_sweetener" class="required-field"> Is Flavored Sweetener</label>
@@ -84,21 +84,21 @@
             <option value="{{[Drink ID]}}">{{[Drink ID]}}</option>
             {{/each}}
         </select>
-        
+
         <br/>
-        
+
         <label for="update-base_flavor" class="required-field"> Base Flavor</label>
         <input type="text" id="update-base_flavor" name="update-base_flavor" minlength="1" maxlength="20" required>
-        
+
         <br/>
-        
+
         <label for="update-small_price" class="required-field"> Small Price</label>
-        <input type="number" id="update-small_price" name="update-small_price" minlength="1" maxlength="20" required>
-        
+        <input type="number" step="0.01" id="update-small_price" name="update-small_price" minlength="1" maxlength="20" required>
+
         <br/>
 
         <label for="update-reg_price" class="required-field"> Regular Price</label>
-        <input type="number" id="update-reg_price" name="update-reg_price" minlength="1" maxlength="20" required>
+        <input type="number" step="0.01" id="update-reg_price" name="update-reg_price" minlength="1" maxlength="20" required>
 
         <br/>
 
@@ -108,7 +108,7 @@
             <option value=0>No</option>
             <option value=1>Yes</option>
         </select>
-        
+
         <br/>
 
         <label for="update-is_flavored_sweetener"> Is Flavored Sweetener</label>
@@ -117,7 +117,7 @@
             <option value=0>No</option>
             <option value=1>Yes</option>
         </select>
-        
+
         <br/>
 
         <button type="submit">Update Drink</button>
@@ -183,14 +183,14 @@
             {{/each}}
         </select>
         {{!-- <input type="text" id="add_on_id" name="target_topping" minlength="1" maxlength="20" required> --}}
-        
+
         <br/>
 
         <label for="update-topping" class="required-field"> Topping</label>
         <input type="text" id="update-input-topping" name="update-topping" minlength="1" maxlength="20" required>
-        
+
         <br/>
-        
+
         <label for="update-price" class="required-field"> Price</label>
         <input type="number" id="update-input-price" name="update-price" minlength="1" maxlength="20" required>
 

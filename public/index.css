@@ -339,7 +339,12 @@ button {
     box-sizing: border-box;
 }
 
-#add-new-drink, .remove-drink {
+#add-new-drink {
+    display: block;
+}
+
+#add-new-drink, .remove-drink, .remove-addon {
+    margin-left: 1rem;
     font-weight: 600;
     padding: 2px 6px;
     font-size: 1.5em;

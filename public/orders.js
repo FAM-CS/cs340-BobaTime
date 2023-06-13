@@ -3,6 +3,156 @@
 // ***********************************************************************
 const drink_list = document.getElementById("add-drinks-list")
 const add_drink_button = document.getElementById('add-new-drink')
+const add_order_form = document.getElementById('add-order-form-ajax')
+
+const capture_order_data = () => {
+    // let data = {
+    //     customer_id: idValue,
+    //     order_date: dateValue,
+    //     num_drinks: numValue,
+    // }
+    const data = {}
+
+    const drink_list_items = drink_list.getElementsByTagName("li")
+    console.log("drink_list_items", drink_list_items)
+
+    drink_list_items.forEach((item, idx) => {
+
+    })
+
+    const id_value = document.getElementById('input-customer_id').value
+    const date_value = document.getElementById('input-order_date').value
+    const num_drinks_value = document.getElementById('input-num_drinks').value
+
+
+}
+
+add_order_form.addEventListener("change", (event) => {
+    fetch("/api/order-drink", {
+        method: 'GET',
+        headers: {
+            "Content-type": "application/json",
+            "Access-Control-Allow-Origin": "GET, POST, PUT, DELETE, OPTIONS",
+            "Access-Control-Allow-Headers": "Content-type"
+        }
+    })
+    .then((response) => response.json())
+    .then((data) => {
+        capture_order_data()
+    })
+    .catch(console.error)
+})
+
+const add_toppings = (event, data) => {
+    const num_addons = parseInt(event.target.value)
+
+    const new_addon_entry = Handlebars.templates.addons_entry(data)
+
+    // Clear toppings list
+    let current_addons_list = event.target.parentNode.querySelector(".drink-addons")
+    current_addons_list.innerHTML = ""
+    for (let i = 0; i < num_addons; i++) {
+        current_addons_list.insertAdjacentHTML("beforeend", new_addon_entry)
+    }
+}
+
+
+const refresh_addons_menu = () => {
+    let number_addons_list = document.querySelectorAll(".input-amt_add_on")
+
+    number_addons_list.forEach((item) => {
+        item.addEventListener("change", (event) => {
+            event.preventDefault()
+
+            fetch("/api/order-drink", {
+                method: 'GET',
+                headers: {
+                    "Content-type": "application/json",
+                    "Access-Control-Allow-Origin": "GET, POST, PUT, DELETE, OPTIONS",
+                    "Access-Control-Allow-Headers": "Content-type"
+                }
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                add_toppings(event, data)
+            })
+            .catch(console.error)
+        })
+    })
+}
+refresh_addons_menu()
+
+
+const update_drink_price = (event, data) => {
+    let target = event.target.parentNode.querySelector(".input-drink_id")
+
+    let current_size = target.parentNode.querySelector(".input-drink_size").value
+    const drink_id = parseInt(target.value)
+
+    // update drink
+    let curr_drink_price = target.parentNode.querySelector(".input-price")
+    curr_drink_price.innerHTML = 0.0
+    data["drinks"].forEach((item) => {
+        if (item["Drink ID"] === drink_id) {
+            if (current_size === "R") {
+                curr_drink_price.innerHTML = item["Price (Regular)"]
+            }
+            else {
+                curr_drink_price.innerHTML = item["Price (Small)"]
+            }
+        }
+    })
+}
+
+const refresh_drink_price = () => {
+    let drink_flavor_selects = document.querySelectorAll(".input-drink_id")
+    let size_selects = document.querySelectorAll(".input-drink_size")
+
+    drink_flavor_selects.forEach((item) => {
+        item.addEventListener("change", (event) => {
+            event.preventDefault()
+
+            fetch("/api/order-drink", {
+                method: 'GET',
+                headers: {
+                    "Content-type": "application/json",
+                    "Access-Control-Allow-Origin": "GET, POST, PUT, DELETE, OPTIONS",
+                    "Access-Control-Allow-Headers": "Content-type"
+                }
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                update_drink_price(event, data)
+            })
+            .catch(console.error)
+        })
+    })
+
+    size_selects.forEach((item) => {
+        item.addEventListener("change", (event) => {
+            event.preventDefault()
+
+            fetch("/api/order-drink", {
+                method: 'GET',
+                headers: {
+                    "Content-type": "application/json",
+                    "Access-Control-Allow-Origin": "GET, POST, PUT, DELETE, OPTIONS",
+                    "Access-Control-Allow-Headers": "Content-type"
+                }
+            })
+            .then((response) => response.json())
+            .then((data) => {
+                const curr_drink = event.target.parentNode.querySelector(".input-drink_id").value
+                if (curr_drink !== "") {
+                    update_drink_price(event, data)
+                }
+            })
+            .catch(console.error)
+        })
+    })
+}
+refresh_drink_price()
+
 
 /**
  * Remove drink entry forms
@@ -44,6 +194,8 @@ add_drink_button.addEventListener("click", (event) => {
         if (xhttp.readyState == 4 && xhttp.status == 200) {
             add_new_drink_entry(xhttp.response)
             refresh_drink_remove()
+            refresh_addons_menu()
+            refresh_drink_price()
         }
         else if (xhttp.readyState == 4 && xhttp.status != 200) {
             console.log("There was an error for getting drink/topping data.")
@@ -79,7 +231,6 @@ const add_new_drink_entry = (data) => {
 
 // Get the objects we need to modify
 let add_order_button = document.getElementById('submit-order')
-// let addOrderForm = document.getElementById('add-order-form-ajax')
 
 // Modify the objects we need
 // Note: Ran into bug where any buttom in form is a submit event
@@ -169,7 +320,7 @@ addRowToTable = (data) => {
 
     // Add the cells to the row
     row.append(
-          deleteCell
+        deleteCell
         , idCell
         , cIDCell
         , dateCell
@@ -198,8 +349,7 @@ update_order_form.addEventListener("submit", function (e) {
     let order_id_value = input_order_id.value
     let num_drinks_value = input_num_drinks.value
 
-    if (isNaN(num_drinks_value))
-    {
+    if (isNaN(num_drinks_value)) {
         return
     }
 
@@ -233,16 +383,16 @@ update_order_form.addEventListener("submit", function (e) {
 })
 
 
-function update_row(data, order_id){
+function update_row(data, order_id) {
     let parsedData = JSON.parse(data)
     console.log("parsedData", parsedData)
 
     let table = document.getElementById("orders-table")
 
     for (let i = 0, row; row = table.rows[i]; i++) {
-       //iterate through rows
-       //rows would be accessed using the "row" variable assigned in the for loop
-       if (table.rows[i].cells[1].innerText == order_id) {
+        //iterate through rows
+        //rows would be accessed using the "row" variable assigned in the for loop
+        if (table.rows[i].cells[1].innerText == order_id) {
             // Get the location of the row where we found the matching person ID
             let updateRowIndex = table.getElementsByTagName("tr")[i]
 
@@ -250,8 +400,8 @@ function update_row(data, order_id){
             let num_drinks_td = updateRowIndex.getElementsByTagName("td")[4]
 
             // Reassign num_drinks to our value we updated to
-            num_drinks_td.innerHTML = parsedData[i-1].num_drinks
-       }
+            num_drinks_td.innerHTML = parsedData[i - 1].num_drinks
+        }
     }
 }
 
@@ -271,8 +421,8 @@ delete_order = (order_id_given) => {
         type: 'DELETE',
         data: JSON.stringify(data),
         contentType: "application/json; charset=utf-8",
-        success: function(result) {
-        delete_row(order_id_given)
+        success: function (result) {
+            delete_row(order_id_given)
         }
     })
 }
@@ -283,8 +433,8 @@ delete_row = (order_id) => {
     for (let i = 0, row; row = table.rows[i]; i++) {
         // console.log("ATT:", table.rows[i].cells[1].innerText)
         if (table.rows[i].cells[1].innerText == order_id) {
-                table.deleteRow(i)
-                break
+            table.deleteRow(i)
+            break
         }
     }
 }

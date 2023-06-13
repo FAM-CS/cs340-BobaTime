@@ -32,14 +32,12 @@
             {{/each}}
         </tbody>
     </table>
-    <script src="delete_order.js"></script>
-
 
     <form id="add-order-form-ajax">
         <h3>Create an Order</h3>
         <label for="input-customer_id" class="required-field">Customer ID</label>
         <select name="input-customer_id" id="input-customer_id">
-            <option value="" aria-placeholder="Name"></option>
+            <option value=""></option>
             {{#each customers}}
             <option value="{{this.customer_id}}">{{[Full Name]}}</option>
             {{/each}}
@@ -67,6 +65,10 @@
                 {{> drink_entry}}
             </ol>
             <button id="add-new-drink">+</button>
+            <label for="input-total_cost">
+                Total: $
+                <output id="input-total_cost" name="input-total_cost">0.00</output>
+            </label>
         </div>
 
         <button type="submit" id="submit-order">Submit Order</button>

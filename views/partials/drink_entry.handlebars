@@ -3,16 +3,17 @@
     <select name="input-drink_id" class="input-drink_id">
         <option value=""></option>
         {{#each drinks}}
-        <option value="{{this.drink_id}}">{{[Base Flavor]}}</option>
+        <option value="{{[Drink ID]}}">{{[Base Flavor]}}</option>
         {{/each}}
     </select>
 
-    <label for="input-add_on_id">Topping</label>
-    <select name="input-add_on_id" class="input-add_on_id">
-        <option value=""></option>
-        {{#each addons}}
-        <option value="{{this.add_on_id}}">{{[Topping]}}</option>
-        {{/each}}
+    <label for="input-amt_add_on">Number of toppings</label>
+    <select name="input-amt_add_on" class="input-amt_add_on">
+        <option value="0">0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
     </select>
 
     <label for="input-sweetness_lvl" class="required-field">Sweetness</label>
@@ -29,5 +30,16 @@
         <option value="S">Small</option>
     </select>
 
+    <label for="input-price">
+        Price: $
+        <output class="input-price" name="input-price">0</output>
+    </label>
+
     <button class="remove-drink">−</button>
+
+    <br/>
+    <div class="topping-entry-container">
+        <ol class="drink-addons">
+        </ol>
+    </div>
 </li>
