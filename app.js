@@ -160,8 +160,15 @@ app.get('/orders', set_active_option, async (req, res) => {
 // ~ Customers
 app.get('/customers', set_active_option, async (req, res) => {
     try {
-        const customer_rows = await db_queries.select_all_clean("Customers")
+        let customer_rows = -1
 
+        if (req.query.email === undefined) {
+            customer_rows = await db_queries.select_all_clean("Customers")
+        } else {
+            customer_rows = await db_queries.search("Customers", [req.query.email+"%"])
+        }
+        
+        console.log("req.query.email", req.query.email)
         const data = Object.assign(
               {options}
             , {customers: customer_rows}
@@ -171,7 +178,7 @@ app.get('/customers', set_active_option, async (req, res) => {
         res.status(200).render('customers', data)
     }
     catch (error) {
-        console.log("order err:", error)
+        console.log("customer err:", error)
         res.status(500).render('500', {options})
     }
 })

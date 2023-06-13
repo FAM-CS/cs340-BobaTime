@@ -178,6 +178,24 @@ h3 a {
 }
 
 /* ? Drop down menu source*/
+h3 a {
+    font-family: 'Barlow', sans-serif;
+    /* font-size: 32px; */
+    font-size: calc(70% + 0.5vw);
+    text-align: left;
+
+    width: auto;
+    /* padding-top: 0.1rem;
+    padding-bottom: 0.1rem; */
+    padding-left: 0.5rem;
+
+    font-weight: 500;
+    color: #FDFCFB;
+
+    border-top: 2px solid #E2CEE5;
+}
+
+/* ? Drop down menu source*/
 ul {
     list-style: none;
 }
@@ -193,7 +211,11 @@ ul li a {
 }
 
 ul.dropdown {
+    border-bottom-left-radius: 1em;
+    border-bottom-right-radius: 1em;
+
     padding: 0;
+
     overflow: hidden;
 }
 
@@ -204,6 +226,10 @@ ul li ul.dropdown li {
 
 ul li ul.dropdown li a {
     text-align: left;
+}
+
+ul li ul.dropdown li:last-child {
+    padding-bottom: 0.25rem;
 }
 
 ul li ul.dropdown {

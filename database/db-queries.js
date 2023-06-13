@@ -141,6 +141,40 @@ const select_all_clean = async (table) => {
 
 module.exports.select_all_clean = select_all_clean
 
+const search = async(table, parameters) => {
+    // const query = `
+    //     SELECT INTO ?? (??)
+    //     VALUES (?)
+    //     RETURNING *
+    //     `
+    let query = ""
+    switch(table) {
+        case "Customers":
+            query = `
+                SELECT
+                    customer_id AS "Customer ID"
+                    , email AS "Email"
+                    , phone_num AS "Phone Number"
+                    , first_name AS "First Name"
+                    , last_name AS "Last Name"
+                    , num_orders AS "Number of Orders"
+                    , num_drinks AS "Number of Drinks"
+                    , total_spent AS "Total Spent"
+                    , drinks_to_free AS "Drinks to Free"
+                    , num_free_drinks AS "Number of Free Drinks"
+                FROM Customers
+                WHERE \`Email\` LIKE ?
+                `
+            break
+        default:
+            break;
+    }
+
+    return await run_query_param(query, parameters)
+}
+
+module.exports.search = search
+
 // -----------------------------------------------------------------------
 // INSERT QUERIES
 // -----------------------------------------------------------------------
