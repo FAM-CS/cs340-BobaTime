@@ -164,8 +164,15 @@ app.get('/orders', set_active_option, async (req, res) => {
 // ~ Customers
 app.get('/customers', set_active_option, async (req, res) => {
     try {
-        const customer_rows = await db_queries.select_all_clean("Customers")
+        let customer_rows = -1
 
+        if (req.query.email === undefined) {
+            customer_rows = await db_queries.select_all_clean("Customers")
+        } else {
+            customer_rows = await db_queries.search("Customers", [req.query.email+"%"])
+        }
+
+        console.log("req.query.email", req.query.email)
         const data = Object.assign(
               {options}
             , {customers: customer_rows}
@@ -175,7 +182,7 @@ app.get('/customers', set_active_option, async (req, res) => {
         res.status(200).render('customers', data)
     }
     catch (error) {
-        console.log("order err:", error)
+        console.log("customer err:", error)
         res.status(500).render('500', {options})
     }
 })
@@ -286,12 +293,11 @@ app.post('/add-order-ajax', async (req, res) => {
         console.log("drink_data", drink_data)
 
         table = "DrinkOrders"
-        columns = ["order_id", "drink_id", "seq_number", "sweetness_lvl", "is_cold", "drink_size"]
+        columns = ["drink_id", "seq_number", "sweetness_lvl", "is_cold", "drink_size", "order_id"]
         parameters = [table, columns, drink_data]
         result = await db_queries.insert_values_many(parameters)
 
-        // res.status(200).send(rows)
-        res.redirect("/orders")
+        res.status(200).redirect("/orders")
     }
     catch (error) {
         console.log("order err:", error)

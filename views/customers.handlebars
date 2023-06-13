@@ -3,11 +3,17 @@
 
 <section class="content">
 
+    <form id="customer-search" method="GET" action="/customers">
+        <label for="email">Search by Email: </label>
+        <input type="text" name="email" id="search-email">
+        <input type="submit">
+        <a href="/customers"><button>Reset</button></a>
+    </form>
+
     <h2>Customers</h2>
 
     <table id="customers-table">
         <tbody>
-            {{!-- Table Header --}}
             <tr>
                 <th>Delete</th>
                 {{#each customers.[0]}}
